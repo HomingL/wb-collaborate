@@ -21,5 +21,16 @@
 
 ## Technology Stack
 
+#### Frontend:
+- React (next or create-react-app or gatsby)
+- Apollo Client
+- Material-UI
+
+#### Backend:
+- Express
+- GraphQL (Apollo Server)
+- Firebase (Authentication)
+- MongoDB 
+- Redis 
 ## Top Five Technical Challenges
 
