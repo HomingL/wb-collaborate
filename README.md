@@ -9,7 +9,8 @@
 | First Name | Last Name |Student Number |
 |------------|-----------|---------------|
 | Hongming   | Li        | 1004135624    |
-| Diego      | HE        |               |
+| Diego      | He        | 1004264547    |
+|            |           |               |
 
 ## App Description
 
@@ -21,3 +22,4 @@
 ## Technology Stack
 
 ## Top Five Technical Challenges
+
