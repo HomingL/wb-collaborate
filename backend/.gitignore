@@ -1,0 +1,7 @@
+# javascript folder
+dist
+# dependencies
+node_modules
+
+# environment variables
+.env
