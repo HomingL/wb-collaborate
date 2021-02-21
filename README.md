@@ -20,10 +20,10 @@ Our web application aims to provide a collaborative platform that allows multipl
 
 Authenticated users have a workspace with basic file organization features where they can see all the whiteboards they have saved. Users can create a new whiteboard and invite other users to join by sharing the link. Users on the same whiteboard can communicate in the chat, and edit the whiteboard at the same time.
 
-Any users who enter the whiteboard page with write access can free draw with their curser. It supports muliple features such like pen, eraser, text box, image upload, color selection, etc. It supports text recognition which can format handwritings to digital text or diagrams. Additionally, it also has a chat box which allows all users in the whiteboard page to communicate in real-time.
+Any users who enter the whiteboard page with access to write can draw freely with their curser. It supports muliple features such like pen, eraser, text box, image upload, color selection, etc. It also supports text recognition which can format handwritings to digital text or diagrams. Additionally, it has a chat box which allows all users in the whiteboard page to communicate in real-time.
 
 
-This application is useful when working remotely. User at different physical location can do group discussion or braistorming without meeting up together. It is also very useful for instructors to deliver a lecture online.
+This application is useful when working remotely. User at different physical location can do group discussion or brainstorming together without meeting up. It is also very useful for instructors to deliver a lecture online.
 
 ## Beta Version 
  - Static Index Page
