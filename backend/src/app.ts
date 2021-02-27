@@ -2,7 +2,7 @@
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
-import { HelloResolver } from './resolvers/hello.ts';
+import { HelloResolver } from './resolvers/hello';
 
 require('dotenv').config();
 
