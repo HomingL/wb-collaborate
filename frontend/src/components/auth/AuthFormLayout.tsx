@@ -8,7 +8,7 @@ interface AuthFormLayoutProps {
   children: React.ReactNode;
 }
 
-const AuthFormLayout: React.FC<AuthFormLayoutProps> = ({ children , title} ) => {
+const AuthFormLayout: React.FC<AuthFormLayoutProps> = ( { children, title} ) => {
   const classes = useStyles();
   return (
     <Container component="main" maxWidth="xs">
