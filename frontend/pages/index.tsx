@@ -15,7 +15,7 @@ export default function Index() {
         <Typography variant="h4" component="h1" gutterBottom>
           WB Collaborate
         </Typography>
-        <Link href="/signin" color="secondary">
+        <Link href="/signup" color="secondary">
           Go to the Sign Up page
         </Link>
         <AuthFormLayout title='Sign In' >

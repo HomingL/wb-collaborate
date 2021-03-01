@@ -1,17 +1,17 @@
 import React from 'react';
 import AuthFormLayout from '../src/components/auth/AuthFormLayout';
-import SigninForm from '../src/components/auth/SigninForm';
+import SignupForm from '../src/components/auth/SignupForm';
 
 
 
-interface signinProps {
+interface signupProps {
 
 }
 
-const signin: React.FC<signinProps> = ({}) => {
+const signin: React.FC<signupProps> = ({}) => {
   return (
     <AuthFormLayout title='Sign Up' >
-      <SigninForm/>
+      <SignupForm/>
     </AuthFormLayout>
   );
 }

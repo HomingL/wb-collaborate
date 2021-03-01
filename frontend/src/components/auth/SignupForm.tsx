@@ -14,7 +14,6 @@ const SignupForm: React.FC<SignupFormProps> = ({}) => {
       <Grid container spacing={1}>
         <Grid item md={6} xs={12}>
           <TextField
-            // className={classes.mdTextField}
             variant="outlined"
             margin="normal"
             required
@@ -88,12 +87,6 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
-  // mdTextField:{
-  //   // '& .MuiFormControl-root': {
-  //   //   padding: theme.spacing(3, 0, 2),
-  //   // }
-  //   padding: theme.spacing(1),
-  // }
 }));
 
 export default SignupForm
