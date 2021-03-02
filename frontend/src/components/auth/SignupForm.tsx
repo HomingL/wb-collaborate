@@ -1,6 +1,6 @@
 import React from 'react'
-import { Button, Checkbox, FormControlLabel, Grid, Link, TextField } from '@material-ui/core';
-import { makeStyles } from "@material-ui/core/styles";
+import { Button, Grid, TextField } from '@material-ui/core';
+import { makeStyles, Theme } from "@material-ui/core/styles";
 
 
 interface SignupFormProps {
@@ -79,9 +79,9 @@ const SignupForm: React.FC<SignupFormProps> = ({}) => {
   );
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   form: {
-    width: '100%', // Fix IE 11 issue.
+    width: '100%',
     marginTop: theme.spacing(3),
   },
   submit: {

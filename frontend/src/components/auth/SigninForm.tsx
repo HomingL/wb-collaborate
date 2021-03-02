@@ -62,7 +62,7 @@ const SigninForm: React.FC<SigninFormProps> = ({}) => {
 
 const useStyles = makeStyles((theme) => ({
   form: {
-    width: '100%', // Fix IE 11 issue.
+    width: '100%',
     marginTop: theme.spacing(3),
   },
   submit: {

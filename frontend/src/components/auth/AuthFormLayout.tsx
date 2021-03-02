@@ -1,5 +1,5 @@
 import React from 'react';
-import { makeStyles, Theme } from '@material-ui/styles';
+import { makeStyles, Theme } from "@material-ui/core/styles";
 import { Container, CssBaseline, Typography, Box } from '@material-ui/core';
 import Copyright from '../../Copyright';
 
