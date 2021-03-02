@@ -5,7 +5,7 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import theme from '../src/theme';
 
-import { createApolloClient } from '../src/apolo/apolo'
+import { createApolloClient } from '../src/apollo/apollo'
 import { ApolloProvider } from '@apollo/client'
 
 const client = createApolloClient();

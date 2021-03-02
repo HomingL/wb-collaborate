@@ -15,4 +15,4 @@ const Hello = () => {
     return data.hello;
 }
 
-export { Hello };
+export { Hello , getHello};
