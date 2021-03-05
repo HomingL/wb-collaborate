@@ -71,7 +71,7 @@ const signin: React.FC<signinProps> = ({}) => {
         <Copyright />
       </Box>
     </Container>
-  );;
+  );
 }
 
 
