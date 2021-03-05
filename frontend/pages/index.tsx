@@ -6,8 +6,6 @@ import ProTip from '../src/ProTip';
 import Link from '../src/Link';
 import Copyright from '../src/Copyright';
 
-import { GetUserHandler } from '../src/graphql/handler/userHandler'
-
 export default function Index() {
   return (
     <Container maxWidth="sm">
@@ -18,7 +16,6 @@ export default function Index() {
         <Link href="/signin" color="secondary">
           Go to the Sign in page
         </Link>
-        <GetUserHandler />
         <ProTip />
         <Copyright />
       </Box>
