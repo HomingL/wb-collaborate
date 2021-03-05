@@ -1,5 +1,4 @@
 import React from 'react';
-import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import Link from '../src/Link';
@@ -7,9 +6,19 @@ import Copyright from '../src/Copyright';
 import SigninForm from '../src/components/auth/SigninForm';
 import AuthFormLayout from '../src/components/auth/AuthFormLayout';
 import JoinBoard from '../src/components/JoinBoard'
-import { BottomNavigation, Grid, Toolbar } from '@material-ui/core';
+import { Grid, Toolbar } from '@material-ui/core';
 import { makeStyles, Theme } from '@material-ui/core/styles';
-import { sizing } from '@material-ui/system';
+
+const navitems = [
+  {title: "How to use?", link: "/"},
+  {title: "About us", link: "/"}
+];
+
+const nav = navitems.map((item) => 
+  <Box m={3}>
+    <Link href={item.link}>{item.title}</Link>
+  </Box>
+);
 
 export default function Index() {
   const classes = useStyles();
@@ -18,12 +27,7 @@ export default function Index() {
 
       <Grid item>
         <Toolbar component="nav" className={classes.toolbar}>
-          <Box m={3}>
-            <Link href="/">How to use?</Link>
-          </Box>
-          <Box m={3}>
-            <Link href="/">About us</Link>
-          </Box>
+          {nav}
         </Toolbar>  
       </Grid>
       
