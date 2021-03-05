@@ -1,5 +1,5 @@
 import React from 'react';
-import { makeStyles, Theme } from '@material-ui/styles';
+import { makeStyles, Theme } from "@material-ui/core/styles";
 import { Container, CssBaseline, Typography, Box } from '@material-ui/core';
 import Copyright from '../../Copyright';
 
@@ -8,7 +8,7 @@ interface AuthFormLayoutProps {
   children: React.ReactNode;
 }
 
-const AuthFormLayout: React.FC<AuthFormLayoutProps> = ({ children , title} ) => {
+const AuthFormLayout: React.FC<AuthFormLayoutProps> = ( { children, title} ) => {
   const classes = useStyles();
   return (
     <Container component="main" maxWidth="xs">
@@ -36,13 +36,6 @@ const useStyles = makeStyles((theme: Theme) => ({
   avatar: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
-    width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(3),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
   },
 }));
 

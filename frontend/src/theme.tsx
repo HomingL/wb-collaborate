@@ -17,6 +17,7 @@ const theme = createMuiTheme({
       default: '#fff',
     },
   },
+  spacing: (factor) => `${0.5 * factor}rem`,
 });
 
 export default theme;
