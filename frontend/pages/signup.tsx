@@ -8,7 +8,7 @@ interface signupProps {
 
 }
 
-const signin: React.FC<signupProps> = ({}) => {
+const signup: React.FC<signupProps> = () => {
   return (
     <AuthFormLayout title='Sign Up' >
       <SignupForm/>
@@ -17,4 +17,4 @@ const signin: React.FC<signupProps> = ({}) => {
 }
 
 
-export default signin;
+export default signup;

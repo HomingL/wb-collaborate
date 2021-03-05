@@ -5,7 +5,7 @@ interface SigninFormProps {
 
 }
 
-const SigninForm: React.FC<SigninFormProps> = ({}) => {
+const SigninForm: React.FC<SigninFormProps> = () => {
   const classes = useStyles();
   return (
     <form className={classes.form} noValidate>

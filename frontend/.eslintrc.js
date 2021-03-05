@@ -28,6 +28,9 @@ module.exports = {
         "prefer-destructuring": [1, { object: true, array: false }],
         "no-underscore-dangle": [1, { allow: ["_id"] }],
         "import/prefer-default-export": "off",
-        "@typescript-eslint/no-use-before-define": "off"
+        "@typescript-eslint/no-use-before-define": "off",
+        "@typescript-eslint/no-empty-interface": "off",
+        "react/display-name": "off",
+        "@typescript-eslint/explicit-module-boundary-types": "off",
     }
 };

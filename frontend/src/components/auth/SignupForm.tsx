@@ -8,7 +8,7 @@ interface SignupFormProps {
 
 }
 
-const SignupForm: React.FC<SignupFormProps> = ({}) => {
+const SignupForm: React.FC<SignupFormProps> = () => {
   const classes = useStyles();
   const validationSchema = yup.object({
     email: yup
@@ -35,7 +35,8 @@ const SignupForm: React.FC<SignupFormProps> = ({}) => {
       password: '',
     },
     validationSchema: validationSchema,
-    onSubmit: (values: any) => {
+    onSubmit: (values: FormFields) => {
+      console.log(values);
       alert(JSON.stringify(values, null, 2))
     }
   })
@@ -123,6 +124,13 @@ const SignupForm: React.FC<SignupFormProps> = ({}) => {
       </Button>
     </form>
   );
+}
+
+interface FormFields{
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
