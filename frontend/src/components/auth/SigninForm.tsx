@@ -1,11 +1,11 @@
 import React from 'react';
 import { Button, Checkbox, FormControlLabel, Grid, Link, TextField } from "@material-ui/core";
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, Theme } from '@material-ui/core/styles';
 interface SigninFormProps {
 
 }
 
-const SigninForm: React.FC<SigninFormProps> = () => {
+const SigninForm: React.FC<SigninFormProps> = ({}) => {
   const classes = useStyles();
   return (
     <form className={classes.form} noValidate>
@@ -60,7 +60,7 @@ const SigninForm: React.FC<SigninFormProps> = () => {
   );
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   form: {
     width: '100%',
     marginTop: theme.spacing(3),
