@@ -1,6 +1,6 @@
-query GetUser{
-    User {
-        name
-        email
-    }
+query GetUser {
+  User {
+    name
+    email
+  }
 }

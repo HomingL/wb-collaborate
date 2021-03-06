@@ -1,5 +1,6 @@
 // .env
-import "reflect-metadata";
+import 'dotenv/config';
+import 'reflect-metadata';
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
@@ -7,7 +8,7 @@ import { UserResolver } from './resolvers/userResolver';
 import { createConnection } from "typeorm";
 
 
-require('dotenv').config();
+// require('dotenv').config();
 
 const { PORT } = process.env;
 
@@ -25,6 +26,7 @@ const main = async () => {
       resolvers: [UserResolver],
       validate: false,
     }),
+    context: ({ req, res }) => ({ req, res }),
   });
 
 

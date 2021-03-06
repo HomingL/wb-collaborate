@@ -1,10 +1,11 @@
-import 'reflect-metadata';
-import { Resolver, Query, Mutation, Arg } from 'type-graphql';
+import { Resolver, Query, Mutation, Arg, Ctx, UseMiddleware } from 'type-graphql';
 import { sign } from 'jsonwebtoken';
+import { Context } from 'src/context';
 import { User } from '../models/user';
 import crypto from 'crypto';
+import { isAuthenticated } from '../middlewares/auth';
 
-const jwtSecret = 'wb_collaborate_secret';
+const { TOKEN_SECRET, TOKEN_EXPIRE_TIME } = process.env;
 
 function generateSalt (){
   return crypto.randomBytes(16).toString('base64');
@@ -19,6 +20,7 @@ function generateHash (password: string, salt: string){
 @Resolver()
 export class UserResolver {
   @Query(() => User)
+  @UseMiddleware(isAuthenticated)
   User() {
     return { id: 1, name: 'Homing Li', email: 'homing.li@mail.utor' };
   }
@@ -37,16 +39,24 @@ export class UserResolver {
     return us;
   }
 
-  @Mutation(() => String)
+
+  @Mutation(() => User)
   async Signin(
     @Arg('email') email: string,
     @Arg('password') password: string,
+    @Ctx() ctx: Context,
   ) {
     let user = await User.findOne({email: email});
     if (user && generateHash(password, user.salt) === user.password) {
-      const token = sign({ email: user.email, name: user.name, id: user.id }, jwtSecret, { expiresIn: '10min' });
-      return token;
-    }
+      const token = sign({ email: user.email, name: user.name, id: user.id }, TOKEN_SECRET!, {
+        expiresIn: TOKEN_EXPIRE_TIME });
+      const { res } = ctx;
+      // console.log("TOken scret is:", TOKEN_SECRET);
+      res.cookie('token', token, {
+        secure: true,
+      });
+      return user;
+
     return new Error("Incorrect match of usename and password");
   }
 }
