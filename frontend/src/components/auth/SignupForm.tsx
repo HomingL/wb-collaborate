@@ -1,8 +1,10 @@
-import React from 'react'
+import React from 'react';
+import { useRouter } from 'next/router';
 import { Button, Grid, TextField } from '@material-ui/core';
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import { useFormik } from 'formik';
 import * as yup from 'yup';
+import { SignupMutationVariables, useSignupMutation } from '../../generated/apolloComponents';
 
 interface SignupFormProps {
 
@@ -10,6 +12,14 @@ interface SignupFormProps {
 
 const SignupForm: React.FC<SignupFormProps> = () => {
   const classes = useStyles();
+  const router = useRouter();
+  const [signupMutation, { error }] = useSignupMutation({
+    variables: {
+       email: '',
+       password: '',
+       name: '',
+    },
+  });
   const validationSchema = yup.object({
     email: yup
       .string()
@@ -37,9 +47,14 @@ const SignupForm: React.FC<SignupFormProps> = () => {
       password: '',
     },
     validationSchema: validationSchema,
-    onSubmit: (values: FormFields) => {
-      console.log(values);
-      alert(JSON.stringify(values, null, 2))
+    onSubmit: (values: SignupMutationVariables) => {
+      alert(JSON.stringify(values, null, 2));
+      signupMutation({ variables: values }).then(() => {
+        router.push('/');
+      }
+      ).catch(() =>{
+        throw new Error('Server Side Error for Signup');
+      })
     }
   })
   return (
@@ -111,11 +126,11 @@ const SignupForm: React.FC<SignupFormProps> = () => {
   );
 }
 
-interface FormFields{
-  name: string;
-  email: string;
-  password: string;
-}
+// interface FormFields{
+//   name: string;
+//   email: string;
+//   password: string;
+// }
 
 const useStyles = makeStyles((theme: Theme) => ({
   form: {

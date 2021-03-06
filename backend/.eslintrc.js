@@ -23,5 +23,6 @@ module.exports = {
     'import/no-unresolved': 'off',
     'object-curly-newline': 'off',
     'no-plusplus': 'off',
+    'arrow-body-style': 'off',
   },
 };
