@@ -21,5 +21,7 @@ module.exports = {
     'import/extensions': 'off',
     'class-methods-use-this': 'off',
     'import/no-unresolved': 'off',
+    'object-curly-newline': 'off',
+    'no-plusplus': 'off',
   },
 };

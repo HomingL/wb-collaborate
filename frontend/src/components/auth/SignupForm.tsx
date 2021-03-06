@@ -18,19 +18,21 @@ const SignupForm: React.FC<SignupFormProps> = () => {
     password: yup
       .string()
       .min(8, 'Password should be of minimum 8 characters length')
+      .max(30, 'Password should be of Maximum 30 characters length')
+      .matches(
+        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+        "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and one special case Character"
+      )
       .required('Password is required'),
-    firstName: yup
+    name: yup
     .string()
-    .required('firstName is required'),
-    lastName: yup
-    .string()
-    .required('lastName is required'),
+    .max(30, 'Name should be of Maximum 30 characters length')
+    .required('Name is required'),
   });
 
   const formik = useFormik({
      initialValues: {
-      firstName: '',
-      lastName: '',
+      name: '',
       email: '',
       password: '',
     },
@@ -43,39 +45,22 @@ const SignupForm: React.FC<SignupFormProps> = () => {
   return (
     <form className={classes.form} onSubmit={formik.handleSubmit} noValidate>
       <Grid container spacing={1}>
-        <Grid item md={6} xs={12}>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            // required
-            fullWidth
-            id="firstName"
-            label="First Name"
-            name="firstName"
-            autoComplete="firstName"
-            value={formik.values.firstName}
-            onChange={formik.handleChange}
-            error={formik.touched.firstName && Boolean(formik.errors.firstName)}
-            helperText={formik.touched.firstName && formik.errors.firstName}
-            autoFocus
-          />
-        </Grid>
-        <Grid item md={6} xs={12}>
+        <Grid item xs={12}>
           <TextField
             // className={classes.mdTextField}
             variant="outlined"
             margin="normal"
             // required
             fullWidth
-            name="lastName"
-            label="Last Name"
-            type="lastName"
-            id="lastName"
-            value={formik.values.lastName}
+            name="name"
+            label="Name"
+            type="name"
+            id="name"
+            value={formik.values.name}
             onChange={formik.handleChange}
-            error={formik.touched.lastName && Boolean(formik.errors.lastName)}
-            helperText={formik.touched.lastName && formik.errors.lastName}
-            autoComplete="lastName"
+            error={formik.touched.name && Boolean(formik.errors.name)}
+            helperText={formik.touched.name && formik.errors.name}
+            autoComplete="name"
           />
         </Grid>
         <Grid item xs={12}>
@@ -127,8 +112,7 @@ const SignupForm: React.FC<SignupFormProps> = () => {
 }
 
 interface FormFields{
-  firstName: string;
-  lastName: string;
+  name: string;
   email: string;
   password: string;
 }
