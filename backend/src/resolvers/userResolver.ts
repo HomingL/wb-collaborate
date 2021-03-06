@@ -2,19 +2,21 @@ import { Resolver, Query, Mutation, Arg, Ctx, UseMiddleware } from 'type-graphql
 import { sign } from 'jsonwebtoken';
 import { Context } from 'src/context';
 import { User } from '../models/user';
+import crypto from 'crypto';
 import { isAuthenticated } from '../middlewares/auth';
 
 const { TOKEN_SECRET, TOKEN_EXPIRE_TIME } = process.env;
 
-interface U {
-  id: number,
-  name: string,
-  password: string,
-  email: string,
+function generateSalt (){
+  return crypto.randomBytes(16).toString('base64');
 }
 
-const users: U[] = [];
-let id = 0;
+function generateHash (password: string, salt: string){
+  var hash = crypto.createHmac('sha512', salt);
+  hash.update(password);
+  return hash.digest('base64');
+}
+
 @Resolver()
 export class UserResolver {
   @Query(() => User)
@@ -24,27 +26,28 @@ export class UserResolver {
   }
 
   @Mutation(() => User)
-  Signup(
+  async Signup(
     @Arg('name') name: string,
     @Arg('email') email: string,
     @Arg('password') password: string,
   ) {
-    const user = { id, name, email, password } as U;
-    users.push(user);
-    console.log(users);
-    id++;
-    return user;
+    let user = await User.findOne({email: email});
+    if (user) return new Error("User Already exist");
+    const salt = generateSalt();
+    password = generateHash(password, salt);
+    let us = await User.create({ name, email, salt, password }).save();
+    return us;
   }
 
+
   @Mutation(() => User)
-  Signin(
+  async Signin(
     @Arg('email') email: string,
     @Arg('password') password: string,
     @Ctx() ctx: Context,
   ) {
-    const user = users.find((u) => u.email === email && u.password === password);
-    if (user) {
-      // ! of TOKEN_SECRET tells typescript this will be defined
+    let user = await User.findOne({email: email});
+    if (user && generateHash(password, user.salt) === user.password) {
       const token = sign({ email: user.email, name: user.name, id: user.id }, TOKEN_SECRET!, {
         expiresIn: TOKEN_EXPIRE_TIME });
       const { res } = ctx;
@@ -53,7 +56,7 @@ export class UserResolver {
         secure: true,
       });
       return user;
-    }
-    return 'not found'; // return error to user to let them know the password is incorrect, need to think about how to do this one
+
+    return new Error("Incorrect match of usename and password");
   }
 }
