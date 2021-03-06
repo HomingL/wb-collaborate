@@ -51,12 +51,10 @@ export class UserResolver {
       const token = sign({ email: user.email, name: user.name, id: user.id }, TOKEN_SECRET!, {
         expiresIn: TOKEN_EXPIRE_TIME });
       const { res } = ctx;
-      // console.log("TOken scret is:", TOKEN_SECRET);
       res.cookie('token', token, {
         secure: true,
       });
       return user;
-
-    return new Error("Incorrect match of usename and password");
   }
+  return new Error("Incorrect match of usename and password");
 }
