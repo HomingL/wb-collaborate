@@ -15,7 +15,7 @@ const navitems = [
 ];
 
 const nav = navitems.map((item) => 
-  <Box m={3}>
+  <Box key={item.title.toString()} m={3}>
     <Link href={item.link}>{item.title}</Link>
   </Box>
 );
