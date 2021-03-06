@@ -10,12 +10,12 @@ import { Grid, Toolbar } from '@material-ui/core';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 
 const navitems = [
-  {title: "How to use?", link: "/"},
-  {title: "About us", link: "/"}
+  {index: 0, title: "How to use?", link: "/"},
+  {index: 1, title: "About us", link: "/"}
 ];
 
 const nav = navitems.map((item) => 
-  <Box key={item.title.toString()} m={3}>
+  <Box key={item.index.toString()} m={3}>
     <Link href={item.link}>{item.title}</Link>
   </Box>
 );
