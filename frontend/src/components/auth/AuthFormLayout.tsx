@@ -19,9 +19,6 @@ const AuthFormLayout: React.FC<AuthFormLayoutProps> = ( { children, title} ) => 
         </Typography>
         {children}
       </div>
-      <Box mt={8}>
-        <Copyright />
-      </Box>
     </Container>
   );
 }

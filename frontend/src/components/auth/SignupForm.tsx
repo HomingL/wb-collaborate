@@ -3,6 +3,7 @@ import { Button, Grid, TextField } from '@material-ui/core';
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import { useFormik } from 'formik';
 import * as yup from 'yup';
+import { Link } from '@material-ui/core';
 
 interface SignupFormProps {
 
@@ -122,6 +123,9 @@ const SignupForm: React.FC<SignupFormProps> = () => {
       >
         Sign Up
       </Button>
+      <Link href="/" variant="body2">
+        {"Already have an account? Sign in"}
+      </Link>
     </form>
   );
 }
