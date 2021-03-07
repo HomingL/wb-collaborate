@@ -34,9 +34,8 @@ export class UserResolver {
     const user = await User.findOne({ email });
     if (user) return new Error('User Already exist');
     const salt = generateSalt();
-    // eslint-disable-next-line no-param-reassign
-    password = generateHash(password, salt);
-    const us = await User.create({ name, email, salt, password }).save();
+    const saltedHash = generateHash(password, salt);
+    const us = await User.create({ name, email, salt, password: saltedHash }).save();
     return us;
   }
 
