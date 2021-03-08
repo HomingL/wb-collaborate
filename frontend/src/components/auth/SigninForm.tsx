@@ -1,20 +1,56 @@
 import React from 'react';
 import { Button, Checkbox, FormControlLabel, Grid, Link, TextField } from "@material-ui/core";
 import { makeStyles } from '@material-ui/core/styles';
+import { useFormik } from 'formik';
+import * as yup from 'yup';
+import { SignInValidationSchema } from './AuthValidationSchema';
+import { useSigninMutation } from '../../generated/apolloComponents';
+import { useRouter } from 'next/router';
+import Cookies from 'js-cookie';
+
 interface SigninFormProps {
 
 }
 
 const SigninForm: React.FC<SigninFormProps> = () => {
   const classes = useStyles();
+  const router = useRouter();
+  const [signinMutation, { data, loading, error }] = useSigninMutation({
+    variables: {
+       email: '',
+       password: ''
+    },
+  });
+  const formik = useFormik({
+    initialValues: {
+      email: '',
+      password: '',
+    },
+    validationSchema: yup.object(SignInValidationSchema),
+    onSubmit: (values) => {
+      // alert(JSON.stringify(values, null, 2));
+      signinMutation({ variables: values }).then((res) => {
+        console.log(data);
+        console.log(Cookies.get());
+        const uid = res.data?.Signin.id;
+        router.push(`/workspace/${uid}`);
+      }).catch(() =>{
+        throw new Error('Server Side Error for Signin');
+      })
+    },
+  });
   return (
-    <form className={classes.form} noValidate>
+    <form className={classes.form} onSubmit={formik.handleSubmit}>
       <TextField
         variant="outlined"
         margin="normal"
         required
         fullWidth
         id="email"
+        value={formik.values.email}
+        onChange={formik.handleChange}
+        error={formik.touched.email && Boolean(formik.errors.email)}
+        helperText={formik.touched.email && formik.errors.email}
         label="Email Address"
         name="email"
         autoComplete="email"
@@ -25,6 +61,10 @@ const SigninForm: React.FC<SigninFormProps> = () => {
         margin="normal"
         required
         fullWidth
+        value={formik.values.password}
+        onChange={formik.handleChange}
+        error={formik.touched.password && Boolean(formik.errors.password)}
+        helperText={formik.touched.password && formik.errors.password}
         name="password"
         label="Password"
         type="password"

@@ -5,6 +5,7 @@ import { makeStyles, Theme } from "@material-ui/core/styles";
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { SignupMutationVariables, useSignupMutation } from '../../generated/apolloComponents';
+import { SignUpValidationSchema } from './AuthValidationSchema';
 
 interface SignupFormProps {
 
@@ -20,25 +21,15 @@ const SignupForm: React.FC<SignupFormProps> = () => {
        name: '',
     },
   });
-  const validationSchema = yup.object({
-    email: yup
-      .string()
-      .email('Enter a valid email')
-      .required('Email is required'),
-    password: yup
-      .string()
-      .min(8, 'Password should be of minimum 8 characters length')
-      .max(30, 'Password should be of Maximum 30 characters length')
-      .matches(
-        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
-        "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and one special case Character"
-      )
-      .required('Password is required'),
-    name: yup
-    .string()
-    .max(30, 'Name should be of Maximum 30 characters length')
-    .required('Name is required'),
-  });
+  // inserts name validation requirement on top of AuthValidationSchema
+  const nameRequirement = yup
+  .string()
+  .max(30, 'Name should be of Maximum 30 characters length')
+  .required('Name is required');
+  SignUpValidationSchema.name = nameRequirement;
+  const validationSchema = yup.object(
+    SignUpValidationSchema
+  );
 
   const formik = useFormik({
      initialValues: {
@@ -48,7 +39,6 @@ const SignupForm: React.FC<SignupFormProps> = () => {
     },
     validationSchema: validationSchema,
     onSubmit: (values: SignupMutationVariables) => {
-      alert(JSON.stringify(values, null, 2));
       signupMutation({ variables: values }).then(() => {
         router.push('/');
       }

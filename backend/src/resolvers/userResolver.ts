@@ -2,8 +2,8 @@ import { Resolver, Query, Mutation, Arg, Ctx, UseMiddleware } from 'type-graphql
 import { sign } from 'jsonwebtoken';
 import { Context } from 'src/context';
 import crypto from 'crypto';
-import { User } from '../models/user';
 import { isAuthenticated } from '../middlewares/auth';
+import { User } from '../models/user';
 
 const { TOKEN_SECRET, TOKEN_EXPIRE_TIME } = process.env;
 
@@ -51,8 +51,8 @@ export class UserResolver {
         expiresIn: TOKEN_EXPIRE_TIME });
       const { res } = ctx;
       res.cookie('token', token, {
-        secure: true,
-      });
+        sameSite: 'lax',
+      }); // this is not working, frontend cannot fetch token.
       return user;
     }
     return new Error('Incorrect match of usename and password');
