@@ -6,6 +6,8 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { SignupMutationVariables, useSignupMutation } from '../../generated/apolloComponents';
 import { SignUpValidationSchema } from './AuthValidationSchema';
+import Link from '../../Link';
+
 
 
 interface SignupFormProps {
