@@ -12,7 +12,7 @@ interface SigninFormProps {
 
 }
 
-const SigninForm: React.FC<SigninFormProps> = () => {
+const SigninForm: React.FC<SigninFormProps> = ({}) => {
   const classes = useStyles();
   const router = useRouter();
   const [signinMutation, { data, loading, error }] = useSigninMutation({
@@ -100,7 +100,7 @@ const SigninForm: React.FC<SigninFormProps> = () => {
   );
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   form: {
     width: '100%',
     marginTop: theme.spacing(3),

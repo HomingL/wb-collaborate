@@ -7,6 +7,7 @@ import * as yup from 'yup';
 import { SignupMutationVariables, useSignupMutation } from '../../generated/apolloComponents';
 import { SignUpValidationSchema } from './AuthValidationSchema';
 
+
 interface SignupFormProps {
 
 }
@@ -112,6 +113,9 @@ const SignupForm: React.FC<SignupFormProps> = () => {
       >
         Sign Up
       </Button>
+      <Link href="/" variant="body2">
+        {"Already have an account? Sign in"}
+      </Link>
     </form>
   );
 }
