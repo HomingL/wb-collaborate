@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Checkbox, FormControlLabel, Grid, Link, TextField } from "@material-ui/core";
+import { Button, Checkbox, FormControlLabel, Grid, TextField } from "@material-ui/core";
 import { makeStyles } from '@material-ui/core/styles';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -7,6 +7,7 @@ import { SignInValidationSchema } from './AuthValidationSchema';
 import { useSigninMutation } from '../../generated/apolloComponents';
 import { useRouter } from 'next/router';
 import Cookies from 'js-cookie';
+import Link from '../../Link';
 
 interface SigninFormProps {
 
