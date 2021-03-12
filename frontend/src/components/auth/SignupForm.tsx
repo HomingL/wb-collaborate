@@ -1,9 +1,12 @@
-import React from 'react'
+import React from 'react';
+import { useRouter } from 'next/router';
 import { Button, Grid, TextField } from '@material-ui/core';
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import { Link } from '@material-ui/core';
+import { SignupMutationVariables, useSignupMutation } from '../../generated/apolloComponents';
+import { SignUpValidationSchema } from './AuthValidationSchema';
+
 
 interface SignupFormProps {
 
@@ -11,72 +14,59 @@ interface SignupFormProps {
 
 const SignupForm: React.FC<SignupFormProps> = () => {
   const classes = useStyles();
-  const validationSchema = yup.object({
-    email: yup
-      .string()
-      .email('Enter a valid email')
-      .required('Email is required'),
-    password: yup
-      .string()
-      .min(8, 'Password should be of minimum 8 characters length')
-      .required('Password is required'),
-    firstName: yup
-    .string()
-    .required('firstName is required'),
-    lastName: yup
-    .string()
-    .required('lastName is required'),
+  const router = useRouter();
+  const [signupMutation, { error }] = useSignupMutation({
+    variables: {
+       email: '',
+       password: '',
+       name: '',
+    },
   });
+  // inserts name validation requirement on top of AuthValidationSchema
+  const nameRequirement = yup
+  .string()
+  .max(30, 'Name should be of Maximum 30 characters length')
+  .required('Name is required');
+  SignUpValidationSchema.name = nameRequirement;
+  const validationSchema = yup.object(
+    SignUpValidationSchema
+  );
 
   const formik = useFormik({
      initialValues: {
-      firstName: '',
-      lastName: '',
+      name: '',
       email: '',
       password: '',
     },
     validationSchema: validationSchema,
-    onSubmit: (values: FormFields) => {
-      console.log(values);
-      alert(JSON.stringify(values, null, 2))
+    onSubmit: (values: SignupMutationVariables) => {
+      signupMutation({ variables: values }).then(() => {
+        router.push('/');
+      }
+      ).catch(() =>{
+        throw new Error('Server Side Error for Signup');
+      })
     }
   })
   return (
     <form className={classes.form} onSubmit={formik.handleSubmit} noValidate>
       <Grid container spacing={1}>
-        <Grid item md={6} xs={12}>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            // required
-            fullWidth
-            id="firstName"
-            label="First Name"
-            name="firstName"
-            autoComplete="firstName"
-            value={formik.values.firstName}
-            onChange={formik.handleChange}
-            error={formik.touched.firstName && Boolean(formik.errors.firstName)}
-            helperText={formik.touched.firstName && formik.errors.firstName}
-            autoFocus
-          />
-        </Grid>
-        <Grid item md={6} xs={12}>
+        <Grid item xs={12}>
           <TextField
             // className={classes.mdTextField}
             variant="outlined"
             margin="normal"
             // required
             fullWidth
-            name="lastName"
-            label="Last Name"
-            type="lastName"
-            id="lastName"
-            value={formik.values.lastName}
+            name="name"
+            label="Name"
+            type="name"
+            id="name"
+            value={formik.values.name}
             onChange={formik.handleChange}
-            error={formik.touched.lastName && Boolean(formik.errors.lastName)}
-            helperText={formik.touched.lastName && formik.errors.lastName}
-            autoComplete="lastName"
+            error={formik.touched.name && Boolean(formik.errors.name)}
+            helperText={formik.touched.name && formik.errors.name}
+            autoComplete="name"
           />
         </Grid>
         <Grid item xs={12}>
@@ -130,12 +120,11 @@ const SignupForm: React.FC<SignupFormProps> = () => {
   );
 }
 
-interface FormFields{
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-}
+// interface FormFields{
+//   name: string;
+//   email: string;
+//   password: string;
+// }
 
 const useStyles = makeStyles((theme: Theme) => ({
   form: {

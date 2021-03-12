@@ -1,12 +1,16 @@
 // .env
+import 'dotenv/config';
+import 'reflect-metadata';
 import express from 'express';
+import cors from 'cors';
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
+import { createConnection } from 'typeorm';
 import { UserResolver } from './resolvers/userResolver';
 
-require('dotenv').config();
+// require('dotenv').config();
 
-const { PORT } = process.env;
+const { PORT, FRONT_END_ORIGIN } = process.env;
 
 const main = async () => {
   const app = express();
@@ -15,14 +19,24 @@ const main = async () => {
     res.send('hello world!');
   });
 
+  await createConnection();
+
+  const corsOptions = {
+    origin: FRONT_END_ORIGIN,
+    credentials: true,
+  };
+  app.use(cors(corsOptions));
+  // app.use(cookieParser());
+
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
       resolvers: [UserResolver],
       validate: false,
     }),
+    context: ({ req, res }) => ({ req, res }),
   });
 
-  apolloServer.applyMiddleware({ app });
+  apolloServer.applyMiddleware({ app, cors: corsOptions });
 
   const port = PORT || 5000;
   app.listen(port, () => {

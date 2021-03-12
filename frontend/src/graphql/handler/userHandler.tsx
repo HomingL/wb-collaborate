@@ -1,14 +1,26 @@
 import React from 'react'
 import { useGetUserQuery } from '../../generated/apolloComponents'
 
-const GetUserHandler: React.FC = () => {
-    const { loading, error, data } = useGetUserQuery();
-  
-    if (loading) return <>loading</>
-    if (error) return <>error</>
-    if (!data) return <></>
+// export async function getStaticProps() {
+//     const { data } = useGetUserQuery();
+//     return {
+//       props: {
+//         data
+//       }
+//     }
+// }
 
-    return <>The user: {data.User.name} has email {data.User.email}</>
+// interface GetUserHandlerProps{
+//     name: string,
+//     email: string,
+// }
+
+const GetUserHandler = () => {
+  const { data, error, loading } = useGetUserQuery();
+    
+    if (loading) return <> loading... </>;
+    if (error) return <div>error?.message</div>;
+    return <div>The user: {data?.User.name} has email {data?.User.email}</div>
 }
 
-export { GetUserHandler};
+export { GetUserHandler };
