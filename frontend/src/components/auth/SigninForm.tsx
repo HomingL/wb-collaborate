@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Checkbox, FormControlLabel, Grid, TextField } from "@material-ui/core";
+import { Button, Checkbox, FormControlLabel, Grid, TextField, Theme } from "@material-ui/core";
 import { makeStyles } from '@material-ui/core/styles';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -8,15 +8,16 @@ import { useSigninMutation } from '../../generated/apolloComponents';
 import { useRouter } from 'next/router';
 import Cookies from 'js-cookie';
 import Link from '../../Link';
+// import { theme } from '../../theme';
 
 interface SigninFormProps {
 
 }
 
-const SigninForm: React.FC<SigninFormProps> = ({}) => {
+const SigninForm: React.FC<SigninFormProps> = () => {
   const classes = useStyles();
   const router = useRouter();
-  const [signinMutation, { data, loading, error }] = useSigninMutation({
+  const [signinMutation, { data }] = useSigninMutation({
     variables: {
        email: '',
        password: ''
@@ -101,7 +102,7 @@ const SigninForm: React.FC<SigninFormProps> = ({}) => {
   );
 }
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles((theme:Theme) => ({
   form: {
     width: '100%',
     marginTop: theme.spacing(3),
