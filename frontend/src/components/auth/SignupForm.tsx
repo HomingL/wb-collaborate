@@ -17,7 +17,7 @@ interface SignupFormProps {
 const SignupForm: React.FC<SignupFormProps> = () => {
   const classes = useStyles();
   const router = useRouter();
-  const [signupMutation, { error }] = useSignupMutation({
+  const [signupMutation] = useSignupMutation({
     variables: {
        email: '',
        password: '',
