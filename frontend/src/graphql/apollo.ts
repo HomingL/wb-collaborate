@@ -2,9 +2,11 @@ import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client'
 import { setContext } from '@apollo/client/link/context'
 import Cookies from 'js-cookie'
 
+
 const httpLink = createHttpLink({ 
-  uri: 'http://localhost:5000/graphql', 
-  credentials: 'include', });
+    uri: process.env.NEXT_PUBLIC_BACK_END_ORIGIN, 
+    credentials: 'include', }
+);
 
 const authLink = setContext((_, { headers }) => {
 
