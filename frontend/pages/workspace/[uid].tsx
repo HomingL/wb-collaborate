@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Grid } from '@material-ui/core';
-import Whiteboard from '../../src/components/whiteboard/whiteboard'
+import WbCanvas from '../../src/components/whiteboard/wbCanvas'
+import { WBProvider } from '../../src/components/whiteboard/wbProvider'
 
 interface WorkspaceProps {
 
@@ -14,14 +15,16 @@ const Workspace: React.FC<WorkspaceProps> = () => {
     }
 
     return (
-        <Grid container justify='space-between'>
-            <Grid item>
-                <Whiteboard paths={paths} addPath={pathHandler}/>
+        <WBProvider>
+            <Grid container justify='space-between'>
+                <Grid item>
+                    <WbCanvas paths={paths} addPath={pathHandler}/>
+                </Grid>
+                <Grid item>
+                    <WbCanvas paths={paths} addPath={pathHandler}/>
+                </Grid> 
             </Grid>
-            <Grid item>
-                <Whiteboard paths={paths} addPath={pathHandler}/>
-            </Grid> 
-        </Grid>
+        </WBProvider>
     );
 }
 
