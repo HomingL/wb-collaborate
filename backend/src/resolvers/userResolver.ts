@@ -51,7 +51,7 @@ export class UserResolver {
         expiresIn: TOKEN_EXPIRE_TIME });
       const { res } = ctx;
       res.cookie('token', token, {
-        sameSite: 'none',
+        sameSite: 'strict',
         secure: true,
       }); // this is not working, frontend cannot fetch token.
       return user;
