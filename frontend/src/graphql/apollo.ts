@@ -11,6 +11,7 @@ const httpLink = createHttpLink({
 const authLink = setContext((_, { headers }) => {
 
   const token = Cookies.get('token')
+  console.log('apollo sets bearer: ', token)
   return {
     headers: {
       ...headers,
