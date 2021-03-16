@@ -4,7 +4,6 @@ import { Context } from 'src/context';
 import crypto from 'crypto';
 import { isAuthenticated } from '../middlewares/auth';
 import { User } from '../models/user';
-import { NoNeedToReleaseEntityManagerError } from 'typeorm';
 
 const { TOKEN_SECRET, TOKEN_EXPIRE_TIME } = process.env;
 
