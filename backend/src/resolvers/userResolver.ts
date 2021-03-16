@@ -4,6 +4,7 @@ import { Context } from 'src/context';
 import crypto from 'crypto';
 import { isAuthenticated } from '../middlewares/auth';
 import { User } from '../models/user';
+import { NoNeedToReleaseEntityManagerError } from 'typeorm';
 
 const { TOKEN_SECRET, TOKEN_EXPIRE_TIME } = process.env;
 
@@ -51,6 +52,7 @@ export class UserResolver {
         expiresIn: TOKEN_EXPIRE_TIME });
       const { res } = ctx;
       res.cookie('token', token, {
+        sameSite: 'none',
         secure: true,
       }); // this is not working, frontend cannot fetch token.
       return user;
