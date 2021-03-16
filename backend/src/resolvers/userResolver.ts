@@ -52,6 +52,7 @@ export class UserResolver {
       const { res } = ctx;
       res.cookie('token', token, {
         sameSite: 'none',
+        secure: true,
       }); // this is not working, frontend cannot fetch token.
       return user;
     }
