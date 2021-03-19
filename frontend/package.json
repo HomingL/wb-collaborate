@@ -14,6 +14,9 @@
     "next": "latest",
     "react": "latest",
     "react-dom": "latest",
+    "simple-peer": "^9.9.3",
+    "socket.io": "^4.0.0",
+    "socket.io-client": "^4.0.0",
     "yup": "^0.32.9"
   },
   "scripts": {
@@ -34,6 +37,7 @@
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
+    "@types/simple-peer": "^9.6.2",
     "@typescript-eslint/eslint-plugin": "^4.16.1",
     "@typescript-eslint/parser": "^4.16.1",
     "eslint": "^7.21.0",

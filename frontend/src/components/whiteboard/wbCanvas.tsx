@@ -3,7 +3,8 @@ import { Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { fabric } from "fabric";
 // import { theme } from '../../theme';
-import { useWBContext } from '../whiteboard/wbProvider'
+import { useWBContext } from '../whiteboard/wbContext'
+import { usePBContext } from './peerData';
 
 interface WhiteboardProps {
   paths: any[],
@@ -13,6 +14,7 @@ interface WhiteboardProps {
 const WbCanvas: React.FC<WhiteboardProps> = ({ addPath, paths }) => {
   
   const { penState, setPenState, canvas, setCanvas } = useWBContext();
+  const { peerBroadcast } = usePBContext();
 
   const classes = useStyles();
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -32,7 +34,8 @@ const WbCanvas: React.FC<WhiteboardProps> = ({ addPath, paths }) => {
     // canvas.on('path:created', function(e:any){
     //   const your_path = e.path;
     //   console.log(your_path);
-    //   addPath(your_path);    
+    //   addPath(your_path);  
+    //   peerBroadcast(your_path);
     // });
     
     // canvas.on('mouse:move', function(e){
