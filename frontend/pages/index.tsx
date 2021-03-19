@@ -8,9 +8,6 @@ import AuthFormLayout from '../src/components/auth/AuthFormLayout';
 import JoinBoard from '../src/components/JoinBoard'
 import { Grid, Toolbar } from '@material-ui/core';
 import { makeStyles, Theme } from '@material-ui/core/styles';
-import { io } from "socket.io-client";
-
-const socket = io('ws://localhost:5001');
 
 const navitems = [
   {index: 0, title: "How to use?", link: "/"},

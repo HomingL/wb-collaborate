@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react'
+import React, { useRef, useEffect } from 'react'
 import { Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { fabric } from "fabric";
@@ -7,18 +7,19 @@ import { useWBContext } from '../whiteboard/wbContext'
 import { usePBContext } from './peerData';
 
 interface WhiteboardProps {
-  paths: any[],
-  addPath: (path: any) => void
+  // paths: any[],
+  // addPath: (path: any) => void
 }
 
-const WbCanvas: React.FC<WhiteboardProps> = ({ addPath, paths }) => {
+const WbCanvas: React.FC<WhiteboardProps> = () => {
   
-  const { penState, setPenState, canvas, setCanvas } = useWBContext();
+  const { setCanvas } = useWBContext();
   const { peerBroadcast } = usePBContext();
 
   const classes = useStyles();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const canv = useRef<fabric.Canvas>();
+
   useEffect(()=>{
     canv.current = new fabric.Canvas(canvasRef.current, {
       isDrawingMode: true
@@ -27,16 +28,16 @@ const WbCanvas: React.FC<WhiteboardProps> = ({ addPath, paths }) => {
     // console.log(setPenState);
     // console.log(canvas);
     // console.log(penState);
-    setCanvas(canv.current);
-    setPenState("down");
+    if(setCanvas) setCanvas(canv.current);
+    // setPenState("down");
     // console.log(canvas);
     // console.log(penState);
 
     canv.current.on('path:created', function(e:any){
       const your_path = e.path;
       console.log(your_path);
-      addPath(your_path);  
-      peerBroadcast({path: your_path});
+      // addPath(your_path);
+      if (peerBroadcast) peerBroadcast({path: your_path});
     });
     
     // canvas.on('mouse:move', function(e){
@@ -69,11 +70,11 @@ const WbCanvas: React.FC<WhiteboardProps> = ({ addPath, paths }) => {
     //     color: 'red',
     //   });
     // }
-  },[]);
+  },[peerBroadcast]);
 
-  useEffect(()=> {
-    paths.forEach((path) => canv.current?.add(path));
-  }, [paths]);
+  // useEffect(()=> {
+  //   paths.forEach((path) => canv.current?.add(path));
+  // }, [paths]);
   
   return (
     <div className={classes.root}>

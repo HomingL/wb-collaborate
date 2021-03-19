@@ -1,6 +1,4 @@
 import React, { useState } from 'react'
-import { Grid } from '@material-ui/core';
-import WbCanvas from '../../src/components/whiteboard/wbCanvas'
 import { WBProvider } from '../../src/components/whiteboard/wbContext'
 import PeerConnecion from '../../src/components/whiteboard/peerData';
 
