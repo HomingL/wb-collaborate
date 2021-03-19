@@ -58,9 +58,8 @@ const PeerConnecion: React.FC<PConnProps> = ({ draw, children }) => {
 
         // keep all connected user id updated and establish simple-peer connection to them
         socket.on('allUserIds', (users:string[]) => {
-            console.log("Before Friend AllID", allSocketIds);
             setAllSocketIds(users);
-            console.log("After Friend AllID", allSocketIds);
+            console.log("AllSocketIDs", allSocketIds);
         });
 
         // signal the data passed by peer
@@ -70,8 +69,8 @@ const PeerConnecion: React.FC<PConnProps> = ({ draw, children }) => {
     }, [socket])
 
     useEffect( () => {
-        console.log("After Init ID", selfSocketId);
-        console.log("After Init AllID", allSocketIds);
+        console.log("Self ID", selfSocketId);
+        console.log("AllSocketID", allSocketIds);
         connectPeers();
     }, [selfSocketId, allSocketIds])
 
@@ -107,15 +106,11 @@ const PeerConnecion: React.FC<PConnProps> = ({ draw, children }) => {
 
     function connectPeers() {
         // destroy p2p connection to disconnected user
-        console.log("Connect peers", peerConnections);
         Object.keys(peerConnections).forEach(id => {
-            console.log("1 Connect peers", peerConnections);
             if (!allSocketIds.includes(id)) {
                 const { [id]: tmp, ...conns } = peerConnections;
                 setPeerConnections(conns);
             }
-            console.log("2 Connect peers", peerConnections);
-
         });
         // establish new p2p connection
         callPeer(0);
@@ -132,6 +127,9 @@ const PeerConnecion: React.FC<PConnProps> = ({ draw, children }) => {
         });
         peer.on('data', (data:any) => {
             onPeerData(data);
+        });
+        peer.on('connect', () => {
+            console.log(selfSocketId + " successfully connected to " + initiator);
         });
         peer.signal(initiatorData);
         const { [initiator]: tmp, ...conns } = peerConnections;
@@ -152,7 +150,8 @@ const PeerConnecion: React.FC<PConnProps> = ({ draw, children }) => {
     
     function onPeerData(data:string) {
         // TODO: define this function to draw
-        draw(JSON.parse(data).path);
+        draw(JSON.parse(String(data)).path);
+        // console.log("received", String(data));
     }
 
     return (
