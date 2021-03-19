@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 import { WBProvider } from '../../src/components/whiteboard/wbContext'
 import PeerConnecion from '../../src/components/whiteboard/peerData';
+import { Grid } from '@material-ui/core';
+import WbCanvas from '../../src/components/whiteboard/wbCanvas';
+import WbToolbar from '../../src/components/whiteboard/wbToolbar';
 
 interface WorkspaceProps {
 
@@ -17,14 +20,14 @@ const Workspace: React.FC<WorkspaceProps> = () => {
     return (
         <PeerConnecion draw={pathHandler}>
             <WBProvider>
-                {/* <Grid container justify='space-between'>
-                    <Grid item>
-                        <WbCanvas paths={paths} addPath={pathHandler}/>
+                <Grid container justify='space-between'>
+                    <Grid item xs={12}>
+                        <WbToolbar />
                     </Grid>
-                    <Grid item>
-                        <WbCanvas paths={paths} addPath={pathHandler}/>
+                    <Grid item xs={12}>
+                        <WbCanvas />
                     </Grid> 
-                </Grid> */}
+                </Grid>
             </WBProvider>
         </PeerConnecion>
     );
