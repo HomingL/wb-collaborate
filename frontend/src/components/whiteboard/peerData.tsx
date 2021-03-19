@@ -24,10 +24,11 @@ const PeerConnecion: React.FC<PConnProps> = ({ draw, children }) => {
     const [selfSocketId, setSelfSocketId] = useState<string>('');
     const [allSocketIds, setAllSocketIds] = useState<string[]>([]);
     const [peerConnections, setPeerConnections] = useState<{[socketId:string]:any}>({});
+    const [socket, setSocket] = useState<any>(null)
 
     useEffect(() => {
         // connect the server by passing in auth token and roomId
-        const socket = io('ws://localhost:5001', {
+        const sok = io('ws://localhost:5001', {
             auth: {
                 token: token
             },
@@ -37,94 +38,105 @@ const PeerConnecion: React.FC<PConnProps> = ({ draw, children }) => {
             reconnectionAttempts: 10
         });
 
+        setSocket(sok);
+
+        // clean up effect when unmounting
+        return (() => {
+            if (socket)
+               socket.disconnect()
+            return;
+        });
+    },[]);
+
+    useEffect( () => {
+        if (!socket) return
         // receive self socket id when connected to the server
         socket.on('init', (data:{selfId:string, allUserIds:string[]}) => {
             setSelfSocketId(data.selfId);
             setAllSocketIds(data.allUserIds);
-            console.log("self socket new user", selfSocketId);
-            console.log("all socket new user", allSocketIds);
-            connectPeers();
         });
 
         // keep all connected user id updated and establish simple-peer connection to them
         socket.on('allUserIds', (users:string[]) => {
-            console.log("new user");
+            console.log("Before Friend AllID", allSocketIds);
             setAllSocketIds(users);
-            console.log("self socket", selfSocketId);
-            console.log("all socket", allSocketIds);
+            console.log("After Friend AllID", allSocketIds);
         });
 
         // signal the data passed by peer
         socket.on('hello', (data:{initiatorId:string, signalData:any}) => {
             signal(data.initiatorId, data.signalData);
         });
+    }, [socket])
 
-        function callPeer(index:number) {
-            if (index >= allSocketIds.length) return;
-            const id = allSocketIds[index];
-            // return if connect to self or already connected
-            if (id === selfSocketId || peerConnections[id]) return;
-            const peer = new Peer({
-                initiator: true,
-                trickle: false
-            });
-        
-            peer.on('signal', (signalData:any) => {
-                socket.emit("notifyPeers", { to: id, signalData: signalData, from: selfSocketId })
-            })
-            peer.on('error', console.error);
-            peer.on('connect', () => {
-                console.log(selfSocketId + " successfully connected to " + id);
-                callPeer(index+1);
-            });
-            peer.on('data', (data:string) => {
-                onPeerData(data);
-            });
-        
-            // finalize connection if connection accepted
-            socket.on('accepted', (signalData:any) => {
-                peer.signal(signalData);
-                const { [id]: tmp, ...conns } = peerConnections;
-                setPeerConnections({ [id]: peer, ...conns });
-            });
-        }
-        
-        function connectPeers() {
-            // destroy p2p connection to disconnected user
-            console.log("peers", peerConnections);
-            Object.keys(peerConnections).forEach(id => {
-                if (!allSocketIds.includes(id)) {
-                    const { [id]: tmp, ...conns } = peerConnections;
-                    setPeerConnections(conns);
-                }
-            });
-            // establish new p2p connection
-            callPeer(0);
-        }
-        
-        function signal(initiator:string, initiatorData:any) {
-            console.log("Running signal");
-            const peer = new Peer({
-                initiator: false,
-                trickle: false
-            });
-            peer.on('signal', (signalData:any) => {
-                socket.emit("acceptConn", { signalData: signalData, to: initiator })
-            });
-            peer.on('data', (data:any) => {
-                onPeerData(data);
-            });
-            peer.signal(initiatorData);
-            const { [initiator]: tmp, ...conns } = peerConnections;
-            setPeerConnections({ [initiator]: peer, ...conns });
-        }
+    useEffect( () => {
+        console.log("After Init ID", selfSocketId);
+        console.log("After Init AllID", allSocketIds);
+        connectPeers();
+    }, [selfSocketId, allSocketIds])
 
-        // clean up effect when unmounting
-        return (() => {
-            socket.disconnect()
-            return;
+    function callPeer(index:number) {
+        if (index >= allSocketIds.length) return;
+        const id = allSocketIds[index];
+        // return if connect to self or already connected
+        if (id === selfSocketId || peerConnections[id]) return;
+        const peer = new Peer({
+            initiator: true,
+            trickle: false
         });
-    },[]);
+    
+        peer.on('signal', (signalData:any) => {
+            socket.emit("notifyPeers", { to: id, signalData: signalData, from: selfSocketId })
+        })
+        peer.on('error', console.error);
+        peer.on('connect', () => {
+            console.log(selfSocketId + " successfully connected to " + id);
+            callPeer(index+1);
+        });
+        peer.on('data', (data:string) => {
+            onPeerData(data);
+        });
+    
+        // finalize connection if connection accepted
+        socket.on('accepted', (signalData:any) => {
+            peer.signal(signalData);
+            const { [id]: tmp, ...conns } = peerConnections;
+            setPeerConnections({ [id]: peer, ...conns });
+        });
+    }
+
+    function connectPeers() {
+        // destroy p2p connection to disconnected user
+        console.log("Connect peers", peerConnections);
+        Object.keys(peerConnections).forEach(id => {
+            console.log("1 Connect peers", peerConnections);
+            if (!allSocketIds.includes(id)) {
+                const { [id]: tmp, ...conns } = peerConnections;
+                setPeerConnections(conns);
+            }
+            console.log("2 Connect peers", peerConnections);
+
+        });
+        // establish new p2p connection
+        callPeer(0);
+    }
+    
+    function signal(initiator:string, initiatorData:any) {
+        console.log("Running signal");
+        const peer = new Peer({
+            initiator: false,
+            trickle: false
+        });
+        peer.on('signal', (signalData:any) => {
+            socket.emit("acceptConn", { signalData: signalData, to: initiator })
+        });
+        peer.on('data', (data:any) => {
+            onPeerData(data);
+        });
+        peer.signal(initiatorData);
+        const { [initiator]: tmp, ...conns } = peerConnections;
+        setPeerConnections({ [initiator]: peer, ...conns });
+    }
 
     function peerBroadcast(data:DrawData) {
         Object.values(peerConnections).forEach(peer => {

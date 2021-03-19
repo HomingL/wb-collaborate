@@ -19,12 +19,12 @@ const Workspace: React.FC<WorkspaceProps> = () => {
         <PeerConnecion draw={pathHandler}>
             <WBProvider>
                 <Grid container justify='space-between'>
-                    <Grid item>
+                    {/* <Grid item>
                         <WbCanvas paths={paths} addPath={pathHandler}/>
                     </Grid>
                     <Grid item>
                         <WbCanvas paths={paths} addPath={pathHandler}/>
-                    </Grid> 
+                    </Grid>  */}
                 </Grid>
             </WBProvider>
         </PeerConnecion>
