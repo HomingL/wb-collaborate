@@ -18,25 +18,26 @@ const WbCanvas: React.FC<WhiteboardProps> = ({ addPath, paths }) => {
 
   const classes = useStyles();
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const canv = useRef<fabric.Canvas>();
   useEffect(()=>{
-    const canv = new fabric.Canvas(canvasRef.current, {
+    canv.current = new fabric.Canvas(canvasRef.current, {
       isDrawingMode: true
     });
 
-    console.log(setPenState);
-    console.log(canvas);
-    console.log(penState);
-    setCanvas(canv);
+    // console.log(setPenState);
+    // console.log(canvas);
+    // console.log(penState);
+    setCanvas(canv.current);
     setPenState("down");
-    console.log(canvas);
-    console.log(penState);
+    // console.log(canvas);
+    // console.log(penState);
 
-    // canvas.on('path:created', function(e:any){
-    //   const your_path = e.path;
-    //   console.log(your_path);
-    //   addPath(your_path);  
-    //   peerBroadcast(your_path);
-    // });
+    canv.current.on('path:created', function(e:any){
+      const your_path = e.path;
+      console.log(your_path);
+      addPath(your_path);  
+      peerBroadcast({path: your_path});
+    });
     
     // canvas.on('mouse:move', function(e){
     //   if (e.isClick)
@@ -71,7 +72,7 @@ const WbCanvas: React.FC<WhiteboardProps> = ({ addPath, paths }) => {
   },[]);
 
   useEffect(()=> {
-    paths.forEach((path) => canv?.add(path));
+    paths.forEach((path) => canv.current?.add(path));
   }, [paths]);
   
   return (

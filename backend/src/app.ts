@@ -51,7 +51,7 @@ const main = async () => {
     if (!isAuth(socket.handshake.auth.token)) return next(new Error('Permission denied!'));
     return next();
   }).on('connection', (socket:Socket) => {
-    console.log('connected');
+    console.log('socket.io connected');
     const roomId = socket.handshake.query.roomId as string;
     if (roomId) socket.join(roomId);
     else return console.error('roomId is undefined');
@@ -65,11 +65,13 @@ const main = async () => {
     socket.to(roomId).emit('allUserIds', Object.values(roomUsers[roomId]));
 
     socket.on('notifyPeers', (data) => {
+      // console.log(data.from, ' sending hello to ', data.to);
       socket.to(data.to).emit('hello', { signalData: data.signalData, initiatorId: data.from });
     });
 
     socket.on('acceptConn', (data) => {
-      socket.to(data.to).emit('accepted', data.signalData);
+      // console.log('sending acceptance message from ', socket.id);
+      socket.to(data.to).emit('accepted', { targetId: socket.id, signalData: data.signalData });
     });
 
     socket.on('disconnect', () => {

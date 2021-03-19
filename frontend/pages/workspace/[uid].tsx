@@ -13,19 +13,20 @@ const Workspace: React.FC<WorkspaceProps> = () => {
 
     const pathHandler = (path: any) => {
         setPaths([...paths, path])
+        console.log(path);
     }
 
     return (
         <PeerConnecion draw={pathHandler}>
             <WBProvider>
-                <Grid container justify='space-between'>
-                    {/* <Grid item>
+                {/* <Grid container justify='space-between'>
+                    <Grid item>
                         <WbCanvas paths={paths} addPath={pathHandler}/>
                     </Grid>
                     <Grid item>
                         <WbCanvas paths={paths} addPath={pathHandler}/>
-                    </Grid>  */}
-                </Grid>
+                    </Grid> 
+                </Grid> */}
             </WBProvider>
         </PeerConnecion>
     );

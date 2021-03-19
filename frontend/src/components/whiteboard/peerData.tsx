@@ -1,6 +1,6 @@
 import { io } from "socket.io-client";
 import Peer from "simple-peer";
-import React, { useContext, createContext, useEffect, useState } from "react";
+import React, { useContext, createContext, useEffect, useState, useRef } from "react";
 
 export interface DrawData {
     path: any
@@ -21,14 +21,14 @@ interface PConnProps {
 const PeerConnecion: React.FC<PConnProps> = ({ draw, children }) => {
     const [roomId, setRoomId] = useState<string>("000000");
     const [token, setToken] = useState<string>("abc");
-    const [selfSocketId, setSelfSocketId] = useState<string>('');
-    const [allSocketIds, setAllSocketIds] = useState<string[]>([]);
-    const [peerConnections, setPeerConnections] = useState<{[socketId:string]:any}>({});
-    const [socket, setSocket] = useState<any>(null)
+    const selfSocketId = useRef<string>('');
+    const allSocketIds = useRef<string[]>([]);
+    const peerConnections = useRef<{[socketId:string]:any}>({});
+    const socket = useRef<any>();
 
     useEffect(() => {
         // connect the server by passing in auth token and roomId
-        const sok = io('ws://localhost:5001', {
+        socket.current = io('ws://localhost:5001', {
             auth: {
                 token: token
             },
@@ -37,107 +37,120 @@ const PeerConnecion: React.FC<PConnProps> = ({ draw, children }) => {
             },
             reconnectionAttempts: 10
         });
-
-        setSocket(sok);
-
-        // clean up effect when unmounting
-        return (() => {
-            if (socket)
-               socket.disconnect()
-            return;
-        });
-    },[]);
-
-    useEffect( () => {
-        if (!socket) return
+        
         // receive self socket id when connected to the server
-        socket.on('init', (data:{selfId:string, allUserIds:string[]}) => {
-            setSelfSocketId(data.selfId);
-            setAllSocketIds(data.allUserIds);
+        socket.current.on('init', (data:{selfId:string, allUserIds:string[]}) => {
+            selfSocketId.current = (data.selfId);
+            allSocketIds.current = (data.allUserIds);
+            console.log("Self ID", selfSocketId.current);
+            console.log("AllSocketID", allSocketIds.current);
+            connectPeers();
         });
-
+        
         // keep all connected user id updated and establish simple-peer connection to them
-        socket.on('allUserIds', (users:string[]) => {
-            setAllSocketIds(users);
-            console.log("AllSocketIDs", allSocketIds);
+        socket.current.on('allUserIds', (users:string[]) => {
+            allSocketIds.current = (users);
+            // console.log("AllSocketIDs", allSocketIds.current);
+            peerCleanup();
         });
 
         // signal the data passed by peer
-        socket.on('hello', (data:{initiatorId:string, signalData:any}) => {
+        socket.current.on('hello', (data:{initiatorId:string, signalData:any}) => {
             signal(data.initiatorId, data.signalData);
         });
-    }, [socket])
-
-    useEffect( () => {
-        console.log("Self ID", selfSocketId);
-        console.log("AllSocketID", allSocketIds);
-        connectPeers();
-    }, [selfSocketId, allSocketIds])
-
-    function callPeer(index:number) {
-        if (index >= allSocketIds.length) return;
-        const id = allSocketIds[index];
+        
+        // clean up effect when unmounting
+        return (() => {
+            if (socket.current)
+               socket.current.disconnect();
+            return;
+        });
+        
+    },[]);
+    
+    function callPeer(id:string) {
         // return if connect to self or already connected
-        if (id === selfSocketId || peerConnections[id]) return;
+        if (id === selfSocketId.current || peerConnections.current[id]) return;
         const peer = new Peer({
             initiator: true,
             trickle: false
         });
-    
+        // console.log("calling peer");
         peer.on('signal', (signalData:any) => {
-            socket.emit("notifyPeers", { to: id, signalData: signalData, from: selfSocketId })
+            console.log("emit signal to", id);
+            socket.current.emit("notifyPeers", { to: id, signalData: signalData, from: selfSocketId.current })
         })
-        peer.on('error', console.error);
+        peer.on('error', (err:Error) => {
+            console.error(err);
+            peer.destroy();
+        });
         peer.on('connect', () => {
-            console.log(selfSocketId + " successfully connected to " + id);
-            callPeer(index+1);
+            console.log("peers", peerConnections.current);
+            peer.send(JSON.stringify({path: "hello from " + selfSocketId.current}));
+            console.log(selfSocketId.current + " successfully connected to " + id);
         });
         peer.on('data', (data:string) => {
             onPeerData(data);
         });
     
         // finalize connection if connection accepted
-        socket.on('accepted', (signalData:any) => {
-            peer.signal(signalData);
-            const { [id]: tmp, ...conns } = peerConnections;
-            setPeerConnections({ [id]: peer, ...conns });
+        socket.current.on('accepted', (data:any) => {
+            if (data.targetId === id) {
+                // console.log("accepted by ", data.signalData);
+                try {
+                    peer.signal(data.signalData);
+                    peerConnections.current[id] = peer;
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+        });
+    }
+
+    function peerCleanup() {
+        // destroy p2p connection to disconnected user
+        Object.keys(peerConnections.current).forEach(id => {
+            if (!allSocketIds.current.includes(id)) {
+                peerConnections.current[id].destroy();
+                delete peerConnections.current[id];
+            }
         });
     }
 
     function connectPeers() {
-        // destroy p2p connection to disconnected user
-        Object.keys(peerConnections).forEach(id => {
-            if (!allSocketIds.includes(id)) {
-                const { [id]: tmp, ...conns } = peerConnections;
-                setPeerConnections(conns);
-            }
-        });
+        peerCleanup();
         // establish new p2p connection
-        callPeer(0);
+        allSocketIds.current.forEach(id => callPeer(id));
     }
     
     function signal(initiator:string, initiatorData:any) {
-        console.log("Running signal");
+        // console.log("Received signal");
         const peer = new Peer({
             initiator: false,
             trickle: false
         });
         peer.on('signal', (signalData:any) => {
-            socket.emit("acceptConn", { signalData: signalData, to: initiator })
+            socket.current.emit("acceptConn", { signalData: signalData, to: initiator })
+        });
+        peer.on('error', (err:Error) => {
+            console.error(err);
+            peer.destroy();
         });
         peer.on('data', (data:any) => {
             onPeerData(data);
         });
         peer.on('connect', () => {
-            console.log(selfSocketId + " successfully connected to " + initiator);
+            console.log("peers", peerConnections.current);
+            peer.send(JSON.stringify({path: "hello from " + selfSocketId.current}));
+            console.log(selfSocketId.current + " successfully connected to " + initiator);
         });
         peer.signal(initiatorData);
-        const { [initiator]: tmp, ...conns } = peerConnections;
-        setPeerConnections({ [initiator]: peer, ...conns });
+        peerConnections.current[initiator] = peer;
     }
 
     function peerBroadcast(data:DrawData) {
-        Object.values(peerConnections).forEach(peer => {
+        console.log("data", data)
+        Object.values(peerConnections.current).forEach(peer => {
             try {
                 peer.on('connect', () => {
                     peer.send(data);
@@ -150,6 +163,7 @@ const PeerConnecion: React.FC<PConnProps> = ({ draw, children }) => {
     
     function onPeerData(data:string) {
         // TODO: define this function to draw
+        console.log("received data");
         draw(JSON.parse(String(data)).path);
         // console.log("received", String(data));
     }
