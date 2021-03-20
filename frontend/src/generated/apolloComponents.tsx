@@ -28,7 +28,7 @@ export type User = {
 export type Mutation = {
   __typename?: 'Mutation';
   Signup: User;
-  Signin: User;
+  Signin: SigninResponse;
 };
 
 
@@ -42,6 +42,12 @@ export type MutationSignupArgs = {
 export type MutationSigninArgs = {
   password: Scalars['String'];
   email: Scalars['String'];
+};
+
+export type SigninResponse = {
+  __typename?: 'SigninResponse';
+  user: User;
+  token: Scalars['String'];
 };
 
 export type SignupMutationVariables = Exact<{
@@ -68,8 +74,12 @@ export type SigninMutationVariables = Exact<{
 export type SigninMutation = (
   { __typename?: 'Mutation' }
   & { Signin: (
-    { __typename?: 'User' }
-    & Pick<User, 'id' | 'name' | 'email'>
+    { __typename?: 'SigninResponse' }
+    & Pick<SigninResponse, 'token'>
+    & { user: (
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'name' | 'email'>
+    ) }
   ) }
 );
 
@@ -124,9 +134,12 @@ export type SignupMutationOptions = Apollo.BaseMutationOptions<SignupMutation, S
 export const SigninDocument = gql`
     mutation Signin($email: String!, $password: String!) {
   Signin(email: $email, password: $password) {
-    id
-    name
-    email
+    user {
+      id
+      name
+      email
+    }
+    token
   }
 }
     `;

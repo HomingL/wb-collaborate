@@ -1,6 +1,7 @@
 import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client'
 import { setContext } from '@apollo/client/link/context'
-import Cookies from 'js-cookie'
+// import Cookies from 'js-cookie'
+import { getToken } from '../utils/token';
 
 
 const httpLink = createHttpLink({ 
@@ -10,8 +11,8 @@ const httpLink = createHttpLink({
 
 const authLink = setContext((_, { headers }) => {
 
-  const token = Cookies.get('token')
-  console.log('apollo sets bearer: ', token)
+  const token = getToken();
+  console.log('apollo sets bearer: ', token);
   return {
     headers: {
       ...headers,

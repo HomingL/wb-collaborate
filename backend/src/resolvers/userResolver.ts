@@ -1,9 +1,9 @@
-import { Resolver, Query, Mutation, Arg, Ctx, UseMiddleware } from 'type-graphql';
+import { Resolver, Query, Mutation, Arg, UseMiddleware } from 'type-graphql';
 import { sign } from 'jsonwebtoken';
-import { Context } from 'src/context';
 import crypto from 'crypto';
 import { isAuthenticated } from '../middlewares/auth';
 import { User } from '../models/user';
+import { SigninResponse } from '../models/signinResponse';
 
 const { TOKEN_SECRET, TOKEN_EXPIRE_TIME } = process.env;
 
@@ -39,22 +39,17 @@ export class UserResolver {
     return us;
   }
 
-  @Mutation(() => User)
+  @Mutation(() => SigninResponse)
   async Signin(
     @Arg('email') email: string,
     @Arg('password') password: string,
-    @Ctx() ctx: Context,
   ) {
     const user = await User.findOne({ email });
     if (user && generateHash(password, user.salt) === user.password) {
       const token = sign({ email: user.email, name: user.name, id: user.id }, TOKEN_SECRET!, {
         expiresIn: TOKEN_EXPIRE_TIME });
-      const { res } = ctx;
-      res.cookie('token', token, {
-        sameSite: 'none',
-        secure: true,
-      }); // this is not working, frontend cannot fetch token.
-      return user;
+      const response : SigninResponse = { user, token };
+      return response;
     }
     return new Error('Incorrect match of usename and password');
   }

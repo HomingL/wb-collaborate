@@ -1,13 +1,11 @@
-// import { Field, ObjectType, ID } from 'type-graphql';
+import { Field, ObjectType } from 'type-graphql';
+import { User } from './user';
 
-// @ObjectType
-// class signinResponse {
-//   @Field(() => ID)
-//   id: number;
+@ObjectType()
+export class SigninResponse {
+  @Field(() => User)
+  user: User;
 
-//   @Field()
-//   name: string;
-
-//   @Field()
-//   email: string;
-// }
+  @Field()
+  token: string;
+}
