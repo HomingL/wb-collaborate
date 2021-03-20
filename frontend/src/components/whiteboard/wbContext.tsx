@@ -21,8 +21,7 @@ const WBProvider: React.FC = ({ children }) => {
     const [penState, setPenState] = useState<boolean>(true);
 
     useEffect( () =>{
-        if (canvas)
-            canvas.isDrawingMode = false;
+        if (canvas) canvas.isDrawingMode = penState;
     }, [penState]);
 
     return (

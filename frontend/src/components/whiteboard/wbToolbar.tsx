@@ -16,16 +16,20 @@ import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 // import InsertPhotoSharpIcon from '@material-ui/icons/InsertPhotoSharp';
 import { useWBContext } from './wbContext';
 import { fabric } from "fabric";
+import { usePBContext } from './peerData';
 
 
-function WbToolbar() {
+const WbToolbar: React.FC = () => {
   const classes = useStyles();
-  const { setPenState, canvas }= useWBContext();
+  const { setPenState, canvas } = useWBContext();
+  const { peerBroadcast } = usePBContext();
 
   const createNewRect = (top: number, left: number) => {
     const rect = new fabric.Rect({
       top: top, left: left, width: 50, height: 50, fill: 'grey', borderColor:'red' });
+    console.log("rect", rect, canvas);
     canvas?.add(rect);
+    // if (peerBroadcast) peerBroadcast(JSON.stringify({ canvas: canvas }));
   };
 
   const createNewTextBox = () => {
@@ -38,6 +42,7 @@ function WbToolbar() {
       textAlign: 'center'
     });
     canvas?.add(textBox);
+    // if (peerBroadcast) peerBroadcast(JSON.stringify({ canvas: canvas }));
   };
 
   return (
@@ -48,24 +53,26 @@ function WbToolbar() {
           <Typography variant="h6" className={classes.title}>
             Wb Collaborate
           </Typography>
-          <IconButton edge="start" className={classes.button} onClick={() => {canvas?.clear()}}>
+          <IconButton edge="start" className={classes.button} onClick={() => {
+            canvas?.clear();
+            if (peerBroadcast) peerBroadcast(JSON.stringify({ canvas: canvas }));
+          }}>
             <DeleteIcon />
           </IconButton>
           <IconButton edge="start" className={classes.button} onClick={()=> {
             canvas?._objects.pop();
             canvas?.renderAll();
+            if (peerBroadcast) peerBroadcast(JSON.stringify({ canvas: canvas }));
           }}>
             <RotateLeftIcon />
           </IconButton>
           <IconButton edge="start" className={classes.button} onClick={() => {
-            if (setPenState)
-              setPenState(true)
+            if (setPenState) setPenState(true);
           }}>
             <CreateIcon />
           </IconButton>
           <IconButton edge="start" className={classes.button} onClick={() => {
-            if (setPenState)
-              setPenState(false)
+            if (setPenState) setPenState(false);
             }}>
             <PanToolIcon />
           </IconButton>

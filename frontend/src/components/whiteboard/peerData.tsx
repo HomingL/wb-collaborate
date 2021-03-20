@@ -2,10 +2,6 @@ import { io } from "socket.io-client";
 import Peer from "simple-peer";
 import React, { useContext, createContext, useEffect,/* useState,*/ useRef, useCallback, useState } from "react";
 
-// export interface DrawData {
-//     path: any
-// }
-
 export const PBContext = createContext<{peerBroadcast?: (data: string) => void, peerData?: any}>({});
 
 export const usePBContext = () => {
@@ -167,8 +163,6 @@ const PeerConnecion: React.FC = ({ children }) => {
     function onPeerData(data:string) {
         console.log("received data:", String(data));
         setPeerData(String(data));
-        // draw(JSON.parse(String(data)));
-        // console.log("received", String(data));
     }
 
     return (
