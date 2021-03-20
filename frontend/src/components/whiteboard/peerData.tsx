@@ -163,7 +163,7 @@ const PeerConnecion: React.FC = ({ children }) => {
 
     const [peerData, setPeerData] = useState<string>('');
     
-    // define this function to draw
+    // define this function to send data
     function onPeerData(data:string) {
         console.log("received data:", String(data));
         setPeerData(String(data));
