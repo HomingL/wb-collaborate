@@ -60,9 +60,10 @@ const main = async () => {
 
     console.log(roomUsers);
 
-    socket.emit('init', { selfId: socket.id, allUserIds: Object.values(roomUsers[roomId]) });
     // update all users
     socket.to(roomId).emit('allUserIds', Object.values(roomUsers[roomId]));
+    // update self
+    socket.emit('init', { selfId: socket.id, allUserIds: Object.values(roomUsers[roomId]) });
 
     socket.on('notifyPeers', (data) => {
       // console.log(data.from, ' sending hello to ', data.to);

@@ -12,13 +12,13 @@ interface WorkspaceProps {
 const Workspace: React.FC<WorkspaceProps> = () => {
     const [paths, setPaths] = useState<any>([]);
 
-    const pathHandler = (path: any) => {
-        setPaths([...paths, path])
-        console.log(path);
-    }
+    // const pathHandler = (path: any) => {
+    //     setPaths([...paths, path])
+    //     console.log(path);
+    // }
 
     return (
-        <PeerConnecion draw={pathHandler}>
+        <PeerConnecion>
             <WBProvider>
                 <Grid container justify='space-between'>
                     <Grid item xs={12}>

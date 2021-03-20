@@ -1,22 +1,22 @@
 import { io } from "socket.io-client";
 import Peer from "simple-peer";
-import React, { useContext, createContext, useEffect,/* useState,*/ useRef, useCallback } from "react";
+import React, { useContext, createContext, useEffect,/* useState,*/ useRef, useCallback, useState } from "react";
 
-export interface DrawData {
-    path: any
-}
+// export interface DrawData {
+//     path: any
+// }
 
-export const PBContext = createContext<{peerBroadcast?: (data: DrawData) => void}>({});
+export const PBContext = createContext<{peerBroadcast?: (data: string) => void, peerData?: any}>({});
 
 export const usePBContext = () => {
     return useContext(PBContext);
 }
 
-interface PConnProps {
-    draw: (path: any) => void
-}
+// interface PConnProps {
+//     draw: (path: any) => void
+// }
 
-const PeerConnecion: React.FC<PConnProps> = ({ draw, children }) => {
+const PeerConnecion: React.FC = ({ children }) => {
     // const [roomId, setRoomId] = useState<string>("000000");
     // const [token, setToken] = useState<string>("abc");
     const roomId = "000000";
@@ -40,8 +40,8 @@ const PeerConnecion: React.FC<PConnProps> = ({ draw, children }) => {
         
         // receive self socket id when connected to the server
         socket.current.on('init', (data:{selfId:string, allUserIds:string[]}) => {
-            selfSocketId.current = (data.selfId);
-            allSocketIds.current = (data.allUserIds);
+            selfSocketId.current = data.selfId;
+            allSocketIds.current = data.allUserIds;
             console.log("Self ID", selfSocketId.current);
             console.log("AllSocketID", allSocketIds.current);
             connectPeers();
@@ -136,7 +136,7 @@ const PeerConnecion: React.FC<PConnProps> = ({ draw, children }) => {
             console.error(err);
             peer.destroy();
         });
-        peer.on('data', (data:any) => {
+        peer.on('data', (data:string) => {
             onPeerData(data);
         });
         peer.on('connect', () => {
@@ -148,28 +148,31 @@ const PeerConnecion: React.FC<PConnProps> = ({ draw, children }) => {
         peerConnections.current[initiator] = peer;
     }
 
-    const peerBroadcast = useCallback((data:DrawData) => {
-        console.log("data", data)
+    const peerBroadcast = useCallback((data:string) => {
+        console.log("process data...", data);
         Object.values(peerConnections.current).forEach(peer => {
             try {
-                peer.on('connect', () => {
-                    peer.send(data);
-                });
+                console.log("send to:", peer);
+                console.log("sending...", data);
+                peer.send(data);
             } catch (err) {
                 console.error(err);
             }
         });
     }, []);
+
+    const [peerData, setPeerData] = useState<string>('');
     
+    // define this function to draw
     function onPeerData(data:string) {
-        // TODO: define this function to draw
-        console.log("received data");
-        draw(JSON.parse(String(data)).path);
+        console.log("received data:", String(data));
+        setPeerData(String(data));
+        // draw(JSON.parse(String(data)));
         // console.log("received", String(data));
     }
 
     return (
-        <PBContext.Provider value={{peerBroadcast}}>
+        <PBContext.Provider value={{peerBroadcast, peerData}}>
             {children}
         </PBContext.Provider>
     );

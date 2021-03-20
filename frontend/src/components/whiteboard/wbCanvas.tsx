@@ -14,13 +14,13 @@ interface WhiteboardProps {
 const WbCanvas: React.FC<WhiteboardProps> = () => {
   
   const { setCanvas } = useWBContext();
-  const { peerBroadcast } = usePBContext();
+  const { peerBroadcast, peerData } = usePBContext();
 
   const classes = useStyles();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const canv = useRef<fabric.Canvas>();
 
-  useEffect(()=>{
+  useEffect(() => {
     canv.current = new fabric.Canvas(canvasRef.current, {
       isDrawingMode: true
     });
@@ -30,9 +30,15 @@ const WbCanvas: React.FC<WhiteboardProps> = () => {
       const your_path = e.path;
       console.log(your_path);
       // addPath(your_path);
-      if (peerBroadcast) peerBroadcast({path: your_path});
+      if (peerBroadcast) peerBroadcast(JSON.stringify(your_path));
     });
   },[peerBroadcast]);
+
+  useEffect(() => {
+    const path = new fabric.Path(peerData);
+    console.log("newPath", path);
+    canv.current?.add(path);
+  }, [peerData]);
 
   return (
     <div className={classes.root}>
