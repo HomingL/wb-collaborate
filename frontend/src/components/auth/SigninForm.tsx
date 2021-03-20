@@ -8,6 +8,7 @@ import { useSigninMutation } from '../../generated/apolloComponents';
 import { useRouter } from 'next/router';
 import Cookies from 'js-cookie';
 import Link from '../../Link';
+import { setToken } from '../../utils/token';
 // import { theme } from '../../theme';
 
 interface SigninFormProps {
@@ -33,8 +34,11 @@ const SigninForm: React.FC<SigninFormProps> = () => {
       // alert(JSON.stringify(values, null, 2));
       signinMutation({ variables: values }).then((res) => {
         console.log(data);
-        console.log(Cookies.get());
-        const uid = res.data?.Signin.id;
+        console.log("cookie!!!", Cookies.get());
+        // Cookies.set('token', );
+        const uid = res.data?.Signin.user.id;
+        const token = res.data?.Signin.token;
+        if (token) setToken(token);
         router.push(`/workspace/${uid}`);
       }).catch(() =>{
         throw new Error('Server Side Error for Signin');
