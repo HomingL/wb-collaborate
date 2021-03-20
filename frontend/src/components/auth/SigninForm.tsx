@@ -31,11 +31,7 @@ const SigninForm: React.FC<SigninFormProps> = () => {
     },
     validationSchema: yup.object(SignInValidationSchema),
     onSubmit: (values) => {
-      // alert(JSON.stringify(values, null, 2));
       signinMutation({ variables: values }).then((res) => {
-        console.log(data);
-        console.log("cookie!!!", Cookies.get());
-        // Cookies.set('token', );
         const uid = res.data?.Signin.user.id;
         const token = res.data?.Signin.token;
         if (token) setToken(token);
