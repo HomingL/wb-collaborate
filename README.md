@@ -27,14 +27,13 @@ This application is useful when working remotely. User at different physical loc
 
 ## Beta Version 
  - Static Index Page
- - User Authentication
+ - Basic User Authentication with JWT
  - Single-page Collaborative Whiteboard
      - Minimal whiteboard features:
          - Pen
          - Eraser
          - Textbox
          - Selection
-         - Add image
          - Delete sketch
  
 
@@ -53,13 +52,15 @@ This application is useful when working remotely. User at different physical loc
 #### Backend:
 - Express
 - GraphQL (Apollo Server)
-- Firebase (Authentication)
-- MongoDB 
-- Redis
+- PostgreSQL (with Typeorm)
+
+## Other Technologies
+- P2P connection (simple-peer)
+- Websocket (socket.io)
 
 ## Top Five Technical Challenges
  - P2P User Communication(for whiteboard)
- - Graphics programming with SVG
+ - Drawing with Canvas
  - Multi-feature toolbar(e.g. color selection)
  - Text Recognition 
- - Learning new frameworks and technologies (e.g. GraphQL, Redis)
+ - Websocket for P2P connection management
