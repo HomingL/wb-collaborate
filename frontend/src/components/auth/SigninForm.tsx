@@ -6,10 +6,8 @@ import * as yup from 'yup';
 import { SignInValidationSchema } from './AuthValidationSchema';
 import { useSigninMutation } from '../../generated/apolloComponents';
 import { useRouter } from 'next/router';
-import Cookies from 'js-cookie';
 import Link from '../../Link';
 import { setToken } from '../../utils/token';
-// import { theme } from '../../theme';
 
 interface SigninFormProps {
 
@@ -18,7 +16,7 @@ interface SigninFormProps {
 const SigninForm: React.FC<SigninFormProps> = () => {
   const classes = useStyles();
   const router = useRouter();
-  const [signinMutation, { data }] = useSigninMutation({
+  const [signinMutation] = useSigninMutation({
     variables: {
        email: '',
        password: ''

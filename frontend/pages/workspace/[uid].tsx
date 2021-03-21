@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { WBProvider } from '../../src/components/whiteboard/wbContext'
 import PeerConnecion from '../../src/components/whiteboard/peerData';
 import { Grid } from '@material-ui/core';
@@ -10,13 +10,6 @@ interface WorkspaceProps {
 }
 
 const Workspace: React.FC<WorkspaceProps> = () => {
-    const [paths, setPaths] = useState<any>([]);
-
-    // const pathHandler = (path: any) => {
-    //     setPaths([...paths, path])
-    //     console.log(path);
-    // }
-
     return (
         <PeerConnecion>
             <WBProvider>
