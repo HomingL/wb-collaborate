@@ -38,6 +38,8 @@
     "jsonwebtoken": "^8.5.1",
     "pg": "^8.5.1",
     "reflect-metadata": "^0.1.13",
+    "simple-peer": "^9.9.3",
+    "socket.io": "^4.0.0",
     "sqlite3": "^5.0.2",
     "type-graphql": "^1.1.1",
     "typeorm": "^0.2.31"
