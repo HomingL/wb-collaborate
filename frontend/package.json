@@ -22,7 +22,7 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
-    "start": "next start",
+    "start": "LD_PRELOAD='/opt/app-root/src/node_modules/sharp/vendor/lib/libz.so' next start",
     "post-update": "echo \"codesandbox preview only, need an update\" && yarn upgrade --latest",
     "generate": "graphql-codegen --config codegen.yml"
   },
