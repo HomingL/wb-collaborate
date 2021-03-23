@@ -161,8 +161,8 @@ const PeerConnecion: React.FC = ({ children }) => {
     
     // define this function to send data
     function onPeerData(data:string) {
-        console.log("received data:", String(data));
-        setPeerData(String(data));
+        console.log("received data:", data.toString());
+        setPeerData(data.toString());
     }
 
     return (

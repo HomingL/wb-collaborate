@@ -5,9 +5,9 @@ import { fabric } from "fabric";
 // import { theme } from '../../theme';
 import { useWBContext } from '../whiteboard/wbContext'
 import { usePBContext } from './peerData';
+// import { Root, Type, Field } from 'protobufjs';
 
 const WbCanvas: React.FC = () => {
-  
   const { penState, setCanvas } = useWBContext();
   const { peerBroadcast, peerData } = usePBContext();
 
@@ -18,35 +18,64 @@ const WbCanvas: React.FC = () => {
   const isDrawing = useRef<boolean>(false);
   const brushStart = useRef<{x: number, y: number}>();
   const brushEnd = useRef<{x: number, y: number}>();
+  // const objects = useRef<fabric.Object[]>([]);
+
+  function broadcastData(data:any) {
+    try {
+      data = JSON.stringify(data);
+      if (peerBroadcast) peerBroadcast(data);
+    } catch (err) {
+      if (err instanceof TypeError) console.error('Stringify Error', err);
+      else console.error(err);
+    }
+  }
+
+  function onMouseDown(e:Event) {
+    if (pState.current) {   /** make sure it's in penState */
+      isDrawing.current = true;
+      /** set the starting point of the brush and clear the previous endpoint */
+      brushStart.current = canv.current?.getPointer(e);
+      brushEnd.current = undefined;
+    }
+  }
+
+  function onMouseUp(e:Event) {
+    isDrawing.current = false;
+    if (pState.current) {
+      brushEnd.current = canv.current?.getPointer(e);
+      broadcastData({ start: brushStart.current, end: brushEnd.current, /*canvas: canv.current*/ });
+    }
+  }
+
+  function onMouseMove(e:Event) {
+    if (isDrawing.current) {
+      if (brushEnd.current) brushStart.current = brushEnd.current;
+      brushEnd.current = canv.current?.getPointer(e);
+      broadcastData({ start: brushStart.current, end: brushEnd.current });
+    }
+  }
+
+  function onMouseModified() {
+    // const objs = canv.current?._objects;
+    broadcastData({ /* canvObjs: objs */ canvas: canv.current?.toDatalessJSON() });
+  }
 
   useEffect(() => {
     canv.current = new fabric.Canvas(canvasRef.current, {
       isDrawingMode: true
     });
-    if(setCanvas) setCanvas(canv.current);
     canv.current.freeDrawingBrush.color = '#00aeff';
     canv.current.freeDrawingBrush.width = 5;
+    if(setCanvas) setCanvas(canv.current);
 
     canv.current.on('mouse:down', function({e}) {
-      if (pState.current) {
-        isDrawing.current = true;
-        brushStart.current = canv.current?.getPointer(e);
-        brushEnd.current = undefined;
-      }
+      onMouseDown(e);
     }).on('mouse:up', function({e}) {
-      isDrawing.current = false;
-      if (pState.current) {
-        brushEnd.current = canv.current?.getPointer(e);
-        if (peerBroadcast) peerBroadcast(JSON.stringify({ start: brushStart.current, end: brushEnd.current, canvas: canv.current }));
-      }
+      onMouseUp(e);
     }).on('mouse:move', function({e}) {
-      if (isDrawing.current) {
-        if (brushEnd.current) brushStart.current = brushEnd.current;
-        brushEnd.current = canv.current?.getPointer(e);
-        if (peerBroadcast) peerBroadcast(JSON.stringify({ start: brushStart.current, end: brushEnd.current }));
-      }
+      onMouseMove(e);
     }).on('object:modified', function() {
-      if (peerBroadcast) peerBroadcast(JSON.stringify({ canvas: canv.current }));
+      onMouseModified();
     });
 
     // canv.current.on('path:created', function(e:any){
@@ -57,16 +86,20 @@ const WbCanvas: React.FC = () => {
     // });
   },[peerBroadcast]);
 
+  /** penState won't get update in listeners under useEffect unless updating it using reference */
   useEffect(() => {
     console.log("penState:", penState);
     pState.current = penState;
   }, [penState]);
 
   useEffect(() => {
-    console.log("peerData", peerData);
     if (peerData) {
       try {
         const pData = JSON.parse(peerData);
+        console.log("pData", pData);
+        // if (pData.canvObjs) {
+        //   objects.current = pData.canvObjs;
+        // }
         if (pData.canvas) {
           canv.current?.loadFromJSON(pData.canvas, canv.current.renderAll.bind(canv.current));
         }
@@ -79,11 +112,17 @@ const WbCanvas: React.FC = () => {
       } catch (err) {
         if (err instanceof SyntaxError) {
           console.log("peerData is not in JSON type", peerData);
-        }
+        } else console.error(err);
       }
     }
 
   }, [peerData]);
+
+  // useEffect(() => {
+  //   console.log("objs", objects.current);
+  //   if (canv.current) canv.current._objects = objects.current;
+  //   canv.current?.renderAll();
+  // }, [objects.current]);
 
   return (
     <div className={classes.root}>
