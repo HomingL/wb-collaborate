@@ -27,9 +27,8 @@ const WbToolbar: React.FC = () => {
   const createNewRect = (top: number, left: number) => {
     const rect = new fabric.Rect({
       top: top, left: left, width: 50, height: 50, fill: 'grey', borderColor:'red' });
-    console.log("rect", rect, canvas);
     canvas?.add(rect);
-    // if (peerBroadcast) peerBroadcast(JSON.stringify({ canvas: canvas }));
+    if (peerBroadcast) peerBroadcast(JSON.stringify({ canvas: canvas?.toDatalessJSON() }));
   };
 
   const createNewTextBox = () => {
@@ -42,7 +41,7 @@ const WbToolbar: React.FC = () => {
       textAlign: 'center'
     });
     canvas?.add(textBox);
-    // if (peerBroadcast) peerBroadcast(JSON.stringify({ canvas: canvas }));
+    if (peerBroadcast) peerBroadcast(JSON.stringify({ canvas: canvas?.toDatalessJSON() }));
   };
 
   return (
@@ -55,14 +54,14 @@ const WbToolbar: React.FC = () => {
           </Typography>
           <IconButton edge="start" className={classes.button} onClick={() => {
             canvas?.clear();
-            if (peerBroadcast) peerBroadcast(JSON.stringify({ canvas: canvas }));
+            if (peerBroadcast) peerBroadcast(JSON.stringify({ canvas: canvas?.toDatalessJSON() }));
           }}>
             <DeleteIcon />
           </IconButton>
           <IconButton edge="start" className={classes.button} onClick={()=> {
             canvas?._objects.pop();
             canvas?.renderAll();
-            if (peerBroadcast) peerBroadcast(JSON.stringify({ canvas: canvas }));
+            if (peerBroadcast) peerBroadcast(JSON.stringify({ canvas: canvas?.toDatalessJSON() }));
           }}>
             <RotateLeftIcon />
           </IconButton>
