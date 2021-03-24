@@ -22,7 +22,8 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
-    "start": "LD_PRELOAD='/opt/app-root/src/node_modules/sharp/vendor/lib/libz.so' next start",
+    "vercel-build": "yum install libuuid-devel libmount-devel && cp /lib64/{libuuid,libmount,libblkid}.so.1 node_modules/canvas/build/Release/ && npm run build",
+    "start": "next start",
     "post-update": "echo \"codesandbox preview only, need an update\" && yarn upgrade --latest",
     "generate": "graphql-codegen --config codegen.yml"
   },
