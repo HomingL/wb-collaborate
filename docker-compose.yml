@@ -1,0 +1,25 @@
+version: '3'
+services:
+  ggnb-proxy:
+    image: nginx:1.19
+    volumes: 
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    ports: 
+      - 80:80
+  ggnb-frontend:
+    build: ./frontend
+    volumes: 
+      - ./frontend:/var/opt
+    working_dir: /var/opt
+    ports: 
+      - 3000:3000
+    command: npm run start
+  ggnb-backend:
+    build: ./backend
+    volumes: 
+      - ./backend:/var/opt
+    working_dir: /var/opt
+    ports: 
+      - 5000:5000
+      - 5001:5001
+    command: npm run start
