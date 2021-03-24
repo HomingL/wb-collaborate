@@ -22,7 +22,7 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
-    "vercel-build": "yum install libuuid-devel libmount-devel && cp /lib64/{libuuid,libmount,libblkid}.so.1 node_modules/canvas/build/Release/ && npm run build",
+    "vercel-build": "yum install libz1g && cp /lib64/libz.so.1 node_modules/canvas/build/Release/ && npm run build",
     "start": "next start",
     "post-update": "echo \"codesandbox preview only, need an update\" && yarn upgrade --latest",
     "generate": "graphql-codegen --config codegen.yml"
