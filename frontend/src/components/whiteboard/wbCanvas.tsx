@@ -43,7 +43,7 @@ const WbCanvas: React.FC = () => {
     isDrawing.current = false;
     if (pState.current) {
       brushEnd.current = canv.current?.getPointer(e);
-      broadcastData({ start: brushStart.current, end: brushEnd.current, /*canvas: canv.current*/ });
+      broadcastData({ start: brushStart.current, end: brushEnd.current, canvas: canv.current?.toDatalessJSON() });
     }
   }
 
