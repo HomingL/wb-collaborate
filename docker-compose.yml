@@ -1,0 +1,26 @@
+version: '3'
+services:
+  ggnb-proxy:
+    image: nginx:1.19
+    depends_on: 
+      - ggnb-frontend
+      - ggnb-backend
+    volumes: 
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    ports: 
+      - 80:80
+  ggnb-frontend:
+    image: lihongming1/ggnb-frontend:latest
+    working_dir: /var/opt
+    depends_on:
+      - ggnb-backend
+    ports: 
+      - 3000:3000
+    command: npm run start
+  ggnb-backend:
+    image: lihongming1/ggnb-backend:2.0.1
+    working_dir: /var/opt
+    ports: 
+      - 5000:5000
+      - 5001:5001
+    command: npm run start
