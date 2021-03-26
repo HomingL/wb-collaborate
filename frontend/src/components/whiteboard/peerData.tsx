@@ -8,14 +8,16 @@ export const usePBContext = () => {
     return useContext(PBContext);
 }
 
-// interface PConnProps {
-//     draw: (path: any) => void
-// }
+interface PeerConnecionProps {
+    wid: string,
+    children: React.ReactNode,
+}
 
-const PeerConnecion: React.FC = ({ children }) => {
+const PeerConnecion: React.FC<PeerConnecionProps> = ({ children, wid }) => {
     // const [roomId, setRoomId] = useState<string>("000000");
     // const [token, setToken] = useState<string>("abc");
-    const roomId = "000000";
+    // const roomId = "000000";
+    const roomId = wid;
     const token = "abc";
     const selfSocketId = useRef<string>('');
     const allSocketIds = useRef<string[]>([]);
@@ -24,6 +26,8 @@ const PeerConnecion: React.FC = ({ children }) => {
 
     useEffect(() => {
         // connect the server by passing in auth token and roomId
+        console.log('useEffect wid:', wid);
+        if (!wid) return ()=>{return};
         socket.current = io('ws://localhost:5001', {
             auth: {
                 token: token
@@ -62,7 +66,7 @@ const PeerConnecion: React.FC = ({ children }) => {
             return;
         });
         
-    },[]);
+    },[wid]);
     
     function callPeer(id:string) {
         // return if connect to self or already connected
