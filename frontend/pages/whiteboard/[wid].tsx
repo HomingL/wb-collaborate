@@ -12,16 +12,15 @@ interface WhiteboardProps {
 
 const Whiteboard: React.FC<WhiteboardProps> = () => {
     const router = useRouter()
-    console.log("router query wid:", router.query.wid);
     const [whiteboardId, setWhiteboardId] = useState<string>('');
 
     useEffect(() => {
-    const wid: string= router.query.wid;
-    
-    setWhiteboardId(wid);
+        const wid: string= router.query.wid;
+        
+        setWhiteboardId(wid);
 
-        console.log('whiteboardId:', whiteboardId);
-    }, [])
+        console.log('whiteboardId:', router.query);
+    }, [router.query.wid])
 
     return (
       <PeerConnecion wid={whiteboardId}>

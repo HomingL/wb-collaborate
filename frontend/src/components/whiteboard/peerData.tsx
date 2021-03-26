@@ -27,7 +27,7 @@ const PeerConnecion: React.FC<PeerConnecionProps> = ({ children, wid }) => {
     useEffect(() => {
         // connect the server by passing in auth token and roomId
         console.log('useEffect wid:', wid);
-        // if (!wid) return ()=>{return};
+        if (!wid) return ()=>{return};
         socket.current = io('ws://localhost:5001', {
             auth: {
                 token: token
@@ -66,7 +66,7 @@ const PeerConnecion: React.FC<PeerConnecionProps> = ({ children, wid }) => {
             return;
         });
         
-    },[]);
+    },[wid]);
     
     function callPeer(id:string) {
         // return if connect to self or already connected
