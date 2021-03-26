@@ -54,9 +54,15 @@ This application is useful when working remotely. User at different physical loc
 - GraphQL (Apollo Server)
 - PostgreSQL (with Typeorm)
 
-## Other Technologies
+#### Other Technologies
 - P2P connection (simple-peer)
 - Websocket (socket.io)
+- Canvas (fabric.js)
+
+## Deployment
+- Digital Ocean 
+- Docker
+- Nginx
 
 ## Top Five Technical Challenges
  - P2P User Communication(for whiteboard)
