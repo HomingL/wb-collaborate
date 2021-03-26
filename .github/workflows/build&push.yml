@@ -25,15 +25,6 @@ jobs:
       - name: Check out
         uses: actions/checkout@v2
       
-      - name: Docker meta
-        id: docker_meta
-        uses: crazy-max/ghaction-docker-meta@v1
-        with:
-          images: ghcr.io/gbaeke/rgapi
-          tag-sha: true
-          tag-edge: false
-          tag-latest: true
-      
       # Runs a single command using the runners shell
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -49,4 +40,4 @@ jobs:
       
       - name: Build docker image
         id: docker_build
-        run: docker-compose build
+        run: ls && docker-compose build
