@@ -50,6 +50,3 @@ jobs:
       - name: Build docker image
         id: docker_build
         run: docker-compose build
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
