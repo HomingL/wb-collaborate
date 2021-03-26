@@ -15,9 +15,9 @@ const Whiteboard: React.FC<WhiteboardProps> = () => {
     const [whiteboardId, setWhiteboardId] = useState<string>('');
 
     useEffect(() => {
-        const wid: string= router.query.wid;
+        const { wid } = router.query;
         
-        setWhiteboardId(wid);
+        setWhiteboardId(wid as string);
 
         console.log('whiteboardId:', router.query);
     }, [router.query.wid])

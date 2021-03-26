@@ -23,12 +23,11 @@ const PeerConnecion: React.FC<PeerConnecionProps> = ({ children, wid }) => {
     const allSocketIds = useRef<string[]>([]);
     const peerConnections = useRef<{[socketId:string]:any}>({});
     const socket = useRef<any>();
-
+    console.log(process.env.NEXT_PUBLIC_BACK_END_SOCKET!);
     useEffect(() => {
         // connect the server by passing in auth token and roomId
-        console.log('useEffect wid:', wid);
         if (!wid) return ()=>{return};
-        socket.current = io('ws://localhost:5001', {
+        socket.current = io(process.env.NEXT_PUBLIC_BACK_END_SOCKET!, {
             auth: {
                 token: token
             },
