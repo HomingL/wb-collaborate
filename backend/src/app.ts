@@ -53,6 +53,7 @@ const main = async () => {
   }).on('connection', (socket:Socket) => {
     console.log('socket.io connected');
     const roomId = socket.handshake.query.roomId as string;
+    console.log('join room:', roomId);
     if (roomId) socket.join(roomId);
     else return console.error('roomId is undefined');
     if (!roomUsers[roomId]) roomUsers[roomId] = {};
