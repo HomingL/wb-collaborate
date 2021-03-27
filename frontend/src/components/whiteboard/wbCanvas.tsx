@@ -64,8 +64,7 @@ const WbCanvas: React.FC = () => {
     canv.current = new fabric.Canvas(canvasRef.current, {
       isDrawingMode: true
     });
-    canv.current.freeDrawingBrush.color = '#00aeff';
-    canv.current.freeDrawingBrush.width = 5;
+
     if(setCanvas) setCanvas(canv.current);
 
     canv.current.on('mouse:down', function({e}) {

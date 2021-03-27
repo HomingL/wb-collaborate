@@ -11,9 +11,7 @@ export interface WBprops {
 
 const WBContext = createContext<WBprops>({
     penState: true,
-    // setPenState: (state : boolean) => {},
     canvas: undefined,
-    // setCanvas: (canv: fabric.Canvas) => {}
 });
 
 const WBProvider: React.FC = ({ children }) => {
