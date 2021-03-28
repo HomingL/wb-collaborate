@@ -9,6 +9,7 @@ import { IconButton } from '@material-ui/core';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import { Color, ColorPicker, ColorBox, createColor } from 'material-ui-color';
+import { usePBContext } from './peerData';
 import { useWBContext } from './wbContext';
 
 const WbSubTool: React.FC = () => {
@@ -16,25 +17,35 @@ const WbSubTool: React.FC = () => {
     const [value, setValue] = useState(5);
     const [color, setColor] = useState(createColor("black"));
 
-    const [selectValue, setSelectValue] = useState(5);
+    const [selectValue, setSelectValue] = useState(0);
     const [selectColor, setSelectColor] = useState(createColor("black"));
     const [selectBorderColor, setSelectBorderColor] = useState(createColor("black"));
+    const [selectBackgroundColor, setSelectBackgroundColor] = useState(createColor("white"));
+
+
+    const { peerBroadcast } = usePBContext();
 
     const { select, penState, canvas, setSelect } = useWBContext();
 
     useEffect(() =>{
-        console.log("Selected", select);
         if (select && select.length === 1){
-            const obj = select[0];
-            let svalue = 0;
-            let sColor = createColor("black");
-            let sBorderColor = createColor("black");
+            const obj: fabric.Object = select[0];
+            let sColor: Color = createColor("black");
 
             if (obj.type == "path")
-                    sBorderColor = obj.stroke;
+                sColor = createColor(obj.stroke);
             else
-                sColor = obj.fill;
-
+                sColor = createColor(obj.fill);
+            
+            setSelectValue(obj.strokeWidth);
+            setSelectColor(sColor);
+            setSelectBorderColor(createColor(obj.stroke));
+            setSelectBackgroundColor(createColor(obj.backgroundColor));
+        }
+        else{
+            setSelectValue(0);
+            setSelectColor(createColor("black"));
+            setSelectBorderColor(createColor("black"));
         }
     }, [select]);
 
@@ -44,20 +55,24 @@ const WbSubTool: React.FC = () => {
                 canvas.remove(obj);
             });
             setSelect(null);
+            if (peerBroadcast) peerBroadcast(JSON.stringify({ canvas: canvas?.toDatalessJSON() }));
         }
         canvas.discardActiveObject().renderAll();
     }
 
     const handleCopyPaste = () => {
         if (select && select.length > 0){
+            canvas.discardActiveObject();
             select.forEach(obj => {
                 obj?.clone(clone => {
-                    clone.set("left", clone.left + 10);
-                    clone.set("top", clone.top + 10);
+                    clone.set("left", clone.left + 15);
+                    clone.set("top", clone.top + 15);
                     canvas.add(clone);
+                    canvas.setActiveObject(clone);
                 });
             });
             canvas?.renderAll();
+            if (peerBroadcast) peerBroadcast(JSON.stringify({ canvas: canvas?.toDatalessJSON() }));
         }
     }
 
@@ -69,6 +84,7 @@ const WbSubTool: React.FC = () => {
                 obj.set("strokeWidth", newValue);
             });
             canvas?.renderAll();
+            if (peerBroadcast) peerBroadcast(JSON.stringify({ canvas: canvas?.toDatalessJSON() }));
             return
         }
         setValue(newValue);
@@ -77,27 +93,31 @@ const WbSubTool: React.FC = () => {
         }
     };
 
-    const handleColorChange = (newValue: Color, border: bool) => {
+    const handleColorChange = (newValue: Color, type: number) => {
         if (select && select.length > 0){
-            if (!border) setSelectColor(newValue);
-            else setSelectBorderColor(newValue);
+            if (type == 0) setSelectColor(newValue);
+            else if (type == 1) setSelectBorderColor(newValue);
+            else setSelectBackgroundColor(newValue);
             select.forEach(obj => {
-                if (obj.type == "path")
+                if (type == 2)
+                  obj.set("backgroundColor", "#" + newValue.hex);
+                
+                else{
+                  if (obj.type == "path" || obj.type == "line")
                     obj.set("stroke", "#" + newValue.hex);
-                else
-                    if (border) obj.set("stroke", "#" + newValue.hex);
-                    else obj.set("fill", "#" + newValue.hex);
-
+                  else{
+                    if (type == 0) obj.set("fill", "#" + newValue.hex);
+                    else if (type == 1) obj.set("stroke", "#" + newValue.hex);
+                  }
+                }
             });
             canvas?.renderAll();
+            if (peerBroadcast) peerBroadcast(JSON.stringify({ canvas: canvas?.toDatalessJSON() }));
             return
         }
         setColor(newValue);
         if (canvas){
-            console.log("new_Color", newValue.hex);
-            canvas.freeDrawingBrush.color = "#" + newValue.hex;
-            console.log("brush", canvas.freeDrawingBrush.color)
-        }
+            canvas.freeDrawingBrush.color = "#" + newValue.hex;        }
     };
 
     if (select && select.length > 0){
@@ -105,15 +125,15 @@ const WbSubTool: React.FC = () => {
             <div className={classes.root}>
         
                 <Typography gutterBottom>
-                  Pen width
+                  Width
                 </Typography>
                 <Grid container alignItems='center' justify='space-between'>
                   <Grid item xs>
-                    <Slider defaultValue= {5} 
-                            step={5} 
-                            min={5} 
+                    <Slider defaultValue= {0} 
+                            step={1} 
+                            min={0} 
                             max={50} 
-                            value={value} 
+                            value={selectValue} 
                             valueLabelDisplay="auto"
                             onChange={handleWidthChange}
                             aria-labelledby="continuous-slider" />
@@ -131,10 +151,10 @@ const WbSubTool: React.FC = () => {
                   <ColorPicker defaultValue= '#000'
                             hideTextfield 
                             value={selectColor} 
-                            onChange={(c: Color) => handleColorChange(c, false)} />
+                            onChange={(c: Color) => handleColorChange(c, 0)} />
                   </Grid>
                   <Grid item>
-                    #{color.hex}
+                    #{selectColor.hex}
                   </Grid>
                 </Grid>
 
@@ -146,10 +166,25 @@ const WbSubTool: React.FC = () => {
                   <ColorPicker defaultValue= '#000'
                             hideTextfield 
                             value={selectBorderColor} 
-                            onChange={(c: Color) => handleColorChange(c, true)} />
+                            onChange={(c: Color) => handleColorChange(c, 1)} />
                   </Grid>
                   <Grid item>
-                    #{color.hex}
+                    #{selectBorderColor.hex}
+                  </Grid>
+                </Grid>
+
+                <Typography gutterBottom>
+                    Border Color
+                </Typography>
+                <Grid container alignItems='center' justify='space-between'>
+                  <Grid item xs>
+                  <ColorPicker defaultValue= '#000'
+                            hideTextfield 
+                            value={selectBackgroundColor} 
+                            onChange={(c: Color) => handleColorChange(c, 2)} />
+                  </Grid>
+                  <Grid item>
+                    #{selectBackgroundColor.hex}
                   </Grid>
                 </Grid>
 
@@ -194,7 +229,7 @@ const WbSubTool: React.FC = () => {
           <ColorPicker defaultValue= '#000'
                     hideTextfield 
                     value={color} 
-                    onChange={(c: Color) => handleColorChange(c, false)} />
+                    onChange={(c: Color) => handleColorChange(c, 0)} />
           </Grid>
           <Grid item>
             #{color.hex}

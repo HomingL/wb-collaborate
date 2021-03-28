@@ -20,7 +20,6 @@ const Whiteboard: React.FC<WhiteboardProps> = () => {
         
         setWhiteboardId(wid as string);
 
-        console.log('whiteboardId:', router.query);
     }, [router.query.wid])
 
     return (

@@ -8,12 +8,12 @@ import Typography from '@material-ui/core/Typography';
 import CreateIcon from '@material-ui/icons/Create';
 import PanToolIcon from '@material-ui/icons/PanTool';
 import DeleteIcon from '@material-ui/icons/Delete';
-import FormatShapesIcon from '@material-ui/icons/FormatShapes';
 import CropDinSharpIcon from '@material-ui/icons/CropDinSharp';
+import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
+import ChangeHistoryIcon from '@material-ui/icons/ChangeHistory';
 import TextFieldsIcon from '@material-ui/icons/TextFields';
-// import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
-// import InsertPhotoSharpIcon from '@material-ui/icons/InsertPhotoSharp';
+import ShowChartIcon from '@material-ui/icons/ShowChart';
 import { useWBContext } from './wbContext';
 import { fabric } from "fabric";
 import { usePBContext } from './peerData';
@@ -27,8 +27,51 @@ const WbToolbar: React.FC = () => {
   const createNewRect = (top: number, left: number) => {
     if (setPenState) setPenState(false);
     const rect = new fabric.Rect({
-      top: top, left: left, width: 50, height: 50, fill: 'grey', borderColor:'red' });
+      top: top, 
+      left: left, 
+      width: 50, 
+      height: 50, 
+      fill: 'black', 
+      borderColor:'black' 
+    });
     canvas?.add(rect);
+    if (peerBroadcast) peerBroadcast(JSON.stringify({ canvas: canvas?.toDatalessJSON() }));
+  };
+
+  const createNewCirc = (top: number, left: number) => {
+    if (setPenState) setPenState(false);
+    const circ = new fabric.Circle({
+      top: top, 
+      left: left,
+      radius: 30,
+      fill: 'black', 
+      borderColor:'black' 
+    });
+    canvas?.add(circ);
+    if (peerBroadcast) peerBroadcast(JSON.stringify({ canvas: canvas?.toDatalessJSON() }));
+  };
+
+  const createNewLine = (top: number, left: number) => {
+    if (setPenState) setPenState(false);
+    const line = new fabric.Line([top, left, top + 20, left + 20], {
+      strokeWidth: 5,
+      stroke: 'black' 
+    });
+    canvas?.add(line);
+    if (peerBroadcast) peerBroadcast(JSON.stringify({ canvas: canvas?.toDatalessJSON() }));
+  };
+
+  const createNewTri = (top: number, left: number) => {
+    if (setPenState) setPenState(false);
+    const tri = new fabric.Triangle({
+      top: top, 
+      left: left, 
+      width: 50, 
+      height: 50, 
+      fill: 'black', 
+      borderColor:'black' 
+    });
+    canvas?.add(tri);
     if (peerBroadcast) peerBroadcast(JSON.stringify({ canvas: canvas?.toDatalessJSON() }));
   };
 
@@ -78,18 +121,21 @@ const WbToolbar: React.FC = () => {
             }}>
             <PanToolIcon />
           </IconButton>
+          <IconButton edge="start" className={classes.button} onClick={() => createNewLine(100, 100)}>
+            <ShowChartIcon />
+          </IconButton>
           <IconButton edge="start" className={classes.button} onClick={() => createNewRect(100, 100)}>
-            <FormatShapesIcon />
+            <CropDinSharpIcon />
+          </IconButton>
+          <IconButton edge="start" className={classes.button} onClick={() => createNewTri(100, 100)}>
+            <ChangeHistoryIcon />
+          </IconButton>
+          <IconButton edge="start" className={classes.button} onClick={() => createNewCirc(100, 100)}>
+            <RadioButtonUncheckedIcon />
           </IconButton>
           <IconButton edge="start" className={classes.button} onClick={() => createNewTextBox()}>
             <TextFieldsIcon />
           </IconButton>
-          <IconButton edge="start" className={classes.button}>
-            <CropDinSharpIcon />
-          </IconButton>
-          {/* <IconButton edge="start" className={classes.button}>
-            <RadioButtonUncheckedIcon />
-          </IconButton> */}
         </Toolbar>
       </AppBar>
     </div>

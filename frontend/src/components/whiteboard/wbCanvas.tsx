@@ -43,7 +43,7 @@ const WbCanvas: React.FC = () => {
     isDrawing.current = false;
     if (pState.current) {
       brushEnd.current = canv.current?.getPointer(e);
-      broadcastData({ start: brushStart.current, end: brushEnd.current, /*canvas: canv.current*/ });
+      broadcastData({ /* canvObjs: objs */ canvas: canv.current?.toDatalessJSON() });
     }
   }
 
@@ -51,7 +51,8 @@ const WbCanvas: React.FC = () => {
     if (isDrawing.current) {
       if (brushEnd.current) brushStart.current = brushEnd.current;
       brushEnd.current = canv.current?.getPointer(e);
-      broadcastData({ start: brushStart.current, end: brushEnd.current });
+      const brush = { width: canv.current?.freeDrawingBrush.width, color: canv.current?.freeDrawingBrush.color};
+      broadcastData({ start: brushStart.current, end: brushEnd.current, brush:brush });
     }
   }
 
@@ -81,6 +82,8 @@ const WbCanvas: React.FC = () => {
       onMouseModified();
     }).on('selection:created', function(e) {
       onSelected(e.selected);
+    }).on('selection:cleared', function(e) {
+      onSelected(null);
     });
 
     // canv.current.on('path:created', function(e:any){
@@ -93,7 +96,6 @@ const WbCanvas: React.FC = () => {
 
   /** penState won't get update in listeners under useEffect unless updating it using reference */
   useEffect(() => {
-    console.log("penState:", penState);
     pState.current = penState;
   }, [penState]);
 
@@ -102,16 +104,14 @@ const WbCanvas: React.FC = () => {
       try {
         const pData = JSON.parse(peerData);
         console.log("pData", pData);
-        // if (pData.canvObjs) {
-        //   objects.current = pData.canvObjs;
-        // }
+
         if (pData.canvas) {
           canv.current?.loadFromJSON(pData.canvas, canv.current.renderAll.bind(canv.current));
         }
         if (pData.start && pData.end) {
           const brush = new fabric.PencilBrush();
-          brush.color = '#00aeff';
-          brush.width = 5;
+          brush.color = pData.brush.color;
+          brush.width = pData.brush.width;
           canv.current?.add(brush.createPath(brush.convertPointsToSVGPath([pData.start,pData.end]).toString()));
         }
       } catch (err) {
