@@ -8,7 +8,7 @@ import { usePBContext } from './peerData';
 // import { Root, Type, Field } from 'protobufjs';
 
 const WbCanvas: React.FC = () => {
-  const { penState, setCanvas } = useWBContext();
+  const { penState, setCanvas, setSelect } = useWBContext();
   const { peerBroadcast, peerData } = usePBContext();
 
   const classes = useStyles();
@@ -60,6 +60,10 @@ const WbCanvas: React.FC = () => {
     broadcastData({ /* canvObjs: objs */ canvas: canv.current?.toDatalessJSON() });
   }
 
+  function onSelected(lst: fabric.Object[]) {
+    if (setSelect) setSelect(lst);
+  }
+
   useEffect(() => {
     canv.current = new fabric.Canvas(canvasRef.current, {
       isDrawingMode: true
@@ -75,6 +79,8 @@ const WbCanvas: React.FC = () => {
       onMouseMove(e);
     }).on('object:modified', function() {
       onMouseModified();
+    }).on('selection:created', function(e) {
+      onSelected(e.selected);
     });
 
     // canv.current.on('path:created', function(e:any){

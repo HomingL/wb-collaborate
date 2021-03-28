@@ -21,10 +21,11 @@ import { usePBContext } from './peerData';
 
 const WbToolbar: React.FC = () => {
   const classes = useStyles();
-  const { setPenState, canvas } = useWBContext();
+  const { setPenState, canvas, setSelect } = useWBContext();
   const { peerBroadcast } = usePBContext();
 
   const createNewRect = (top: number, left: number) => {
+    if (setPenState) setPenState(false);
     const rect = new fabric.Rect({
       top: top, left: left, width: 50, height: 50, fill: 'grey', borderColor:'red' });
     canvas?.add(rect);
@@ -32,6 +33,7 @@ const WbToolbar: React.FC = () => {
   };
 
   const createNewTextBox = () => {
+    if (setPenState) setPenState(false);
     const textBox = new fabric.Textbox('text box',{
       width: 200,
       height: 200,
@@ -67,6 +69,7 @@ const WbToolbar: React.FC = () => {
           </IconButton>
           <IconButton edge="start" className={classes.button} onClick={() => {
             if (setPenState) setPenState(true);
+            if (setSelect) setSelect(null);
           }}>
             <CreateIcon />
           </IconButton>
