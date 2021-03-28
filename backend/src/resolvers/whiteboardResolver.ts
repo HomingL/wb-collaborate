@@ -1,13 +1,19 @@
-import { Resolver, Mutation, Arg } from 'type-graphql';
+import { Resolver, Mutation, Arg, UseMiddleware, Ctx, Query } from 'type-graphql';
 import { User } from '../models/user';
 import { Whiteboard } from '../models/whiteboard';
+import { isAuthenticated } from '../middlewares/auth';
+import { Context } from '../context';
 
 @Resolver()
 export class WhiteboardResolver {
   @Mutation(() => Whiteboard)
+  @UseMiddleware(isAuthenticated)
   async CreateWhiteboard(
-    @Arg('email') email: string,
+    @Ctx() ctx: Context,
   ) {
+    const { payload } = ctx;
+    const email = payload?.email;
+    if (!payload || !email) return new Error('token has insufficient info!');
     const user = await User.findOne({ email });
     if (!user) return new Error(`email ${email} does not exist`);
     const whiteboard = await Whiteboard.create({ user }).save();
@@ -16,7 +22,7 @@ export class WhiteboardResolver {
 
   @Mutation(() => String)
   async UpdateWhiteboard(
-    @Arg('id') id: number,
+    @Arg('id') id: string,
     @Arg('data') data: string,
   ) {
     const whiteboard = await Whiteboard.findOne({ id });
@@ -26,5 +32,17 @@ export class WhiteboardResolver {
     return `Whiteboard ${id} saved successfully`;
   }
 
-  // Query: list of user's whiteboard
+  @Query(() => [Whiteboard])
+  @UseMiddleware(isAuthenticated)
+  async GetWhiteboards(
+    @Ctx() ctx: Context,
+  ) {
+    const { payload } = ctx;
+    const email = payload?.email;
+    const user = await User.findOne({ email });
+    if (!user) return new Error('User no longer exists');
+    return user.whiteboards;
+  }
+  // @Query(() => Whiteboard)
+  // @UseMiddleware(isAuthenticated)
 }

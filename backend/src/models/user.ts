@@ -8,7 +8,7 @@ import { Whiteboard } from './whiteboard';
 export class User extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   @Field(() => ID)
-  id: number;
+  id: string;
 
   @Column()
   @Field()
@@ -24,7 +24,7 @@ export class User extends BaseEntity {
   @Column()
   password: string;
 
-  @OneToMany(() => Whiteboard, (whiteboard) => whiteboard.user)
+  @OneToMany(() => Whiteboard, (whiteboard) => whiteboard.user, { nullable: true, onDelete: 'CASCADE' })
   @Field(() => [Whiteboard], { nullable: true })
   whiteboards: Whiteboard[];
 }

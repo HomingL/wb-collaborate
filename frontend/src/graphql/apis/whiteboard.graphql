@@ -1,0 +1,15 @@
+mutation CreateWhiteboard{
+  CreateWhiteboard{
+    id
+    data
+    user{
+      id
+      name
+      email
+    }
+  }
+}
+
+mutation UpdateWhiteboard($id: String!, $data: String!){
+  UpdateWhiteboard(id: $id, data: $data)
+}

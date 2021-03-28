@@ -7,7 +7,7 @@ import { User } from './user';
 export class Whiteboard extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     @Field(() => ID)
-    id: number;
+    id: string;
 
     @ManyToOne(() => User, (user) => user.whiteboards, { nullable: false })
     @Field(() => User)
