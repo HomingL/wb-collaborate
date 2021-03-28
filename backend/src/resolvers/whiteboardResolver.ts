@@ -10,13 +10,14 @@ export class WhiteboardResolver {
   @UseMiddleware(isAuthenticated)
   async CreateWhiteboard(
     @Ctx() ctx: Context,
+    @Arg('name') name: string,
   ) {
     const { payload } = ctx;
     const email = payload?.email;
     if (!payload || !email) return new Error('token has insufficient info!');
     const user = await User.findOne({ email });
     if (!user) return new Error(`email ${email} does not exist`);
-    const whiteboard = await Whiteboard.create({ user }).save();
+    const whiteboard = await Whiteboard.create({ user, name }).save();
     return whiteboard;
   }
 
@@ -41,8 +42,11 @@ export class WhiteboardResolver {
     const email = payload?.email;
     const user = await User.findOne({ email });
     if (!user) return new Error('User no longer exists');
-    return user.whiteboards;
+    const whiteboards = await Whiteboard
+      .createQueryBuilder('whiteboard')
+      .leftJoinAndSelect('whiteboard.user', 'user')
+      .where(`user.id = '${payload?.id}'`)
+      .getMany();
+    return whiteboards;
   }
-  // @Query(() => Whiteboard)
-  // @UseMiddleware(isAuthenticated)
 }

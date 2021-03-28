@@ -9,6 +9,10 @@ export class Whiteboard extends BaseEntity {
     @Field(() => ID)
     id: string;
 
+    @Column()
+    @Field()
+    name: string;
+
     @ManyToOne(() => User, (user) => user.whiteboards, { nullable: false })
     @Field(() => User)
     user: User;
