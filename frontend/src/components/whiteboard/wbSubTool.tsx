@@ -2,13 +2,14 @@ import React, { useEffect } from 'react'
 import { useState} from 'react';
 import { Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { fabric } from "fabric";
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
 import { IconButton } from '@material-ui/core';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
-import { Color, ColorPicker, ColorBox, createColor } from 'material-ui-color';
+import { Color, ColorPicker, createColor } from 'material-ui-color';
 import { usePBContext } from './peerData';
 import { useWBContext } from './wbContext';
 
@@ -25,22 +26,22 @@ const WbSubTool: React.FC = () => {
 
     const { peerBroadcast } = usePBContext();
 
-    const { select, penState, canvas, setSelect } = useWBContext();
+    const { select, canvas, setSelect } = useWBContext();
 
     useEffect(() =>{
         if (select && select.length === 1){
             const obj: fabric.Object = select[0];
             let sColor: Color = createColor("black");
 
-            if (obj.type == "path")
-                sColor = createColor(obj.stroke);
+            if (obj?.type == "path")
+                sColor = createColor(obj?.stroke ? obj?.stroke : "black");
             else
-                sColor = createColor(obj.fill);
+                sColor = createColor(obj?.fill  ? obj?.fill : "black");
             
-            setSelectValue(obj.strokeWidth);
+            setSelectValue(obj?.strokeWidth ? obj?.strokeWidth :0);
             setSelectColor(sColor);
-            setSelectBorderColor(createColor(obj.stroke));
-            setSelectBackgroundColor(createColor(obj.backgroundColor));
+            setSelectBorderColor(createColor(obj?.stroke ? obj?.stroke : "black"));
+            setSelectBackgroundColor(createColor(obj?.backgroundColor ? obj?.backgroundColor : "white"));
         }
         else{
             setSelectValue(0);
@@ -52,23 +53,23 @@ const WbSubTool: React.FC = () => {
     const handleDelete = () =>{
         if (select && select.length > 0){
             select.forEach(obj => {
-                canvas.remove(obj);
+                canvas?.remove(obj);
             });
-            setSelect(null);
+            if (setSelect) setSelect([]);
             if (peerBroadcast) peerBroadcast(JSON.stringify({ canvas: canvas?.toDatalessJSON() }));
         }
-        canvas.discardActiveObject().renderAll();
+        canvas?.discardActiveObject().renderAll();
     }
 
     const handleCopyPaste = () => {
         if (select && select.length > 0){
-            canvas.discardActiveObject();
+            canvas?.discardActiveObject();
             select.forEach(obj => {
-                obj?.clone(clone => {
-                    clone.set("left", clone.left + 15);
-                    clone.set("top", clone.top + 15);
-                    canvas.add(clone);
-                    canvas.setActiveObject(clone);
+                obj?.clone((clone: fabric.Object) => {
+                  clone.set("left", obj?.left?? + 15);
+                  clone.set("top", obj?.top?? + 15);
+                  canvas?.add(clone);
+                  canvas?.setActiveObject(clone);
                 });
             });
             canvas?.renderAll();
@@ -76,7 +77,9 @@ const WbSubTool: React.FC = () => {
         }
     }
 
-    const handleWidthChange = (event, newValue: number) => {
+    const handleWidthChange = (newValue: number|number[]) => {
+        if (Array.isArray(newValue)) return;
+
         if (select && select.length > 0){
             setSelectValue(newValue);
             select.forEach(obj => {
@@ -135,7 +138,7 @@ const WbSubTool: React.FC = () => {
                             max={50} 
                             value={selectValue} 
                             valueLabelDisplay="auto"
-                            onChange={handleWidthChange}
+                            onChange={(_e, w:number|number[]) => handleWidthChange(w)}
                             aria-labelledby="continuous-slider" />
                   </Grid>
                   <Grid item>
@@ -213,7 +216,7 @@ const WbSubTool: React.FC = () => {
                     max={50} 
                     value={value} 
                     valueLabelDisplay="auto"
-                    onChange={handleWidthChange}
+                    onChange={(_e, w:number|number[]) => handleWidthChange(w)}
                     aria-labelledby="continuous-slider" />
           </Grid>
           <Grid item>
@@ -247,6 +250,10 @@ const useStyles = makeStyles((theme: Theme) => ({
       width: '100%',
       justifyItems: 'center',
       padding: theme.spacing(3),
+    },
+    button: {
+      marginRight: theme.spacing(2),
+      color: "inherit",
     },
   }));
 

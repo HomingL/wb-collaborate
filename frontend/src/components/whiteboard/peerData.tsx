@@ -1,7 +1,6 @@
 import { io } from "socket.io-client";
 import Peer from "simple-peer";
 import React, { useContext, createContext, useEffect,/* useState,*/ useRef, useCallback, useState } from "react";
-import { useWBContext } from './wbContext';
 
 export const PBContext = createContext<{peerBroadcast?: (data: string) => void, peerData?: any}>({});
 
@@ -18,8 +17,6 @@ const PeerConnecion: React.FC<PeerConnecionProps> = ({ children, wid }) => {
     // const [roomId, setRoomId] = useState<string>("000000");
     // const [token, setToken] = useState<string>("abc");
     // const roomId = "000000";
-
-    const { canvas } = useWBContext();
 
     const roomId = wid;
     const token = "abc";

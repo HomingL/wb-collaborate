@@ -5,10 +5,9 @@ import { fabric } from "fabric";
 // import { theme } from '../../theme';
 import { useWBContext } from '../whiteboard/wbContext'
 import { usePBContext } from './peerData';
-// import { Root, Type, Field } from 'protobufjs';
 
 const WbCanvas: React.FC = () => {
-  const { penState, setCanvas, setSelect } = useWBContext();
+  const { penState, setCanvas, setSelect} = useWBContext();
   const { peerBroadcast, peerData } = usePBContext();
 
   const classes = useStyles();
@@ -80,10 +79,10 @@ const WbCanvas: React.FC = () => {
       onMouseMove(e);
     }).on('object:modified', function() {
       onMouseModified();
-    }).on('selection:created', function(e) {
-      onSelected(e.selected);
-    }).on('selection:cleared', function(e) {
-      onSelected(null);
+    }).on('selection:created', function() {
+      onSelected(canv.current?.getActiveObjects() ? canv.current?.getActiveObjects() : []);
+    }).on('selection:cleared', function() {
+      onSelected([]);
     });
 
     // canv.current.on('path:created', function(e:any){

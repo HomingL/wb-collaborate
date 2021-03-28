@@ -112,7 +112,7 @@ const WbToolbar: React.FC = () => {
           </IconButton>
           <IconButton edge="start" className={classes.button} onClick={() => {
             if (setPenState) setPenState(true);
-            if (setSelect) setSelect(null);
+            if (setSelect) setSelect([]);
           }}>
             <CreateIcon />
           </IconButton>
