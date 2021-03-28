@@ -10,6 +10,7 @@ import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
 import { createConnection } from 'typeorm';
 import { UserResolver } from './resolvers/userResolver';
+import { WhiteboardResolver } from './resolvers/whiteboardResolver';
 
 // require('dotenv').config();
 
@@ -84,7 +85,7 @@ const main = async () => {
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [UserResolver],
+      resolvers: [UserResolver, WhiteboardResolver],
       validate: false,
     }),
     context: ({ req, res }) => ({ req, res }),

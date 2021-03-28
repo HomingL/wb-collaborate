@@ -6,7 +6,7 @@ import { Whiteboard } from './whiteboard';
 @Entity()
 @ObjectType()
 export class User extends BaseEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   @Field(() => ID)
   id: number;
 
@@ -25,6 +25,6 @@ export class User extends BaseEntity {
   password: string;
 
   @OneToMany(() => Whiteboard, (whiteboard) => whiteboard.user)
-  @Field()
+  @Field(() => [Whiteboard], { nullable: true })
   whiteboards: Whiteboard[];
 }

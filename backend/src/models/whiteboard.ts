@@ -1,15 +1,19 @@
-import { Entity, BaseEntity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Entity, BaseEntity, PrimaryGeneratedColumn, ManyToOne, Column } from 'typeorm';
 import { Field, ObjectType, ID } from 'type-graphql';
 import { User } from './user';
 
 @Entity()
 @ObjectType()
 export class Whiteboard extends BaseEntity {
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn('uuid')
     @Field(() => ID)
     id: number;
 
-    @ManyToOne(() => User, (user) => user.whiteboards)
-    @Field()
+    @ManyToOne(() => User, (user) => user.whiteboards, { nullable: false })
+    @Field(() => User)
     user: User;
+
+    @Column({ nullable: true })
+    @Field({ nullable: true })
+    data: string;
 }
