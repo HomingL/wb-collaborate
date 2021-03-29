@@ -12,6 +12,7 @@ import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
 import { createConnection } from 'typeorm';
 import { UserResolver } from './resolvers/userResolver';
+import { WhiteboardResolver } from './resolvers/whiteboardResolver';
 
 // require('dotenv').config();
 
@@ -94,13 +95,17 @@ const boot = async () => {
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [UserResolver],
+      resolvers: [UserResolver, WhiteboardResolver],
       validate: false,
     }),
     context: ({ req, res }) => ({ req, res }),
   });
-
-  apolloServer.applyMiddleware({ app, cors: corsOptions });
+  
+  apolloServer.applyMiddleware({ app, cors: corsOptions, 
+  bodyParserConfig: {
+      limit: '100mb',
+    }, });
+  
   if (!config.ssl) {
     // app.listen(port, () => {
     //   console.log(`HTTP server started on localhost: ${port}`);
