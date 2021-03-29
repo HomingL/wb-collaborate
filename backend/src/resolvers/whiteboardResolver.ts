@@ -33,6 +33,15 @@ export class WhiteboardResolver {
     return `Whiteboard ${id} saved successfully`;
   }
 
+  @Query(() => Whiteboard, { nullable: true })
+  async GetWhiteboard(
+    @Arg('id') id: string,
+  ) {
+    const whiteboard = await Whiteboard.findOne(id);
+    if (!whiteboard) return new Error(`Whiteboard id: ${id} does not exist`);
+    return whiteboard;
+  }
+
   @Query(() => [Whiteboard])
   @UseMiddleware(isAuthenticated)
   async GetWhiteboards(
@@ -48,5 +57,20 @@ export class WhiteboardResolver {
       .where(`user.id = '${payload?.id}'`)
       .getMany();
     return whiteboards;
+  }
+
+  @Mutation(() => String)
+  async DeleteWhiteboard(
+    @Arg('id') id: string,
+  ) {
+    try {
+      await Whiteboard
+        .createQueryBuilder()
+        .delete()
+        .from(Whiteboard)
+        .where('id = :id', { id })
+        .execute();
+      return `Whiteboard id: ${id} has been deleted successfully`;
+    } catch { return new Error(`Whiteboard id: ${id} does not exist`); }
   }
 }
