@@ -3,6 +3,8 @@
 import 'dotenv/config';
 import 'reflect-metadata';
 import express from 'express';
+import * as fs from 'fs';
+import * as https from 'https';
 import cors from 'cors';
 import { createServer } from 'http';
 import { Server, Socket } from 'socket.io';
@@ -13,9 +15,9 @@ import { UserResolver } from './resolvers/userResolver';
 
 // require('dotenv').config();
 
-const { PORT, FRONT_END_ORIGIN } = process.env;
+const { PORT, FRONT_END_ORIGIN, PORT_SOCKET } = process.env;
 
-const main = async () => {
+const boot = async () => {
   const app = express();
 
   app.get('/', (_, res) => {
@@ -32,17 +34,16 @@ const main = async () => {
   // app.use(cookieParser());
 
   // establish socket.io server
-  const httpServer = createServer();
+  const httpServer = createServer(app);
   const io = new Server(httpServer, {
     cors: {
       origin: FRONT_END_ORIGIN,
     } });
   const roomUsers:{ [roomId:string] : { [socketId:string] : string } } = {};
 
-  httpServer.listen(5001);
+  httpServer.listen(PORT_SOCKET || 5001);
 
   function isAuth(token:string) {
-    // TODO: user authentication
     if (token) return true;
     return false;
   }
@@ -82,6 +83,14 @@ const main = async () => {
       socket.to(roomId).emit('allUserIds', Object.values(roomUsers[roomId]));
     });
   });
+  const port = PORT || 5000;
+  const configurations = {
+    // Note: You may need sudo to run on port 443
+    production: { ssl: true, port, hostname: 'ggnbwhiteboard.ninja' },
+    development: { ssl: false, port, hostname: 'localhost' },
+  };
+
+  const config = (process.env.NODE_ENV === 'development') ? configurations.development : configurations.production;
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
@@ -92,13 +101,26 @@ const main = async () => {
   });
 
   apolloServer.applyMiddleware({ app, cors: corsOptions });
+  if (!config.ssl) {
+    // app.listen(port, () => {
+    //   console.log(`HTTP server started on localhost: ${port}`);
+    // });
+    const httpServer2 = createServer(app);
+    httpServer2.listen(config.port, () => {
+      console.log(`HTTP server started on ${config.hostname}: ${port}`);
+    });
+  } else {
+    const key = fs.readFileSync('server.key');
+    const cert = fs.readFileSync('server.cert');
+    // const ca = fs.readFileSync('/etc/letsencrypt/live/anime-sales.com/chain.pem', 'utf8');
 
-  const port = PORT || 5000;
-  app.listen(port, () => {
-    console.log(`server started on localhost: ${port}`);
-  });
+    const httpsServer = https.createServer({ key, cert }, app);
+    httpsServer.listen(config.port, () => {
+      console.log(`HTTPS server started on ${config.hostname}:${port}`);
+    });
+  }
 };
 
-main().catch((err) => {
+boot().catch((err) => {
   console.error(err);
 });
