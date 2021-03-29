@@ -43,7 +43,7 @@ const Whiteboard: React.FC<WhiteboardProps> = () => {
                         </Grid> 
                     </Grid>
 
-                    <Grid container   justify="flex-end">
+                    <Grid container justify="flex-end">
                         <Chat />
                     </Grid>
                 </Grid>
