@@ -10,10 +10,9 @@ const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
-console.log(process.env.NEXT_PUBLIC_SSL_KEY);
 const httpsOptions = {
-  key: fs.readFileSync(process.env.NEXT_PUBLIC_SSL_KEY),
-  cert: fs.readFileSync(process.env.NEXT_PUBLIC_SSL_CERT)
+  key: fs.readFileSync('frontend_server.key'),
+  cert: fs.readFileSync('frontend_server.cert')
 };
 
 app.prepare().then(() => {
