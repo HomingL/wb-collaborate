@@ -14,34 +14,31 @@ interface WhiteboardProps {
 const Whiteboard: React.FC<WhiteboardProps> = () => {
     const router = useRouter()
     const [whiteboardId, setWhiteboardId] = useState<string>('');
-
+    
     useEffect(() => {
         const { wid } = router.query;
-        
         setWhiteboardId(wid as string);
-
     }, [router.query.wid])
 
     return (
       <PeerConnecion wid={whiteboardId}>
-      <WBProvider>
-          <Grid container justify='space-between'>
-              <Grid item xs={12}>
-                  <WbToolbar />
-              </Grid>
-
+          <WBProvider wid={whiteboardId}>
               <Grid container justify='space-between'>
-                <Grid item xs={1}>
-                    <WbSubTool />
-                </Grid>
-
-                <Grid item xs={11}>
-                    <WbCanvas />
-                </Grid> 
+                  <Grid item xs={12}>
+                      <WbToolbar />
+                  </Grid>
+                
+                  <Grid container justify='space-between'>
+                    <Grid item xs={1}>
+                        <WbSubTool />
+                    </Grid>
+                    <Grid item xs={11}>
+                        <WbCanvas wid={whiteboardId}/>
+                    </Grid> 
+                  </Grid>
               </Grid>
-          </Grid>
-      </WBProvider>
-  </PeerConnecion>
+          </WBProvider>
+      </PeerConnecion>
     );
 }
 
