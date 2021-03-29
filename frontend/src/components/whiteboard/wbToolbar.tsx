@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { IconButton } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
@@ -18,17 +18,24 @@ import { useWBContext } from './wbContext';
 import { fabric } from "fabric";
 import { usePBContext } from './peerData';
 
+interface WbToolbarProp {
+  saveCanv: (stringifiedCanv:string, wid:string) => void,
+  wid: string,
+}
 
-const WbToolbar: React.FC = () => {
+const WbToolbar: React.FC<WbToolbarProp> = ({ saveCanv, wid }) => {
   const classes = useStyles();
   const { setPenState, canvas } = useWBContext();
   const { peerBroadcast } = usePBContext();
+  const wbid = useRef<string>(wid);
 
   const createNewRect = (top: number, left: number) => {
     const rect = new fabric.Rect({
       top: top, left: left, width: 50, height: 50, fill: 'grey', borderColor:'red' });
     canvas?.add(rect);
-    if (peerBroadcast) peerBroadcast(JSON.stringify({ canvas: canvas?.toDatalessJSON() }));
+    const stringifiedCanv = JSON.stringify(canvas?.toDatalessJSON());
+    if (peerBroadcast) peerBroadcast(JSON.stringify({ canvas: stringifiedCanv }));
+    saveCanv(stringifiedCanv, wbid.current);
   };
 
   const createNewTextBox = () => {
@@ -41,8 +48,14 @@ const WbToolbar: React.FC = () => {
       textAlign: 'center'
     });
     canvas?.add(textBox);
-    if (peerBroadcast) peerBroadcast(JSON.stringify({ canvas: canvas?.toDatalessJSON() }));
+    const stringifiedCanv = JSON.stringify(canvas?.toDatalessJSON());
+    if (peerBroadcast) peerBroadcast(JSON.stringify({ canvas: stringifiedCanv }));
+    saveCanv(stringifiedCanv, wbid.current);
   };
+
+  useEffect(() => {
+    wbid.current = wid;
+  }, [wid]);
 
   return (
     <div className={classes.root}>
