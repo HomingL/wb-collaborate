@@ -23,7 +23,6 @@ const PeerConnecion: React.FC<PeerConnecionProps> = ({ children, wid }) => {
     const allSocketIds = useRef<string[]>([]);
     const peerConnections = useRef<{[socketId:string]:any}>({});
     const socket = useRef<any>();
-    console.log(process.env.NEXT_PUBLIC_BACK_END_SOCKET!);
     useEffect(() => {
         // connect the server by passing in auth token and roomId
         if (!wid) return ()=>{return};
@@ -81,7 +80,6 @@ const PeerConnecion: React.FC<PeerConnecionProps> = ({ children, wid }) => {
         })
         peer.on('error', (err:Error) => {
             console.error(err);
-            peer.destroy();
         });
         peer.on('connect', () => {
             console.log("peers", peerConnections.current);
@@ -133,7 +131,6 @@ const PeerConnecion: React.FC<PeerConnecionProps> = ({ children, wid }) => {
         });
         peer.on('error', (err:Error) => {
             console.error(err);
-            peer.destroy();
         });
         peer.on('data', (data:string) => {
             onPeerData(data);
@@ -148,11 +145,11 @@ const PeerConnecion: React.FC<PeerConnecionProps> = ({ children, wid }) => {
     }
 
     const peerBroadcast = useCallback((data:string) => {
-        console.log("process data...", data);
+        // console.log("process data...", data);
         Object.values(peerConnections.current).forEach(peer => {
             try {
-                console.log("send to:", peer);
-                console.log("sending...", data);
+                // console.log("send to:", peer);
+                // console.log("sending...", data);
                 peer.send(data);
             } catch (err) {
                 console.error(err);
@@ -164,7 +161,7 @@ const PeerConnecion: React.FC<PeerConnecionProps> = ({ children, wid }) => {
     
     // define this function to send data
     function onPeerData(data:string) {
-        console.log("received data:", data.toString());
+        // console.log("received data:", data.toString());
         setPeerData(data.toString());
     }
 

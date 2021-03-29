@@ -1,5 +1,5 @@
-mutation CreateWhiteboard{
-  CreateWhiteboard{
+mutation CreateWhiteboard($name: String!){
+  CreateWhiteboard(name: $name){
     id
     data
     user{
@@ -12,4 +12,11 @@ mutation CreateWhiteboard{
 
 mutation UpdateWhiteboard($id: String!, $data: String!){
   UpdateWhiteboard(id: $id, data: $data)
+}
+
+query GetWhiteboard($id: String!){
+  GetWhiteboard(id: $id){
+    name
+    data
+  }
 }

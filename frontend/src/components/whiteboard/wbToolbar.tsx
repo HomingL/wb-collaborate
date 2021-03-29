@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { IconButton } from '@material-ui/core';
+import { Button, IconButton } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -13,29 +13,21 @@ import CropDinSharpIcon from '@material-ui/icons/CropDinSharp';
 import TextFieldsIcon from '@material-ui/icons/TextFields';
 // import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
+import SaveIcon from '@material-ui/icons/Save';
 // import InsertPhotoSharpIcon from '@material-ui/icons/InsertPhotoSharp';
 import { useWBContext } from './wbContext';
 import { fabric } from "fabric";
-import { usePBContext } from './peerData';
 
-interface WbToolbarProp {
-  saveCanv: (stringifiedCanv:string, wid:string) => void,
-  wid: string,
-}
 
-const WbToolbar: React.FC<WbToolbarProp> = ({ saveCanv, wid }) => {
+const WbToolbar: React.FC = () => {
   const classes = useStyles();
-  const { setPenState, canvas } = useWBContext();
-  const { peerBroadcast } = usePBContext();
-  const wbid = useRef<string>(wid);
+  const { setPenState, canvas, onCanvasChange } = useWBContext();
 
   const createNewRect = (top: number, left: number) => {
     const rect = new fabric.Rect({
       top: top, left: left, width: 50, height: 50, fill: 'grey', borderColor:'red' });
     canvas?.add(rect);
-    const stringifiedCanv = JSON.stringify(canvas?.toDatalessJSON());
-    if (peerBroadcast) peerBroadcast(JSON.stringify({ canvas: stringifiedCanv }));
-    saveCanv(stringifiedCanv, wbid.current);
+    saveCanvas();
   };
 
   const createNewTextBox = () => {
@@ -48,14 +40,12 @@ const WbToolbar: React.FC<WbToolbarProp> = ({ saveCanv, wid }) => {
       textAlign: 'center'
     });
     canvas?.add(textBox);
-    const stringifiedCanv = JSON.stringify(canvas?.toDatalessJSON());
-    if (peerBroadcast) peerBroadcast(JSON.stringify({ canvas: stringifiedCanv }));
-    saveCanv(stringifiedCanv, wbid.current);
+    saveCanvas();
   };
 
-  useEffect(() => {
-    wbid.current = wid;
-  }, [wid]);
+  function saveCanvas() {
+    if (onCanvasChange) onCanvasChange(JSON.stringify(canvas?.toDatalessJSON()));
+  }
 
   return (
     <div className={classes.root}>
@@ -67,14 +57,14 @@ const WbToolbar: React.FC<WbToolbarProp> = ({ saveCanv, wid }) => {
           </Typography>
           <IconButton edge="start" className={classes.button} onClick={() => {
             canvas?.clear();
-            if (peerBroadcast) peerBroadcast(JSON.stringify({ canvas: canvas?.toDatalessJSON() }));
+            saveCanvas();
           }}>
             <DeleteIcon />
           </IconButton>
           <IconButton edge="start" className={classes.button} onClick={()=> {
             canvas?._objects.pop();
             canvas?.renderAll();
-            if (peerBroadcast) peerBroadcast(JSON.stringify({ canvas: canvas?.toDatalessJSON() }));
+            saveCanvas();
           }}>
             <RotateLeftIcon />
           </IconButton>
@@ -100,6 +90,14 @@ const WbToolbar: React.FC<WbToolbarProp> = ({ saveCanv, wid }) => {
           {/* <IconButton edge="start" className={classes.button}>
             <RadioButtonUncheckedIcon />
           </IconButton> */}
+          <Button
+            variant="outlined"
+            className={classes.button}
+            startIcon={<SaveIcon />}
+            onClick={() => saveCanvas()}
+          >
+            Save
+          </Button>
         </Toolbar>
       </AppBar>
     </div>

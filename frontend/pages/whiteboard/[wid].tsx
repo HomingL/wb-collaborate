@@ -5,7 +5,6 @@ import { Grid } from '@material-ui/core';
 import WbCanvas from '../../src/components/whiteboard/wbCanvas';
 import WbToolbar from '../../src/components/whiteboard/wbToolbar';
 import { useRouter } from 'next/router';
-import { useUpdateWhiteboardMutation } from '../../src/generated/apolloComponents';
 
 interface WhiteboardProps {
 
@@ -14,40 +13,22 @@ interface WhiteboardProps {
 const Whiteboard: React.FC<WhiteboardProps> = () => {
     const router = useRouter()
     const [whiteboardId, setWhiteboardId] = useState<string>('');
-    const [updateWhiteboardMutation] = useUpdateWhiteboardMutation({
-        variables: {
-            id: '',
-            data: ''
-        },
-    });
     
     useEffect(() => {
         const { wid } = router.query;
         setWhiteboardId(wid as string);
         console.log('whiteboardId:', router.query);
-    }, [router.query.wid])
-
-    function saveCanv(stringifiedCanv:string, wid:string) {
-        updateWhiteboardMutation({
-            variables: {
-                id: wid,
-                data: stringifiedCanv
-            },
-        }).catch((err:any) => {
-            console.log(err);
-            throw new Error('Error cannot save canvas');
-        });
-    };
+    }, [router.query.wid]);
     
     return (
         <PeerConnecion wid={whiteboardId}>
-            <WBProvider>
+            <WBProvider wid={whiteboardId}>
                 <Grid container justify='space-between'>
                     <Grid item xs={12}>
-                        <WbToolbar saveCanv={saveCanv} wid={whiteboardId}/>
+                        <WbToolbar/>
                     </Grid>
                     <Grid item xs={12}>
-                        <WbCanvas saveCanv={saveCanv} wid={whiteboardId}/>
+                        <WbCanvas wid={whiteboardId}/>
                     </Grid> 
                 </Grid>
             </WBProvider>

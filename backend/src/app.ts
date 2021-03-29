@@ -92,7 +92,13 @@ const main = async () => {
     context: ({ req, res }) => ({ req, res }),
   });
 
-  apolloServer.applyMiddleware({ app, cors: corsOptions });
+  apolloServer.applyMiddleware({
+    app,
+    cors: corsOptions,
+    bodyParserConfig: {
+      limit: '100mb',
+    },
+  });
 
   const port = PORT || 5000;
   app.listen(port, () => {

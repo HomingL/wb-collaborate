@@ -16,7 +16,13 @@ export type Scalars = {
 export type Query = {
   __typename?: 'Query';
   User: User;
+  GetWhiteboard?: Maybe<Whiteboard>;
   GetWhiteboards: Array<Whiteboard>;
+};
+
+
+export type QueryGetWhiteboardArgs = {
+  id: Scalars['String'];
 };
 
 export type User = {
@@ -30,6 +36,7 @@ export type User = {
 export type Whiteboard = {
   __typename?: 'Whiteboard';
   id: Scalars['ID'];
+  name: Scalars['String'];
   user: User;
   data?: Maybe<Scalars['String']>;
 };
@@ -40,6 +47,7 @@ export type Mutation = {
   Signin: SigninResponse;
   CreateWhiteboard: Whiteboard;
   UpdateWhiteboard: Scalars['String'];
+  DeleteWhiteboard: Scalars['String'];
 };
 
 
@@ -56,8 +64,18 @@ export type MutationSigninArgs = {
 };
 
 
+export type MutationCreateWhiteboardArgs = {
+  name: Scalars['String'];
+};
+
+
 export type MutationUpdateWhiteboardArgs = {
   data: Scalars['String'];
+  id: Scalars['String'];
+};
+
+
+export type MutationDeleteWhiteboardArgs = {
   id: Scalars['String'];
 };
 
@@ -111,7 +129,9 @@ export type GetUserQuery = (
   ) }
 );
 
-export type CreateWhiteboardMutationVariables = Exact<{ [key: string]: never; }>;
+export type CreateWhiteboardMutationVariables = Exact<{
+  name: Scalars['String'];
+}>;
 
 
 export type CreateWhiteboardMutation = (
@@ -135,6 +155,19 @@ export type UpdateWhiteboardMutationVariables = Exact<{
 export type UpdateWhiteboardMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'UpdateWhiteboard'>
+);
+
+export type GetWhiteboardQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type GetWhiteboardQuery = (
+  { __typename?: 'Query' }
+  & { GetWhiteboard?: Maybe<(
+    { __typename?: 'Whiteboard' }
+    & Pick<Whiteboard, 'name' | 'data'>
+  )> }
 );
 
 
@@ -246,8 +279,8 @@ export type GetUserQueryHookResult = ReturnType<typeof useGetUserQuery>;
 export type GetUserLazyQueryHookResult = ReturnType<typeof useGetUserLazyQuery>;
 export type GetUserQueryResult = Apollo.QueryResult<GetUserQuery, GetUserQueryVariables>;
 export const CreateWhiteboardDocument = gql`
-    mutation CreateWhiteboard {
-  CreateWhiteboard {
+    mutation CreateWhiteboard($name: String!) {
+  CreateWhiteboard(name: $name) {
     id
     data
     user {
@@ -273,6 +306,7 @@ export type CreateWhiteboardMutationFn = Apollo.MutationFunction<CreateWhiteboar
  * @example
  * const [createWhiteboardMutation, { data, loading, error }] = useCreateWhiteboardMutation({
  *   variables: {
+ *      name: // value for 'name'
  *   },
  * });
  */
@@ -313,3 +347,37 @@ export function useUpdateWhiteboardMutation(baseOptions?: Apollo.MutationHookOpt
 export type UpdateWhiteboardMutationHookResult = ReturnType<typeof useUpdateWhiteboardMutation>;
 export type UpdateWhiteboardMutationResult = Apollo.MutationResult<UpdateWhiteboardMutation>;
 export type UpdateWhiteboardMutationOptions = Apollo.BaseMutationOptions<UpdateWhiteboardMutation, UpdateWhiteboardMutationVariables>;
+export const GetWhiteboardDocument = gql`
+    query GetWhiteboard($id: String!) {
+  GetWhiteboard(id: $id) {
+    name
+    data
+  }
+}
+    `;
+
+/**
+ * __useGetWhiteboardQuery__
+ *
+ * To run a query within a React component, call `useGetWhiteboardQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetWhiteboardQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetWhiteboardQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetWhiteboardQuery(baseOptions: Apollo.QueryHookOptions<GetWhiteboardQuery, GetWhiteboardQueryVariables>) {
+        return Apollo.useQuery<GetWhiteboardQuery, GetWhiteboardQueryVariables>(GetWhiteboardDocument, baseOptions);
+      }
+export function useGetWhiteboardLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetWhiteboardQuery, GetWhiteboardQueryVariables>) {
+          return Apollo.useLazyQuery<GetWhiteboardQuery, GetWhiteboardQueryVariables>(GetWhiteboardDocument, baseOptions);
+        }
+export type GetWhiteboardQueryHookResult = ReturnType<typeof useGetWhiteboardQuery>;
+export type GetWhiteboardLazyQueryHookResult = ReturnType<typeof useGetWhiteboardLazyQuery>;
+export type GetWhiteboardQueryResult = Apollo.QueryResult<GetWhiteboardQuery, GetWhiteboardQueryVariables>;

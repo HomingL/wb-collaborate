@@ -2,20 +2,23 @@ import React, { useRef, useEffect } from 'react'
 import { Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { fabric } from "fabric";
-// import { theme } from '../../theme';
 import { useWBContext } from '../whiteboard/wbContext';
 import { usePBContext } from './peerData';
+import { useGetWhiteboardLazyQuery } from '../../generated/apolloComponents';
 // import { Root, Type, Field } from 'protobufjs';
 
 interface WbCanvasProp {
-  saveCanv: (stringifiedCanv:string, wid:string) => void,
   wid: string,
 }
 
-const WbCanvas: React.FC<WbCanvasProp> = ({ saveCanv, wid }) => {
-  const { penState, setCanvas } = useWBContext();
+const WbCanvas: React.FC<WbCanvasProp> = ({ wid }) => {
+  const { penState, setCanvas, onCanvasChange } = useWBContext();
   const { peerBroadcast, peerData } = usePBContext();
-  const wbid = useRef<string>(wid);
+  const [GetWhiteboardQuery, { data, error }] = useGetWhiteboardLazyQuery({
+    variables: {
+       id: wid
+    },
+  });
 
   const classes = useStyles();
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -24,7 +27,6 @@ const WbCanvas: React.FC<WbCanvasProp> = ({ saveCanv, wid }) => {
   const isDrawing = useRef<boolean>(false);
   const brushStart = useRef<{x: number, y: number}>();
   const brushEnd = useRef<{x: number, y: number}>();
-  // const objects = useRef<fabric.Object[]>([]);
 
   function broadcastData(data:any) {
     try {
@@ -50,9 +52,9 @@ const WbCanvas: React.FC<WbCanvasProp> = ({ saveCanv, wid }) => {
     const stringifiedCanv = JSON.stringify(canv.current?.toDatalessJSON());
     if (pState.current) {
       brushEnd.current = canv.current?.getPointer(e);
-      broadcastData({ start: brushStart.current, end: brushEnd.current, canvas: stringifiedCanv });
+      // broadcastData({ start: brushStart.current, end: brushEnd.current, /*canvas: stringifiedCanv*/ });
     }
-    saveCanv(stringifiedCanv, wbid.current);
+    if (onCanvasChange) onCanvasChange(stringifiedCanv);
   }
 
   function onMouseMove(e:Event) {
@@ -63,10 +65,9 @@ const WbCanvas: React.FC<WbCanvasProp> = ({ saveCanv, wid }) => {
     }
   }
 
-  function onCanvChanged() {
+  function onObjectModified() {
     const stringifiedCanv = JSON.stringify(canv.current?.toDatalessJSON());
-    broadcastData({ canvas: stringifiedCanv });
-    saveCanv(stringifiedCanv, wbid.current);
+    if (onCanvasChange) onCanvasChange(stringifiedCanv);
   }
 
   useEffect(() => {
@@ -76,26 +77,38 @@ const WbCanvas: React.FC<WbCanvasProp> = ({ saveCanv, wid }) => {
     canv.current.freeDrawingBrush.color = '#00aeff';
     canv.current.freeDrawingBrush.width = 5;
     if(setCanvas) setCanvas(canv.current);
-
-    canv.current.on('mouse:down', function({e}) {
-      onMouseDown(e);
-    }).on('mouse:up', function({e}) {
-      onMouseUp(e);
-    }).on('mouse:move', function({e}) {
-      onMouseMove(e);
-    }).on('object:modified', function() {
-      onCanvChanged();
-    });
-
-  },[peerBroadcast]);
+  }, []);
 
   useEffect(() => {
-    wbid.current = wid;
-  }, [wid]);
+
+    if (canv.current && wid) {
+      canv.current.on('mouse:down', function({e}) {
+        onMouseDown(e);
+      }).on('mouse:up', function({e}) {
+        onMouseUp(e);
+      }).on('mouse:move', function({e}) {
+        onMouseMove(e);
+      }).on('object:modified', function() {
+        onObjectModified();
+      });
+
+      GetWhiteboardQuery({
+        variables: {
+          id: wid
+       },
+      });
+    }
+
+  },[peerBroadcast, canv, wid]);
+
+  useEffect(() => {
+    if (error) return console.error(error);
+    canv.current?.loadFromJSON(data?.GetWhiteboard?.data, canv.current.renderAll.bind(canv.current));
+  }, [data, error]);
 
   /** penState won't get update in listeners under useEffect unless updating it using reference */
   useEffect(() => {
-    console.log("penState:", penState);
+    // console.log("penState:", penState);
     pState.current = penState;
   }, [penState]);
 
@@ -103,10 +116,7 @@ const WbCanvas: React.FC<WbCanvasProp> = ({ saveCanv, wid }) => {
     if (peerData) {
       try {
         const pData = JSON.parse(peerData);
-        console.log("pData", pData);
-        // if (pData.canvObjs) {
-        //   objects.current = pData.canvObjs;
-        // }
+        // console.log("pData", pData);
         if (pData.canvas) {
           canv.current?.loadFromJSON(pData.canvas, canv.current.renderAll.bind(canv.current));
         }
