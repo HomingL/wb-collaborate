@@ -1,8 +1,6 @@
 import React from 'react'
 import WorkspaceLayout from '../../src/components/workspace/WrokspaceLayout';
 import WhiteboardDashboard from '../../src/components/workspace/WorkspaceDashboard';
-// import Pagination from '@material-ui/lab/Pagination';
-// import { makeStyles } from '@material-ui/core';
 
 
 const Workspace: React.FC = () => {

@@ -12,7 +12,7 @@ interface WbCanvasProp {
 }
 
 const WbCanvas: React.FC<WbCanvasProp> = ({ wid }) => {
-  const { penState, setCanvas, onCanvasChange } = useWBContext();
+  const { penState, setCanvas, setSelect, onCanvasChange } = useWBContext();
   const { peerBroadcast, peerData } = usePBContext();
   const [GetWhiteboardQuery, { data, error }] = useGetWhiteboardLazyQuery({
     variables: {
@@ -52,7 +52,6 @@ const WbCanvas: React.FC<WbCanvasProp> = ({ wid }) => {
     const stringifiedCanv = JSON.stringify(canv.current?.toDatalessJSON());
     if (pState.current) {
       brushEnd.current = canv.current?.getPointer(e);
-      // broadcastData({ start: brushStart.current, end: brushEnd.current, /*canvas: stringifiedCanv*/ });
     }
     if (onCanvasChange) onCanvasChange(stringifiedCanv);
   }
@@ -61,7 +60,8 @@ const WbCanvas: React.FC<WbCanvasProp> = ({ wid }) => {
     if (isDrawing.current) {
       if (brushEnd.current) brushStart.current = brushEnd.current;
       brushEnd.current = canv.current?.getPointer(e);
-      broadcastData({ start: brushStart.current, end: brushEnd.current });
+      const brush = { width: canv.current?.freeDrawingBrush.width, color: canv.current?.freeDrawingBrush.color};
+      broadcastData({ start: brushStart.current, end: brushEnd.current, brush:brush });
     }
   }
 
@@ -70,12 +70,15 @@ const WbCanvas: React.FC<WbCanvasProp> = ({ wid }) => {
     if (onCanvasChange) onCanvasChange(stringifiedCanv);
   }
 
+  function onSelected(lst: fabric.Object[]) {
+    if (setSelect) setSelect(lst);
+  }
+
   useEffect(() => {
     canv.current = new fabric.Canvas(canvasRef.current, {
       isDrawingMode: true
     });
-    canv.current.freeDrawingBrush.color = '#00aeff';
-    canv.current.freeDrawingBrush.width = 5;
+
     if(setCanvas) setCanvas(canv.current);
   }, []);
 
@@ -90,6 +93,10 @@ const WbCanvas: React.FC<WbCanvasProp> = ({ wid }) => {
         onMouseMove(e);
       }).on('object:modified', function() {
         onObjectModified();
+      }).on('selection:created', function() {
+        onSelected(canv.current?.getActiveObjects() ? canv.current?.getActiveObjects() : []);
+      }).on('selection:cleared', function() {
+        onSelected([]);
       });
 
       GetWhiteboardQuery({
@@ -108,7 +115,6 @@ const WbCanvas: React.FC<WbCanvasProp> = ({ wid }) => {
 
   /** penState won't get update in listeners under useEffect unless updating it using reference */
   useEffect(() => {
-    // console.log("penState:", penState);
     pState.current = penState;
   }, [penState]);
 
@@ -116,14 +122,13 @@ const WbCanvas: React.FC<WbCanvasProp> = ({ wid }) => {
     if (peerData) {
       try {
         const pData = JSON.parse(peerData);
-        // console.log("pData", pData);
         if (pData.canvas) {
           canv.current?.loadFromJSON(pData.canvas, canv.current.renderAll.bind(canv.current));
         }
         if (pData.start && pData.end) {
           const brush = new fabric.PencilBrush();
-          brush.color = '#00aeff';
-          brush.width = 5;
+          brush.color = pData.brush.color;
+          brush.width = pData.brush.width;
           canv.current?.add(brush.createPath(brush.convertPointsToSVGPath([pData.start,pData.end]).toString()));
         }
       } catch (err) {
@@ -134,12 +139,6 @@ const WbCanvas: React.FC<WbCanvasProp> = ({ wid }) => {
     }
 
   }, [peerData]);
-
-  // useEffect(() => {
-  //   console.log("objs", objects.current);
-  //   if (canv.current) canv.current._objects = objects.current;
-  //   canv.current?.renderAll();
-  // }, [objects.current]);
 
   return (
     <div className={classes.root}>

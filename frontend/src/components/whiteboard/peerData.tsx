@@ -17,6 +17,7 @@ const PeerConnecion: React.FC<PeerConnecionProps> = ({ children, wid }) => {
     // const [roomId, setRoomId] = useState<string>("000000");
     // const [token, setToken] = useState<string>("abc");
     // const roomId = "000000";
+
     const roomId = wid;
     const token = "abc";
     const selfSocketId = useRef<string>('');
@@ -121,7 +122,7 @@ const PeerConnecion: React.FC<PeerConnecionProps> = ({ children, wid }) => {
     }
     
     function signal(initiator:string, initiatorData:any) {
-        // console.log("Received signal");
+
         const peer = new Peer({
             initiator: false,
             trickle: false

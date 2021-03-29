@@ -10,11 +10,14 @@ export interface WBprops {
     canvas?: fabric.Canvas;
     setCanvas?: (canv: fabric.Canvas) => void;
     onCanvasChange?: (stringifiedCanv: string) => void;
+    select?: fabric.Object[];
+    setSelect?: (lst: fabric.Object[]) => void;
 }
 
 const WBContext = createContext<WBprops>({
     penState: true,
     canvas: undefined,
+    select: [],
 });
 
 interface WBProviderProps {
@@ -44,13 +47,15 @@ const WBProvider: React.FC<WBProviderProps> = ({ wid, children }) => {
             throw new Error('Error cannot save canvas');
         });
     }, [peerBroadcast, wid]);
+  
+    const [select, setSelect] =  useState<fabric.Object[]>([]);
 
     useEffect( () =>{
         if (canvas) canvas.isDrawingMode = penState;
     }, [penState]);
 
     return (
-        <WBContext.Provider value={{penState, setPenState, canvas, setCanvas, onCanvasChange}}>
+        <WBContext.Provider value={{penState, setPenState, canvas, setCanvas, select, setSelect, onCanvasChange}}>
             {children}
         </WBContext.Provider>
     )

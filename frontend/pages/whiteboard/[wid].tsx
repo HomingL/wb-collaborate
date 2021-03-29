@@ -4,6 +4,7 @@ import PeerConnecion from '../../src/components/whiteboard/peerData';
 import { Grid } from '@material-ui/core';
 import WbCanvas from '../../src/components/whiteboard/wbCanvas';
 import WbToolbar from '../../src/components/whiteboard/wbToolbar';
+import WbSubTool from '../../src/components/whiteboard/wbSubTool';
 import { useRouter } from 'next/router';
 
 interface WhiteboardProps {
@@ -17,22 +18,27 @@ const Whiteboard: React.FC<WhiteboardProps> = () => {
     useEffect(() => {
         const { wid } = router.query;
         setWhiteboardId(wid as string);
-        console.log('whiteboardId:', router.query);
-    }, [router.query.wid]);
-    
+    }, [router.query.wid])
+
     return (
-        <PeerConnecion wid={whiteboardId}>
-            <WBProvider wid={whiteboardId}>
-                <Grid container justify='space-between'>
-                    <Grid item xs={12}>
-                        <WbToolbar/>
+      <PeerConnecion wid={whiteboardId}>
+          <WBProvider wid={whiteboardId}>
+              <Grid container justify='space-between'>
+                  <Grid item xs={12}>
+                      <WbToolbar />
+                  </Grid>
+                
+                  <Grid container justify='space-between'>
+                    <Grid item xs={1}>
+                        <WbSubTool />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid item xs={11}>
                         <WbCanvas wid={whiteboardId}/>
                     </Grid> 
-                </Grid>
-            </WBProvider>
-        </PeerConnecion>
+                  </Grid>
+              </Grid>
+          </WBProvider>
+      </PeerConnecion>
     );
 }
 
