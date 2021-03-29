@@ -14,6 +14,7 @@ import ChangeHistoryIcon from '@material-ui/icons/ChangeHistory';
 import TextFieldsIcon from '@material-ui/icons/TextFields';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 import ShowChartIcon from '@material-ui/icons/ShowChart';
+import SaveIcon from '@material-ui/icons/Save';
 import { useWBContext } from './wbContext';
 import { fabric } from "fabric";
 import { usePBContext } from './peerData';
@@ -135,6 +136,9 @@ const WbToolbar: React.FC = () => {
           </IconButton>
           <IconButton edge="start" className={classes.button} onClick={() => createNewTextBox()}>
             <TextFieldsIcon />
+          </IconButton>
+          <IconButton edge="start" className={classes.button} onClick={() => console.log("saved")}>
+            <SaveIcon />
           </IconButton>
         </Toolbar>
       </AppBar>

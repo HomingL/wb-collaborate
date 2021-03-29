@@ -6,6 +6,8 @@ import WbCanvas from '../../src/components/whiteboard/wbCanvas';
 import WbToolbar from '../../src/components/whiteboard/wbToolbar';
 import WbSubTool from '../../src/components/whiteboard/wbSubTool';
 import { useRouter } from 'next/router';
+import { ChatProvider } from '../../src/components/chat/chatContext';
+import Chat from '../../src/components/chat/chat';
 
 interface WhiteboardProps {
 
@@ -25,21 +27,27 @@ const Whiteboard: React.FC<WhiteboardProps> = () => {
     return (
       <PeerConnecion wid={whiteboardId}>
       <WBProvider>
-          <Grid container justify='space-between'>
-              <Grid item xs={12}>
-                  <WbToolbar />
-              </Grid>
+            <ChatProvider>
+                <Grid container justify='space-between'>
+                    <Grid item xs={12}>
+                        <WbToolbar />
+                    </Grid>
 
-              <Grid container justify='space-between'>
-                <Grid item xs={1}>
-                    <WbSubTool />
+                    <Grid container justify='space-between'>
+                        <Grid item xs={1}>
+                            <WbSubTool />
+                        </Grid>
+
+                        <Grid item xs={11}>
+                            <WbCanvas />
+                        </Grid> 
+                    </Grid>
+
+                    <Grid container   justify="flex-end">
+                        <Chat />
+                    </Grid>
                 </Grid>
-
-                <Grid item xs={11}>
-                    <WbCanvas />
-                </Grid> 
-              </Grid>
-          </Grid>
+            </ChatProvider>
       </WBProvider>
   </PeerConnecion>
     );

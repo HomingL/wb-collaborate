@@ -47,6 +47,7 @@ const WbSubTool: React.FC = () => {
             setSelectValue(0);
             setSelectColor(createColor("black"));
             setSelectBorderColor(createColor("black"));
+            setSelectBackgroundColor(createColor("white"));
         }
     }, [select]);
 
