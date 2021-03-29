@@ -5,7 +5,6 @@ import { fabric } from "fabric";
 // import { theme } from '../../theme';
 import { useWBContext } from '../whiteboard/wbContext';
 import { usePBContext } from './peerData';
-import { useUpdateWhiteboardMutation } from '../../generated/apolloComponents';
 // import { Root, Type, Field } from 'protobufjs';
 
 interface WbCanvasProp {
