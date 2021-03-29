@@ -22,7 +22,6 @@ import { fabric } from "fabric";
 const WbToolbar: React.FC = () => {
   const classes = useStyles();
   const { setPenState, canvas, setSelect, onCanvasChange } = useWBContext();
-  const { peerBroadcast } = usePBContext();
 
   const createNewRect = (top: number, left: number) => {
     if (setPenState) setPenState(false);
@@ -48,7 +47,7 @@ const WbToolbar: React.FC = () => {
       borderColor:'black' 
     });
     canvas?.add(circ);
-    if (peerBroadcast) peerBroadcast(JSON.stringify({ canvas: canvas?.toDatalessJSON() }));
+    saveCanvas();
   };
 
   const createNewLine = (top: number, left: number) => {
@@ -58,7 +57,7 @@ const WbToolbar: React.FC = () => {
       stroke: 'black' 
     });
     canvas?.add(line);
-    if (peerBroadcast) peerBroadcast(JSON.stringify({ canvas: canvas?.toDatalessJSON() }));
+    saveCanvas();
   };
 
   const createNewTri = (top: number, left: number) => {
@@ -72,7 +71,7 @@ const WbToolbar: React.FC = () => {
       borderColor:'black' 
     });
     canvas?.add(tri);
-    if (peerBroadcast) peerBroadcast(JSON.stringify({ canvas: canvas?.toDatalessJSON() }));
+    saveCanvas();
   };
 
   const createNewTextBox = () => {
