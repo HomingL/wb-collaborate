@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { Grid, Divider, TextField, Fab, IconButton, ClickAwayListener, Portal } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
@@ -7,6 +7,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import SendIcon from '@material-ui/icons/Send';
 import ChatIcon from '@material-ui/icons/Chat';
 import { useChatContext } from './chatContext';
+import { usePBContext } from '../whiteboard/peerData';
 export interface message{
     text: string
     user: string
@@ -16,6 +17,7 @@ export interface message{
 const Chat: React.FC = () => {
     const classes = useStyles();
 
+    const { peerBroadcast, peerData } = usePBContext();
     const { messages, setMessages} = useChatContext();
     const [open, setOpen] = useState<boolean>(false);
     const [text, setText] = useState<string>("");
@@ -40,7 +42,26 @@ const Chat: React.FC = () => {
 
         setMessages([...messages, msg]);
         setText("");
+
+        if (peerBroadcast) peerBroadcast(JSON.stringify({ chats: msg }));
     }
+
+    useEffect(() => {
+        if (peerData) {
+          try {
+            const pData = JSON.parse(peerData);
+            console.log('pData', pData);
+
+            if (pData.chats) {
+              setMessages([...messages, pData.chats]);
+            }
+          } catch (err) {
+            if (err instanceof SyntaxError) {
+              console.log('peerData is not in JSON type', peerData);
+            } else console.error(err);
+          }
+        }
+    }, [peerData]);
 
     return(
         <ClickAwayListener onClickAway={handleClickAway}>
