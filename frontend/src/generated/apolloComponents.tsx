@@ -170,6 +170,21 @@ export type GetWhiteboardQuery = (
   )> }
 );
 
+export type GetWhiteboardsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetWhiteboardsQuery = (
+  { __typename?: 'Query' }
+  & { GetWhiteboards: Array<(
+    { __typename?: 'Whiteboard' }
+    & Pick<Whiteboard, 'id' | 'name' | 'data'>
+    & { user: (
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'name' | 'email'>
+    ) }
+  )> }
+);
+
 
 export const SignupDocument = gql`
     mutation Signup($email: String!, $password: String!, $name: String!) {
@@ -381,3 +396,42 @@ export function useGetWhiteboardLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type GetWhiteboardQueryHookResult = ReturnType<typeof useGetWhiteboardQuery>;
 export type GetWhiteboardLazyQueryHookResult = ReturnType<typeof useGetWhiteboardLazyQuery>;
 export type GetWhiteboardQueryResult = Apollo.QueryResult<GetWhiteboardQuery, GetWhiteboardQueryVariables>;
+export const GetWhiteboardsDocument = gql`
+    query GetWhiteboards {
+  GetWhiteboards {
+    id
+    name
+    data
+    user {
+      id
+      name
+      email
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetWhiteboardsQuery__
+ *
+ * To run a query within a React component, call `useGetWhiteboardsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetWhiteboardsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetWhiteboardsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetWhiteboardsQuery(baseOptions?: Apollo.QueryHookOptions<GetWhiteboardsQuery, GetWhiteboardsQueryVariables>) {
+        return Apollo.useQuery<GetWhiteboardsQuery, GetWhiteboardsQueryVariables>(GetWhiteboardsDocument, baseOptions);
+      }
+export function useGetWhiteboardsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetWhiteboardsQuery, GetWhiteboardsQueryVariables>) {
+          return Apollo.useLazyQuery<GetWhiteboardsQuery, GetWhiteboardsQueryVariables>(GetWhiteboardsDocument, baseOptions);
+        }
+export type GetWhiteboardsQueryHookResult = ReturnType<typeof useGetWhiteboardsQuery>;
+export type GetWhiteboardsLazyQueryHookResult = ReturnType<typeof useGetWhiteboardsLazyQuery>;
+export type GetWhiteboardsQueryResult = Apollo.QueryResult<GetWhiteboardsQuery, GetWhiteboardsQueryVariables>;

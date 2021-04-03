@@ -20,3 +20,16 @@ query GetWhiteboard($id: String!){
     data
   }
 }
+
+query GetWhiteboards{
+  GetWhiteboards{
+    id
+    name
+    data
+    user{
+      id
+      name
+      email
+    }
+  }
+}
