@@ -48,15 +48,13 @@ const WorkspaceDashboard: React.FC = () => {
     }, []);
 
     useEffect(() =>{
-      if (data){
-        const pg = Math.ceil(data?.GetWhiteboards.length/pageLimit);
+      if (data)
         setAllWhiteboards(data?.GetWhiteboards);
-        settotalPage(pg ? pg : 1);
-      }
     }, [data, error]);
 
     useEffect( () =>{
-      console.log("Page", page);
+      const pg = Math.ceil(data?.GetWhiteboards.length/pageLimit);
+      settotalPage(pg ? pg : 1);
       setWhiteboards(allWhiteboards.slice((page - 1)*pageLimit, (page)*pageLimit));
     }, [allWhiteboards, page]);
 
