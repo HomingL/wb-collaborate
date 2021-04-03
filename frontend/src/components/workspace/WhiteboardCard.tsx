@@ -1,11 +1,11 @@
 import React from 'react'
-import { Card, makeStyles, Typography, CardContent } from '@material-ui/core';
+import { Card, makeStyles, Typography, CardContent, Button, CardActions } from '@material-ui/core';
+import { Whiteboard } from './WorkspaceDashboard';
+import { useRouter } from 'next/router';
 
-interface WhiteboardCardProps {
-  name: string
-}
+const WhiteboardCard: React.FC<Whiteboard> = ({user, name, id, data}) => {
 
-const WhiteboardCard: React.FC<WhiteboardCardProps> = ({ name }) => {
+  const router = useRouter();
   const classes = useStyles();
 
   return (
@@ -15,6 +15,9 @@ const WhiteboardCard: React.FC<WhiteboardCardProps> = ({ name }) => {
           { name }
         </Typography>
       </CardContent>
+      <CardActions>
+        <Button size="small" onClick={() => router.push("/whiteboard/" + id)}>Open Board</Button>
+      </CardActions>
     </Card>
   );  
 }

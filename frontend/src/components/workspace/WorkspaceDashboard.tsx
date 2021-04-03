@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { Grid, Fab, TextField } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import WhiteboardCard from './WhiteboardCard';
-import { useCreateWhiteboardMutation, useGetWhiteboardsLazyQuery } from '../../generated/apolloComponents';
+import { useCreateWhiteboardMutation, useGetWhiteboardsLazyQuery, User } from '../../generated/apolloComponents';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import Whiteboard from '../../../pages/whiteboard/[wid]';
 
 // interface WorkspaceDashboardProps {
 //   whiteboards: Whiteboard[]
@@ -30,9 +31,7 @@ const WorkspaceDashboard: React.FC = () => {
       createWhiteboardMutation({
         variables: {name: wbName},
       }).then( (res) =>{
-        console.log(res);
         GetWhiteboardsQuery();
-        console.log("data", data);
       });
 
       setWbName("");
@@ -43,7 +42,6 @@ const WorkspaceDashboard: React.FC = () => {
     }, []);
 
     useEffect(() =>{
-      console.log(data, error);
       if (data)
         setWhiteboards(data?.GetWhiteboards);
     }, [data, error]);
@@ -63,9 +61,9 @@ const WorkspaceDashboard: React.FC = () => {
         </Grid>
 
         {whiteboards.map((whiteboard, index) => (
-        <Grid item xs={6} sm={2} key={index}>
-          <WhiteboardCard name={whiteboard.name} />
-        </Grid>
+          <Grid item xs={6} sm={2} key={index}>
+            <WhiteboardCard {...whiteboard} />
+          </Grid>
         ))}
 
       </Grid>
@@ -73,7 +71,10 @@ const WorkspaceDashboard: React.FC = () => {
 }
 
 export interface Whiteboard{
-  name: string
+  name: string,
+  data: string,
+  id: string,
+  user: User
 }
 
 const useStyles = makeStyles((theme: Theme) =>
