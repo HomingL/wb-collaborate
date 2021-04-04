@@ -20,6 +20,7 @@ const WorkspaceDashboard: React.FC = () => {
     const [allWhiteboards, setAllWhiteboards] = useState<Whiteboard[]>([]);
     const [page, setPage] = useState<number>(1);
     const [totalPage, settotalPage] = useState<number>(1);
+    const [refresh, setRefresh] = useState<boolean>(false);
 
     const [createWhiteboardMutation] = useCreateWhiteboardMutation({
       variables:{
@@ -45,7 +46,7 @@ const WorkspaceDashboard: React.FC = () => {
 
     useEffect(() => {
       GetWhiteboardsQuery();
-    }, []);
+    }, [refresh]);
 
     useEffect(() =>{
       if (data)
@@ -53,8 +54,13 @@ const WorkspaceDashboard: React.FC = () => {
     }, [data, error]);
 
     useEffect( () =>{
-      const pg = Math.ceil(data?.GetWhiteboards.length/pageLimit);
-      settotalPage(pg ? pg : 1);
+      let pg = Math.ceil(data?.GetWhiteboards.length/pageLimit);
+      pg = pg ? pg : 1;
+      settotalPage(pg);
+
+      if (page > pg)
+        setPage(pg);
+
       setWhiteboards(allWhiteboards.slice((page - 1)*pageLimit, (page)*pageLimit));
     }, [allWhiteboards, page]);
 
@@ -74,7 +80,7 @@ const WorkspaceDashboard: React.FC = () => {
 
         {whiteboards.map((whiteboard, index) => (
           <Grid item xs={3} key={index}>
-            <WhiteboardCard {...whiteboard} />
+            <WhiteboardCard refresh={refresh} setRefresh={setRefresh} {...whiteboard} />
           </Grid>
         ))}
 

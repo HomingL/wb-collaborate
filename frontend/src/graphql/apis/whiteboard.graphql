@@ -33,3 +33,7 @@ query GetWhiteboards{
     }
   }
 }
+
+mutation DeleteWhiteboard($id: String!){
+  DeleteWhiteboard(id: $id)
+}
