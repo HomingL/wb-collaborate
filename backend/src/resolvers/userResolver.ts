@@ -1,9 +1,10 @@
-import { Resolver, Query, Mutation, Arg, UseMiddleware } from 'type-graphql';
+import { Resolver, Query, Mutation, Arg, UseMiddleware, Ctx } from 'type-graphql';
 import { sign } from 'jsonwebtoken';
 import crypto from 'crypto';
 import { isAuthenticated } from '../middlewares/auth';
 import { User } from '../models/user';
 import { SigninResponse } from '../models/signinResponse';
+import { Context } from 'src/context';
 
 const { TOKEN_SECRET, TOKEN_EXPIRE_TIME } = process.env;
 
@@ -21,8 +22,12 @@ function generateHash(password: string, salt: string) {
 export class UserResolver {
   @Query(() => User)
   @UseMiddleware(isAuthenticated)
-  User() {
-    return { id: 1, name: 'Homing Li', email: 'homing.li@mail.utor' };
+  async User(
+    @Ctx() ctx: Context,
+  ) {
+    const { payload } = ctx;
+    return payload;
+    // return { id: 1, name: 'Homing Li', email: 'homing.li@mail.utor' };
   }
 
   @Mutation(() => User)
