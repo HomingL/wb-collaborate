@@ -125,7 +125,7 @@ export type GetUserQuery = (
   { __typename?: 'Query' }
   & { User: (
     { __typename?: 'User' }
-    & Pick<User, 'name' | 'email'>
+    & Pick<User, 'id' | 'name' | 'email'>
   ) }
 );
 
@@ -248,6 +248,7 @@ export type SigninMutationOptions = Apollo.BaseMutationOptions<SigninMutation, S
 export const GetUserDocument = gql`
     query GetUser {
   User {
+    id
     name
     email
   }

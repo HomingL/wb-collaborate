@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import Link from '../src/Link';
@@ -8,6 +8,8 @@ import AuthFormLayout from '../src/components/auth/AuthFormLayout';
 import JoinBoard from '../src/components/JoinBoard'
 import { Grid, Toolbar } from '@material-ui/core';
 import { makeStyles, Theme } from '@material-ui/core/styles';
+import { useGetUserQuery } from '../src/generated/apolloComponents';
+import { useRouter } from 'next/router';
 
 const navitems = [
   {index: 0, title: "How to use?", link: "/"},
@@ -20,8 +22,19 @@ const nav = navitems.map((item) =>
   </Box>
 );
 
-export default function Index() {
+const Index: React.FC = () => {
   const classes = useStyles();
+  const { data, error } = useGetUserQuery({
+    variables: {},
+  });
+  const router = useRouter();
+
+  useEffect(() => {
+    console.log('uid', data?.User.id);
+    if (error || !data?.User.id) return;
+    router.push(`/workspace/${data?.User.id}`);
+  }, [data, error]);
+
   return (
     <Grid container className={classes.container} justify="space-between" direction="column" spacing={3}>
 
@@ -75,3 +88,4 @@ const useStyles = makeStyles((theme: Theme) => ({
   }
 }));
 
+export default Index;

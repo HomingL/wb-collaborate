@@ -1,5 +1,6 @@
 query GetUser {
   User {
+    id
     name
     email
   }
