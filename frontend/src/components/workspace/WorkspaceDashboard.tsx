@@ -37,7 +37,7 @@ const WorkspaceDashboard: React.FC = () => {
     const handleCreate = () =>{
       createWhiteboardMutation({
         variables: {name: wbName},
-      }).then( (res) =>{
+      }).then(() =>{
         GetWhiteboardsQuery();
       });
 

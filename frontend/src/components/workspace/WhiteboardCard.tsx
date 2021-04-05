@@ -1,22 +1,21 @@
 import React from 'react'
 import { Card, makeStyles, Typography, CardContent, Button, CardActions, CardMedia, IconButton} from '@material-ui/core';
-import { Whiteboard } from './WorkspaceDashboard';
 import { useRouter } from 'next/router';
 import { fabric } from "fabric";
 import DeleteSweepIcon from '@material-ui/icons/DeleteSweep';
 import { useDeleteWhiteboardMutation, User } from '../../generated/apolloComponents';
 
 interface WhiteboardCardProp{
-  setRefresh: (state : bool) => void;
+  setRefresh: (state : boolean) => void;
   size: number,
   page: number,
   name: string,
-  data: string,
   id: string,
-  user: User
+  user: User,
+  refresh: boolean
 }
 
-const WhiteboardCard: React.FC<WhiteboardCardProp> = ({setRefresh, refresh, user, name, id, data}) => {
+const WhiteboardCard: React.FC<WhiteboardCardProp> = ({setRefresh, refresh, user, name, id}) => {
 
   const router = useRouter();
   const classes = useStyles();
@@ -29,14 +28,15 @@ const WhiteboardCard: React.FC<WhiteboardCardProp> = ({setRefresh, refresh, user
 
   const canvas = new fabric.Canvas('canvas');
 
+  const url = canvas.toDataURL(user + "/" + id);
   
   fabric.Image.fromURL(url, function(img) {
     canvas.add(img);
     // call toDataURL after image gets loaded
     console.log(canvas.toDataURL());
-    });
+  });
 
-  const url = canvas.toDataURL(user + "/" + id);
+  
 
   // console.log(url);
 
