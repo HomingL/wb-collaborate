@@ -1,5 +1,4 @@
-
-import React, { useState, useContext, createContext, useEffect } from 'react'
+import React, { useState, useContext, createContext } from 'react'
 import { message } from '../chat/chat'
 
 export interface Chatprops {

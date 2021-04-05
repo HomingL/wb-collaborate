@@ -3,29 +3,32 @@ import { Grid } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import { AccountCircle } from '@material-ui/icons';
 
 export interface message{
     text: string
     user: string
-    time: string
+    time: number
+    self: boolean
 }
 
-const Message: React.FC = ( {text, user, time} ) => {
-    const classes = useStyles();
-
-
-    return(
-        <ListItem key={time}>
-            <Grid container>
-                <Grid item xs={12}>
-                    <ListItemText className={classes.message} align="right" primary={text}></ListItemText>
-                </Grid>
-                <Grid item xs={12}>
-                    <ListItemText className={classes.message} align="right" secondary={user}></ListItemText>
-                </Grid>
+const Message: React.FC<message> = ( {text, user, time, self} ) => {
+  const classes = useStyles();
+  let msgClass;
+  if (self) msgClass = classes.selfMsg;
+  return(
+    <ListItem key={time}>
+        <Grid container alignItems="flex-end" className={msgClass}>
+            <Grid item xs={2}>
+                <AccountCircle />
             </Grid>
-        </ListItem>
-    );
+            <Grid item xs={10}>
+                <ListItemText primary={text}></ListItemText>
+                <ListItemText secondary={user + " " + new Date(time).toLocaleTimeString()}></ListItemText>
+            </Grid>
+        </Grid>
+    </ListItem>
+  );
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -39,7 +42,11 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     title: {
       margin: theme.spacing(3),
-    }
+    },
+    selfMsg: {
+      textAlign: 'right',
+      flexFlow: 'row-reverse',
+    },
   }),
 );
 export default Message;
