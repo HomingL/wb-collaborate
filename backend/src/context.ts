@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 import { Request, Response } from 'express';
 
 export interface Context {

@@ -6,6 +6,7 @@
     "@apollo/client": "^3.3.11",
     "@material-ui/core": "latest",
     "@material-ui/icons": "^4.11.2",
+    "@material-ui/lab": "^4.0.0-alpha.57",
     "clsx": "latest",
     "fabric": "^4.3.1",
     "formik": "^2.2.6",
@@ -25,7 +26,7 @@
     "dev2": "node server.js",
     "build": "next build",
     "start": "next start",
-    "start2": "NODE_ENV=production node server.js", 
+    "start2": "NODE_ENV=production node server.js",
     "post-update": "echo \"codesandbox preview only, need an update\" && yarn upgrade --latest",
     "generate": "graphql-codegen --config codegen.yml"
   },
