@@ -2,13 +2,23 @@ import React, { useRef, useEffect } from 'react'
 import { Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { fabric } from "fabric";
-// import { theme } from '../../theme';
-import { useWBContext } from '../whiteboard/wbContext'
+import { useWBContext } from '../whiteboard/wbContext';
 import { usePBContext } from './peerData';
+import { useGetWhiteboardLazyQuery } from '../../generated/apolloComponents';
+// import { Root, Type, Field } from 'protobufjs';
 
-const WbCanvas: React.FC = () => {
-  const { penState, setCanvas, setSelect} = useWBContext();
+interface WbCanvasProp {
+  wid: string,
+}
+
+const WbCanvas: React.FC<WbCanvasProp> = ({ wid }) => {
+  const { penState, setCanvas, setSelect, onCanvasChange } = useWBContext();
   const { peerBroadcast, peerData } = usePBContext();
+  const [GetWhiteboardQuery, { data, error }] = useGetWhiteboardLazyQuery({
+    variables: {
+       id: wid
+    },
+  });
 
   const classes = useStyles();
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -17,7 +27,6 @@ const WbCanvas: React.FC = () => {
   const isDrawing = useRef<boolean>(false);
   const brushStart = useRef<{x: number, y: number}>();
   const brushEnd = useRef<{x: number, y: number}>();
-  // const objects = useRef<fabric.Object[]>([]);
 
   function broadcastData(data:any) {
     try {
@@ -40,10 +49,11 @@ const WbCanvas: React.FC = () => {
 
   function onMouseUp(e:Event) {
     isDrawing.current = false;
+    const stringifiedCanv = JSON.stringify(canv.current?.toDatalessJSON());
     if (pState.current) {
       brushEnd.current = canv.current?.getPointer(e);
-      broadcastData({ /* canvObjs: objs */ canvas: canv.current?.toDatalessJSON() });
     }
+    if (onCanvasChange) onCanvasChange(stringifiedCanv);
   }
 
   function onMouseMove(e:Event) {
@@ -55,9 +65,9 @@ const WbCanvas: React.FC = () => {
     }
   }
 
-  function onMouseModified() {
-    // const objs = canv.current?._objects;
-    broadcastData({ /* canvObjs: objs */ canvas: canv.current?.toDatalessJSON() });
+  function onObjectModified() {
+    const stringifiedCanv = JSON.stringify(canv.current?.toDatalessJSON());
+    if (onCanvasChange) onCanvasChange(stringifiedCanv);
   }
 
   function onSelected(lst: fabric.Object[]) {
@@ -70,28 +80,38 @@ const WbCanvas: React.FC = () => {
     });
 
     if(setCanvas) setCanvas(canv.current);
+  }, []);
 
-    canv.current.on('mouse:down', function({e}) {
-      onMouseDown(e);
-    }).on('mouse:up', function({e}) {
-      onMouseUp(e);
-    }).on('mouse:move', function({e}) {
-      onMouseMove(e);
-    }).on('object:modified', function() {
-      onMouseModified();
-    }).on('selection:created', function() {
-      onSelected(canv.current?.getActiveObjects() ? canv.current?.getActiveObjects() : []);
-    }).on('selection:cleared', function() {
-      onSelected([]);
-    });
+  useEffect(() => {
 
-    // canv.current.on('path:created', function(e:any){
-    //   const your_path = e.path;
-    //   console.log(your_path);
-    //   // addPath(your_path);
-    //   if (peerBroadcast) peerBroadcast(JSON.stringify(your_path));
-    // });
-  },[peerBroadcast]);
+    if (canv.current && wid) {
+      canv.current.on('mouse:down', function({e}) {
+        onMouseDown(e);
+      }).on('mouse:up', function({e}) {
+        onMouseUp(e);
+      }).on('mouse:move', function({e}) {
+        onMouseMove(e);
+      }).on('object:modified', function() {
+        onObjectModified();
+      }).on('selection:created', function() {
+        onSelected(canv.current?.getActiveObjects() ? canv.current?.getActiveObjects() : []);
+      }).on('selection:cleared', function() {
+        onSelected([]);
+      });
+
+      GetWhiteboardQuery({
+        variables: {
+          id: wid
+       },
+      });
+    }
+
+  },[peerBroadcast, canv, wid]);
+
+  useEffect(() => {
+    if (error) return console.error(error);
+    canv.current?.loadFromJSON(data?.GetWhiteboard?.data, canv.current.renderAll.bind(canv.current));
+  }, [data, error]);
 
   /** penState won't get update in listeners under useEffect unless updating it using reference */
   useEffect(() => {
@@ -102,8 +122,6 @@ const WbCanvas: React.FC = () => {
     if (peerData) {
       try {
         const pData = JSON.parse(peerData);
-        console.log("pData", pData);
-
         if (pData.canvas) {
           canv.current?.loadFromJSON(pData.canvas, canv.current.renderAll.bind(canv.current));
         }
@@ -121,12 +139,6 @@ const WbCanvas: React.FC = () => {
     }
 
   }, [peerData]);
-
-  // useEffect(() => {
-  //   console.log("objs", objects.current);
-  //   if (canv.current) canv.current._objects = objects.current;
-  //   canv.current?.renderAll();
-  // }, [objects.current]);
 
   return (
     <div className={classes.root}>

@@ -17,17 +17,15 @@ const Whiteboard: React.FC<WhiteboardProps> = () => {
     const classes = useStyles();
     const router = useRouter()
     const [whiteboardId, setWhiteboardId] = useState<string>('');
-
+    
     useEffect(() => {
         const { wid } = router.query;
-        
         setWhiteboardId(wid as string);
-
     }, [router.query.wid])
 
     return (
         <PeerConnecion wid={whiteboardId}>
-            <WBProvider>
+            <WBProvider wid={whiteboardId}>
                 <ChatProvider>
                     <Grid container justify='space-between'>
                         <Grid item xs={12}>
@@ -40,7 +38,7 @@ const Whiteboard: React.FC<WhiteboardProps> = () => {
                             </Grid>
 
                             <Grid item xs={11}>
-                                <WbCanvas />
+                                <WbCanvas wid={whiteboardId}/>
                             </Grid> 
                         </Grid>
 
