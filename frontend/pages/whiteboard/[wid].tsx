@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { WBProvider } from '../../src/components/whiteboard/wbContext'
 import PeerConnecion from '../../src/components/whiteboard/peerData';
-import { createStyles, Grid, makeStyles, Theme } from '@material-ui/core';
+import { createStyles, Grid, makeStyles } from '@material-ui/core';
 import WbCanvas from '../../src/components/whiteboard/wbCanvas';
 import WbToolbar from '../../src/components/whiteboard/wbToolbar';
 import WbSubTool from '../../src/components/whiteboard/wbSubTool';
@@ -52,7 +52,7 @@ const Whiteboard: React.FC<WhiteboardProps> = () => {
     );
 }
 
-const useStyles = makeStyles((theme: Theme) => 
+const useStyles = makeStyles(() => 
     createStyles({
         chat: {
             position: 'fixed',

@@ -15,7 +15,6 @@ import TextFieldsIcon from '@material-ui/icons/TextFields';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 import SaveIcon from '@material-ui/icons/Save';
 import ShowChartIcon from '@material-ui/icons/ShowChart';
-import SaveIcon from '@material-ui/icons/Save';
 import { useWBContext } from './wbContext';
 import { fabric } from "fabric";
 
