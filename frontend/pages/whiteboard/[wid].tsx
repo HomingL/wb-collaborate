@@ -8,6 +8,7 @@ import WbSubTool from '../../src/components/whiteboard/wbSubTool';
 import { useRouter } from 'next/router';
 import { ChatProvider } from '../../src/components/chat/chatContext';
 import Chat from '../../src/components/chat/chat';
+import { useGetWhiteboardLazyQuery } from '../../src/generated/apolloComponents';
 
 interface WhiteboardProps {
 
@@ -17,13 +18,31 @@ const Whiteboard: React.FC<WhiteboardProps> = () => {
     const classes = useStyles();
     const router = useRouter()
     const [whiteboardId, setWhiteboardId] = useState<string>('');
-    
+    const [loading, setLoading] = useState<boolean>(true);
+    const [GetWhiteboardQuery, {data, error}] = useGetWhiteboardLazyQuery({
+        fetchPolicy: 'cache-and-network'
+    })
+
     useEffect(() => {
         const { wid } = router.query;
         setWhiteboardId(wid as string);
-    }, [router.query.wid])
+        GetWhiteboardQuery({
+            variables: {
+               id: wid as string
+            },
+        });
+    }, [router.query.wid]);
+    
+    useEffect(() => {
+        if (data) console.log(data.GetWhiteboard);
+        if (data) setLoading(false);
+        if (error) router.push('/404');
+    }, [data, error]);
 
     return (
+        loading ?
+        <></>
+        :
         <PeerConnecion wid={whiteboardId}>
             <WBProvider wid={whiteboardId}>
                 <ChatProvider>
