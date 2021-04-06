@@ -38,7 +38,7 @@ const SigninForm: React.FC<SigninFormProps> = () => {
         const token = res.data?.Signin.token;
         if (token) setToken(token);
         router.push(`/workspace/${uid}`);
-      }).catch((err) =>{
+      }).catch(() =>{
         setBadLogin(true);
         // throw new Error('Server Side Error for Signin');
       })
