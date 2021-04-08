@@ -19,7 +19,6 @@ const Workspace: React.FC = () => {
         const { uid } = router.query;
         GetUserQuery();
         if (data) {
-            console.log("user id", data.User.id, uid);
             const uidMatch = uid == data.User.id;
             // authorized user needs to have id returned and same as the uid of workspace
             const isAuthorized = data && uidMatch;
