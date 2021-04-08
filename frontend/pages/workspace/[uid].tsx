@@ -7,7 +7,6 @@ import { useRouter } from 'next/router';
 
 
 const Workspace: React.FC = () => {
-    const Whiteboards = [{name: "asdfasdf"},{name: "name2"},{name: "name3"},{name: "name4"},{name: "name5"},{name: "name6"},{name: "name7"},];
     const router = useRouter();
     const [loading, setLoading] = useState<boolean>(true);
     const [GetUserQuery, {data}]  = useGetUserLazyQuery(
@@ -19,7 +18,6 @@ const Workspace: React.FC = () => {
         const { uid } = router.query;
         GetUserQuery();
         if (data) {
-            console.log("user id", data.User.id, uid);
             const uidMatch = uid == data.User.id;
             // authorized user needs to have id returned and same as the uid of workspace
             const isAuthorized = data && uidMatch;
@@ -37,7 +35,7 @@ const Workspace: React.FC = () => {
         <>
         </> :
         <WorkspaceLayout >
-            <WhiteboardDashboard whiteboards={Whiteboards} />
+            <WhiteboardDashboard />
         </WorkspaceLayout>
     );
 }

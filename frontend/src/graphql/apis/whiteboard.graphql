@@ -20,3 +20,20 @@ query GetWhiteboard($id: String!){
     data
   }
 }
+
+query GetWhiteboards{
+  GetWhiteboards{
+    id
+    name
+    data
+    user{
+      id
+      name
+      email
+    }
+  }
+}
+
+mutation DeleteWhiteboard($id: String!){
+  DeleteWhiteboard(id: $id)
+}

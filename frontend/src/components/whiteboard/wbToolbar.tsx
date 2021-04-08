@@ -4,7 +4,6 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Button, IconButton } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
 import CreateIcon from '@material-ui/icons/Create';
 import PanToolIcon from '@material-ui/icons/PanTool';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -17,6 +16,7 @@ import SaveIcon from '@material-ui/icons/Save';
 import ShowChartIcon from '@material-ui/icons/ShowChart';
 import { useWBContext } from './wbContext';
 import { fabric } from "fabric";
+import WBLogo from '../static_components/WBCollaborate';
 
 
 const WbToolbar: React.FC = () => {
@@ -97,9 +97,8 @@ const WbToolbar: React.FC = () => {
       <AppBar position="static">
         <Toolbar>
           
-          <Typography variant="h6" className={classes.title}>
-            Wb Collaborate
-          </Typography>
+          <WBLogo />
+          
           <IconButton edge="start" className={classes.button} onClick={() => {
             canvas?.clear();
             saveCanvas();

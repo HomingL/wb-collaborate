@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
-import { Drawer, List, ListItem, ListItemText, Button, Grid } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
+import WBLogo from '../static_components/WBCollaborate';
 
 
 interface WorkspaceLayoutProps {
@@ -31,36 +31,11 @@ const WorkspaceLayout: React.FC<WorkspaceLayoutProps> = ({ children }) => {
 
   return (
     <div className={classes.root}>
-      <Drawer 
-        open={true}
-        variant="persistent"
-        anchor="left"
-        className={classes.drawer}
-        classes={{
-          paper: classes.drawerPaper,
-        }}
-      >
-        <List>
-          <ListItem>
-            <Button variant="contained" color="secondary">
-              + New whiteboard
-            </Button>
-          </ListItem>
-          <ListItem button>
-              <ListItemText primary={'My Notes'} />
-            </ListItem>
-            <ListItem button>
-              <ListItemText primary={'Collaborative Notes'} />
-            </ListItem>
-        </List>
-      </Drawer>
       <Grid container className={classes.appBar}>
         <Grid item xs={12}>
         <AppBar position="static" color={"primary"} >
           <Toolbar>
-            <Typography variant="h6" className={classes.title}>
-              Workspace
-            </Typography>
+            <WBLogo />
             
             <div>
               <IconButton
@@ -109,8 +84,8 @@ const useStyles = makeStyles((theme: Theme) =>
       flexGrow: 1,
     },
     appBar: {
-      width: `calc(100% - ${drawerWidth}px)`,
-      marginLeft: drawerWidth,
+      // width: `calc(100% - ${drawerWidth}px)`,
+      // marginLeft: drawerWidth,
     },
     drawer:{
       witdth: drawerWidth,
