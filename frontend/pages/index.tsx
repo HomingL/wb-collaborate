@@ -21,7 +21,7 @@ const nav = navitems.map((item) =>
   </Box>
 );
 
-export default function Index() {
+const Index: React.FC = () => {
   const classes = useStyles();
   const [isAuth, setIsAuth] = useState<boolean>(false);
   const [GetUserQuery, {data, loading}]  = useGetUserLazyQuery(
@@ -92,3 +92,4 @@ const useStyles = makeStyles((theme: Theme) => ({
   }
 }));
 
+export default Index;

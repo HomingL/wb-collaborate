@@ -1,10 +1,12 @@
+/* eslint-disable linebreak-style */
 import { Resolver, Query, Mutation, Arg, UseMiddleware, Ctx } from 'type-graphql';
 import { sign } from 'jsonwebtoken';
 import crypto from 'crypto';
+import { Context } from 'src/context';
+import { AuthenticationError } from 'apollo-server-express';
 import { isAuthenticated } from '../middlewares/auth';
 import { User } from '../models/user';
 import { SigninResponse } from '../models/signinResponse';
-import { Context } from 'src/context';
 
 const { TOKEN_SECRET, TOKEN_EXPIRE_TIME } = process.env;
 
@@ -25,9 +27,7 @@ export class UserResolver {
   async User(
     @Ctx() ctx: Context,
   ) {
-    const { payload } = ctx;
-    return payload;
-    // return { id: 1, name: 'Homing Li', email: 'homing.li@mail.utor' };
+    return ctx.payload;
   }
 
   @Mutation(() => User)
@@ -56,6 +56,6 @@ export class UserResolver {
       const response : SigninResponse = { user, token };
       return response;
     }
-    return new Error('Incorrect match of usename and password');
+    return new AuthenticationError('Incorrect match of usename and password');
   }
 }
