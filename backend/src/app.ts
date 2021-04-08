@@ -25,6 +25,11 @@ const boot = async () => {
     res.send('hello world!');
   });
 
+  app.use(function (req, _res, next){
+    console.log("HTTP request", req.method, req.url, req.body);
+    next();
+  });
+
   await createConnection();
 
   const corsOptions = {

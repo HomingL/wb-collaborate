@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 import { Resolver, Mutation, Arg, UseMiddleware, Ctx, Query } from 'type-graphql';
 import { User } from '../models/user';
 import { Whiteboard } from '../models/whiteboard';

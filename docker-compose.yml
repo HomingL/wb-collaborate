@@ -1,26 +1,40 @@
 version: '3'
 services:
   ggnb-proxy:
-    image: nginx:1.19
+    build: ./nginx
+    # image: nginx:1.19
     depends_on: 
       - ggnb-frontend
       - ggnb-backend
     volumes: 
-      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/nginx.conf:/etc/nginx/sites-available/default
+      - ./nginx/cert.pem:/etc/letsencrypt/live/ggnbwhiteboard.rocks/cert.pem
+      - ./nginx/chain.pem:/etc/letsencrypt/live/ggnbwhiteboard.rocks/chain.pem
+      - ./nginx/fullchain.pem:/etc/letsencrypt/live/ggnbwhiteboard.rocks/fullchain.pem
+      - ./nginx/options-ssl-nginx.conf:/etc/letsencrypt/options-ssl-nginx.conf
+      - ./nginx/ssl-dhparams.pem:/etc/letsencrypt/ssl-dhparams.pem
+      - ./nginx/privkey.pem:/etc/letsencrypt/live/ggnbwhiteboard.rocks/privkey.pem
+      # - ./nginx/log.conf:/etc/nginx/nginx.conf
     ports: 
       - 80:80
+      - 443:443
+    # command: certbot --nginx -d ggnbwhiteboard.ninja --non-interactive --agree-tos -m hongming.li@mail.utoronto.ca
   ggnb-frontend:
-    image: lihongming1/ggnb-frontend:latest
+    image: lihongming1/ggnb-frontend:2.0.4
+    build: ./frontend
     working_dir: /var/opt
     depends_on:
       - ggnb-backend
     ports: 
       - 3000:3000
     command: npm run start
+    env_file: ./frontend/.env.local
   ggnb-backend:
-    image: lihongming1/ggnb-backend:2.0.1
+    image: lihongming1/ggnb-backend:2.0.4
+    build: ./backend
     working_dir: /var/opt
     ports: 
       - 5000:5000
       - 5001:5001
     command: npm run start
+    env_file: ./backend/.env
