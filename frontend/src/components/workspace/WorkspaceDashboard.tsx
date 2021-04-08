@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { Grid, Fab, TextField } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import WhiteboardCard from './WhiteboardCard';
-import { useCreateWhiteboardMutation, useGetWhiteboardsLazyQuery, User } from '../../generated/apolloComponents';
+import { useCreateWhiteboardMutation, useGetWhiteboardsLazyQuery, Whiteboard } from '../../generated/apolloComponents';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import Whiteboard from '../../../pages/whiteboard/[wid]';
 import Pagination from '@material-ui/lab/Pagination';
 
 
@@ -54,14 +53,16 @@ const WorkspaceDashboard: React.FC = () => {
     }, [data, error]);
 
     useEffect( () =>{
-      let pg = Math.ceil(data?.GetWhiteboards.length/pageLimit);
-      pg = pg ? pg : 1;
-      settotalPage(pg);
-
-      if (page > pg)
-        setPage(pg);
-
-      setWhiteboards(allWhiteboards.slice((page - 1)*pageLimit, (page)*pageLimit));
+      if (data){
+        let pg = Math.ceil(data.GetWhiteboards?.length/pageLimit);
+        pg = pg ? pg : 1;
+        settotalPage(pg);
+  
+        if (page > pg)
+          setPage(pg);
+  
+        setWhiteboards(allWhiteboards.slice((page - 1)*pageLimit, (page)*pageLimit));
+      }
     }, [allWhiteboards, page]);
 
     return (
@@ -71,7 +72,7 @@ const WorkspaceDashboard: React.FC = () => {
             <Grid item xs={6}>
                 <TextField variant="outlined" label="Whiteboard Name" value={wbName} onChange={(e) => setWbName(e.target.value)} type="search" fullWidth/>
             </Grid>
-            <Grid item xs={1} align="right">
+            <Grid item xs={1}>
               <Fab color="primary" aria-label="add" onClick={handleCreate}>
                   <AddIcon fontSize='large'/>
               </Fab>
@@ -80,7 +81,7 @@ const WorkspaceDashboard: React.FC = () => {
 
         {whiteboards.map((whiteboard, index) => (
           <Grid item xs={3} key={index}>
-            <WhiteboardCard refresh={refresh} setRefresh={setRefresh} {...whiteboard} />
+            <WhiteboardCard refresh={refresh} setRefresh={setRefresh} whiteboard={whiteboard} />
           </Grid>
         ))}
 
@@ -89,13 +90,6 @@ const WorkspaceDashboard: React.FC = () => {
         </Grid>
       </Grid>
     );
-}
-
-export interface Whiteboard{
-  name: string,
-  data: string,
-  id: string,
-  user: User
 }
 
 const useStyles = makeStyles((theme: Theme) =>

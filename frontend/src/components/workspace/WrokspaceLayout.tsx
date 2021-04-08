@@ -7,7 +7,7 @@ import IconButton from '@material-ui/core/IconButton';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
-import { Drawer, List, ListItem, ListItemText, Button, Grid } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 
 
 interface WorkspaceLayoutProps {
