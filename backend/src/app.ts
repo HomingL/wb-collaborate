@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 /* eslint-disable linebreak-style */
 // .env
 import 'dotenv/config';
@@ -25,19 +26,31 @@ const boot = async () => {
     res.send('hello world!');
   });
 
-  app.use(function (req, _res, next){
-    console.log("HTTP request", req.method, req.url, req.body);
+  app.use((req, _res, next) => {
+    console.log('HTTP request', req.method, req.url, req.body);
     next();
   });
 
-  await createConnection();
+  /* For multiple attempts to connect to database, sometimes the backend container try to connect
+  before database container is fully initialized */
+  let retries = 5;
+  while (retries) {
+    try {
+      await createConnection();
+      break;
+    } catch (err) {
+      console.log(err);
+      retries -= 1;
+      console.log(`retries left: ${retries}`);
+      await new Promise((res) => setTimeout(res, 10000));
+    }
+  }
 
   const corsOptions = {
     origin: FRONT_END_ORIGIN,
     credentials: true,
   };
   app.use(cors(corsOptions));
-  // app.use(cookieParser());
 
   // establish socket.io server
   const port = PORT || 5000;

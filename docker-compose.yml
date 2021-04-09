@@ -30,11 +30,25 @@ services:
     command: npm run start
     env_file: ./frontend/.env.local
   ggnb-backend:
-    image: lihongming1/ggnb-backend:2.0.4
+    container_name: ggnb-backend
+    image: lihongming1/ggnb-backend:2.0.5
     build: ./backend
     working_dir: /var/opt
+    depends_on:
+      - ggnb-database
     ports: 
       - 5000:5000
       - 5001:5001
     command: npm run start
     env_file: ./backend/.env
+  ggnb-database:
+    container_name: ggnb-database
+    image: postgres:latest
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: ggnb
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    ports:
+      - 8000:5432
