@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { WBProvider } from '../../src/components/whiteboard/wbContext'
 import PeerConnecion from '../../src/components/whiteboard/peerData';
-import { createStyles, Grid, makeStyles } from '@material-ui/core';
+import { CircularProgress, createStyles, Grid, makeStyles } from '@material-ui/core';
 import WbCanvas from '../../src/components/whiteboard/wbCanvas';
 import WbToolbar from '../../src/components/whiteboard/wbToolbar';
 import WbSubTool from '../../src/components/whiteboard/wbSubTool';
@@ -19,14 +19,14 @@ const Whiteboard: React.FC<WhiteboardProps> = () => {
     const router = useRouter()
     const [whiteboardId, setWhiteboardId] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(true);
-    const [GetWhiteboardQuery, {data, error}] = useGetWhiteboardLazyQuery({
+    const [getWhiteboardQuery, {data, error}] = useGetWhiteboardLazyQuery({
         fetchPolicy: 'cache-and-network'
-    })
+    });
 
     useEffect(() => {
         const { wid } = router.query;
         setWhiteboardId(wid as string);
-        GetWhiteboardQuery({
+        getWhiteboardQuery({
             variables: {
                id: wid as string
             },
@@ -41,8 +41,9 @@ const Whiteboard: React.FC<WhiteboardProps> = () => {
 
     return (
         loading ?
-        <></>
-        :
+        <Grid container alignItems="center" justify="center" style={{ minHeight: '100vh' }}>
+            <CircularProgress />
+        </Grid> :
         <PeerConnecion wid={whiteboardId}>
             <WBProvider wid={whiteboardId}>
                 <ChatProvider>

@@ -10,12 +10,9 @@ import { useSigninMutation } from '../../generated/apolloComponents';
 import { useRouter } from 'next/router';
 import Link from '../../Link';
 import { setToken } from '../../utils/token';
+import ErrorMessage from '../dialog/ErrorMessage';
 
-interface SigninFormProps {
-
-}
-
-const SigninForm: React.FC<SigninFormProps> = () => {
+const SigninForm: React.FC = () => {
   const [badLogin, setBadLogin] = useState<boolean>(false);
   const classes = useStyles();
   const router = useRouter();
@@ -40,29 +37,15 @@ const SigninForm: React.FC<SigninFormProps> = () => {
         router.push(`/workspace/${uid}`);
       }).catch(() =>{
         setBadLogin(true);
-        // throw new Error('Server Side Error for Signin');
       })
     },
   });
   return (
     <>
       <form className={classes.form} onSubmit={formik.handleSubmit}>
-        <Collapse in={badLogin}>
-          <Alert action={
-            <IconButton
-              aria-label="close"
-              color="inherit"
-              size="small"
-              onClick={() => {
-                setBadLogin(false);
-              }}
-            >
-              <CloseIcon fontSize="inherit" />
-            </IconButton>
-          } severity="error">
-            Incorrect email or password!
-          </Alert>
-        </Collapse>
+        <ErrorMessage occur={badLogin} onClose={() => setBadLogin(false)}>
+          Incorrect email or password!
+        </ErrorMessage>
         <TextField
           variant="outlined"
           margin="normal"

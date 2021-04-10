@@ -6,7 +6,7 @@ import Copyright from '../src/Copyright';
 import SigninForm from '../src/components/auth/SigninForm';
 import AuthFormLayout from '../src/components/auth/AuthFormLayout';
 import JoinBoard from '../src/components/JoinBoard'
-import { Button, Grid, Toolbar } from '@material-ui/core';
+import { Button, CircularProgress, Grid, Toolbar } from '@material-ui/core';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import { useGetUserLazyQuery } from '../src/generated/apolloComponents';
 
@@ -24,14 +24,18 @@ const nav = navitems.map((item) =>
 const Index: React.FC = () => {
   const classes = useStyles();
   const [isAuth, setIsAuth] = useState<boolean>(false);
-  const [GetUserQuery, {data, loading}]  = useGetUserLazyQuery(
+  const [getUserQuery, {data, loading}]  = useGetUserLazyQuery(
     {
       fetchPolicy: 'cache-and-network'
     }
   );
 
   useEffect(() => {
-    GetUserQuery();
+    getUserQuery();
+  }, []);
+  
+  useEffect(() => {
+    console.log("query", data);
     if (data){
       setIsAuth(true);
     } 
@@ -40,7 +44,9 @@ const Index: React.FC = () => {
 
   return (
     loading ?
-    <></> :
+    <Grid container alignItems="center" justify="center" style={{ minHeight: '100vh' }}>
+      <CircularProgress />
+    </Grid> :
     <Grid container className={classes.container} justify="space-between" direction="column" spacing={3}>
 
       <Grid item>
@@ -63,11 +69,15 @@ const Index: React.FC = () => {
             </Box>
         </Grid>
 
-        {isAuth ? <Link href={`/workspace/${data?.User.id}`}><Button variant="contained" color='secondary' > Go to Your Workspace </Button> </Link>: <Grid item >
-          <AuthFormLayout title='Sign In' >
-            <SigninForm/>
-          </AuthFormLayout>
-        </Grid>}
+        {isAuth ? 
+          <Link href={`/workspace/${data?.User.id}`}>
+            <Button variant="contained" color='secondary' > Go to Your Workspace </Button>
+          </Link> : 
+          <Grid item >
+            <AuthFormLayout title='Sign In' >
+              <SigninForm/>
+            </AuthFormLayout>
+          </Grid>}
       </Grid>
 
       <Grid item>
