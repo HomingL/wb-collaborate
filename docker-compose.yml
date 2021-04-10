@@ -14,19 +14,17 @@ services:
       - ./nginx/options-ssl-nginx.conf:/etc/letsencrypt/options-ssl-nginx.conf
       - ./nginx/ssl-dhparams.pem:/etc/letsencrypt/ssl-dhparams.pem
       - ./nginx/privkey.pem:/etc/letsencrypt/live/ggnbwhiteboard.rocks/privkey.pem
-      # - ./nginx/log.conf:/etc/nginx/nginx.conf
     ports: 
       - 80:80
       - 443:443
-    # command: certbot --nginx -d ggnbwhiteboard.ninja --non-interactive --agree-tos -m hongming.li@mail.utoronto.ca
   ggnb-frontend:
-    image: lihongming1/ggnb-frontend:2.0.4
+    image: lihongming1/ggnb-frontend:2.0.5
     build: ./frontend
     working_dir: /var/opt
     depends_on:
       - ggnb-backend
-    ports: 
-      - 3000:3000
+    expose: 
+      - "3000"
     command: npm run start
     env_file: ./frontend/.env.local
   ggnb-backend:
@@ -36,9 +34,9 @@ services:
     working_dir: /var/opt
     depends_on:
       - ggnb-database
-    ports: 
-      - 5000:5000
-      - 5001:5001
+    expose: 
+      - "5000"
+      - "5001"
     command: npm run start
     env_file: ./backend/.env
   ggnb-database:
@@ -50,5 +48,5 @@ services:
       POSTGRES_DB: ggnb
     volumes:
       - ./pgdata:/var/lib/postgresql/data
-    ports:
-      - 8000:5432
+    expose:
+      - "5432"
