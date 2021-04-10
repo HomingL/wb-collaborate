@@ -1,5 +1,5 @@
 import { Entity, BaseEntity, PrimaryGeneratedColumn, ManyToOne, Column } from 'typeorm';
-import { Field, ObjectType, ID } from 'type-graphql';
+import { Field, ObjectType, ID, InputType } from 'type-graphql';
 import { User } from './user';
 
 @Entity()
@@ -20,4 +20,28 @@ export class Whiteboard extends BaseEntity {
     @Column({ nullable: true })
     @Field({ nullable: true })
     data: string;
+}
+
+@InputType()
+export class WhiteboardNameInput {
+  
+  @Field()
+  name: string;
+}
+
+@InputType()
+export class WhiteboardIdInput {
+  
+  @Field()
+  id: string;
+}
+
+@InputType()
+export class UpdateWhiteboardInput {
+  
+  @Field()
+  id: string;
+
+  @Field()
+  data: string;
 }
