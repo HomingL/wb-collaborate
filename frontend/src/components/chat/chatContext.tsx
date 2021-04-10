@@ -1,5 +1,5 @@
 import React, { useState, useContext, createContext } from 'react'
-import { message } from '../chat/chat'
+import { message } from '../chat/message'
 
 export interface Chatprops {
     messages: message[];
