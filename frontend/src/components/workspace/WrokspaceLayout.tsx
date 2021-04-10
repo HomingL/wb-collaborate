@@ -1,16 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { Grid } from '@material-ui/core';
 import WBLogo from '../static_components/WBCollaborate';
 import { removeToken } from '../../utils/token';
-import { Link } from '@material-ui/core';
 
 
 interface WorkspaceLayoutProps {
@@ -20,16 +16,8 @@ interface WorkspaceLayoutProps {
 
 const WorkspaceLayout: React.FC<WorkspaceLayoutProps> = ({ children }) => {
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-
-  const handleProfile = (event: React.MouseEvent<HTMLElement>) => {
-    console.log("event: ", event);
-    setAnchorEl(event.currentTarget);
-  };
 
   const handleLogout = () => {
-    setAnchorEl(null);
     removeToken();
     if (typeof window !== 'undefined') window.location.replace("/");
   };
