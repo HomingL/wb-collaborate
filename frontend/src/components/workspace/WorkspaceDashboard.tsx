@@ -20,6 +20,7 @@ const WorkspaceDashboard: React.FC = () => {
     const [page, setPage] = useState<number>(1);
     const [totalPage, settotalPage] = useState<number>(1);
     const [refresh, setRefresh] = useState<boolean>(false);
+    const [whiteboardError, setWhiteboardError] = useState<boolean>(false);
 
     const [createWhiteboardMutation] = useCreateWhiteboardMutation({
       variables:{
@@ -34,13 +35,18 @@ const WorkspaceDashboard: React.FC = () => {
     );
 
     const handleCreate = () =>{
-      createWhiteboardMutation({
-        variables: {name: wbName},
-      }).then(() =>{
-        GetWhiteboardsQuery();
-      });
+      if (wbName){
+        setWhiteboardError(false);
+        createWhiteboardMutation({
+          variables: {name: wbName},
+        }).then(() =>{
+          GetWhiteboardsQuery();
+        });
+        setWbName("");
+      }else{
+        setWhiteboardError(true);
+      }
 
-      setWbName("");
     }
 
     useEffect(() => {
@@ -68,9 +74,17 @@ const WorkspaceDashboard: React.FC = () => {
     return (
       <Grid container spacing={3} justify='flex-start'>
 
-        <Grid container className={classes.textArea} justify="center">
+        <Grid container className={classes.textArea} justify="center" spacing={4}>
             <Grid item xs={6}>
-                <TextField variant="outlined" label="Whiteboard Name" value={wbName} onChange={(e) => setWbName(e.target.value)} type="search" fullWidth/>
+                <TextField 
+                variant="outlined"
+                label="Whiteboard Name"
+                value={wbName}
+                onChange={(e) => setWbName(e.target.value)}
+                type="search"
+                error={whiteboardError}
+                helperText={'Whiteboard name cannot be empty'}
+                fullWidth/>
             </Grid>
             <Grid item xs={1}>
               <Fab color="primary" aria-label="add" onClick={handleCreate}>

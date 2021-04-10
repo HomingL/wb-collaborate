@@ -52,9 +52,7 @@ export type Mutation = {
 
 
 export type MutationSignupArgs = {
-  password: Scalars['String'];
-  email: Scalars['String'];
-  name: Scalars['String'];
+  input: SignupInput;
 };
 
 
@@ -77,6 +75,12 @@ export type MutationUpdateWhiteboardArgs = {
 
 export type MutationDeleteWhiteboardArgs = {
   id: Scalars['String'];
+};
+
+export type SignupInput = {
+  name: Scalars['String'];
+  email: Scalars['String'];
+  password: Scalars['String'];
 };
 
 export type SigninResponse = {
@@ -198,7 +202,7 @@ export type DeleteWhiteboardMutation = (
 
 export const SignupDocument = gql`
     mutation Signup($email: String!, $password: String!, $name: String!) {
-  Signup(email: $email, password: $password, name: $name) {
+  Signup(input: {password: $password, email: $email, name: $name}) {
     id
     name
     email
