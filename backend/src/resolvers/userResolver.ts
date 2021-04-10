@@ -1,5 +1,5 @@
 /* eslint-disable linebreak-style */
-import { Resolver, Query, Mutation, Arg, UseMiddleware, Ctx } from 'type-graphql';
+import { Resolver, Query, Mutation, Arg, UseMiddleware, Ctx, InputType, Field } from 'type-graphql';
 import { sign } from 'jsonwebtoken';
 import crypto from 'crypto';
 import { Context } from 'src/context';
@@ -7,6 +7,7 @@ import { AuthenticationError } from 'apollo-server-express';
 import { isAuthenticated } from '../middlewares/auth';
 import { User } from '../models/user';
 import { SigninResponse } from '../models/signinResponse';
+import { Length, IsEmail, Matches } from "class-validator";
 
 const { TOKEN_SECRET, TOKEN_EXPIRE_TIME } = process.env;
 
@@ -18,6 +19,22 @@ function generateHash(password: string, salt: string) {
   const hash = crypto.createHmac('sha512', salt);
   hash.update(password);
   return hash.digest('base64');
+}
+
+@InputType()
+class SignupInput {
+  
+  @Field()
+  name: string;
+
+  @Field()
+  @IsEmail()
+  email: string;
+
+  @Field()
+  @Length(8, 30)
+  @Matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/)
+  password: string;
 }
 
 @Resolver()
@@ -32,10 +49,9 @@ export class UserResolver {
 
   @Mutation(() => User)
   async Signup(
-    @Arg('name') name: string,
-    @Arg('email') email: string,
-    @Arg('password') password: string,
+    @Arg("input") {name, email, password}: SignupInput,
   ) {
+
     const user = await User.findOne({ email });
     if (user) return new Error('User Already exist');
     const salt = generateSalt();
