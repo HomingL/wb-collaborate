@@ -65,7 +65,6 @@ const boot = async () => {
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
       resolvers: [UserResolver, WhiteboardResolver],
-      validate: false,
     }),
     context: ({ req, res }) => ({ req, res }),
   });

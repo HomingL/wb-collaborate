@@ -5,7 +5,7 @@ import crypto from 'crypto';
 import { Context } from 'src/context';
 import { AuthenticationError } from 'apollo-server-express';
 import { isAuthenticated } from '../middlewares/auth';
-import { User } from '../models/user';
+import { SignupInput, User } from '../models/user';
 import { SigninResponse } from '../models/signinResponse';
 
 const { TOKEN_SECRET, TOKEN_EXPIRE_TIME } = process.env;
@@ -32,10 +32,9 @@ export class UserResolver {
 
   @Mutation(() => User)
   async Signup(
-    @Arg('name') name: string,
-    @Arg('email') email: string,
-    @Arg('password') password: string,
+    @Arg("input") {name, email, password}: SignupInput,
   ) {
+
     const user = await User.findOne({ email });
     if (user) return new Error('User Already exist');
     const salt = generateSalt();

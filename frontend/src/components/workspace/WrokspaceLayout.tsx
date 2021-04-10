@@ -6,8 +6,11 @@ import IconButton from '@material-ui/core/IconButton';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { Grid } from '@material-ui/core';
 import WBLogo from '../static_components/WBCollaborate';
+import { removeToken } from '../../utils/token';
+import { Link } from '@material-ui/core';
 
 
 interface WorkspaceLayoutProps {
@@ -25,8 +28,10 @@ const WorkspaceLayout: React.FC<WorkspaceLayoutProps> = ({ children }) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
+  const handleLogout = () => {
     setAnchorEl(null);
+    removeToken();
+    if (typeof window !== 'undefined') window.location.replace("/");
   };
 
   return (
@@ -36,36 +41,15 @@ const WorkspaceLayout: React.FC<WorkspaceLayoutProps> = ({ children }) => {
         <AppBar position="static" color={"primary"} >
           <Toolbar>
             <WBLogo />
-            
-            <div>
-              <IconButton
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleProfile}
-                color="inherit"
-              >
-                <AccountCircle />
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                open={open}
-                onClose={handleClose}
-              >
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>Log out</MenuItem>
-              </Menu>
-            </div>
+                <IconButton
+                  aria-label="account of current user"
+                  aria-controls="menu-appbar"
+                  aria-haspopup="true"
+                  onClick={handleLogout}
+                  color="inherit"
+                >
+                    <ExitToAppIcon />
+                </IconButton>
             </Toolbar>
           </AppBar>
         </Grid>
