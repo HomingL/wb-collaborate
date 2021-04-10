@@ -77,9 +77,6 @@ const boot = async () => {
 
   let socketServer;
   if (!config.ssl) {
-    // app.listen(port, () => {
-    //   console.log(`HTTP server started on localhost: ${port}`);
-    // });
     socketServer = createServer(app);
     const httpServer2 = createServer(app);
     httpServer2.listen(config.port, () => {
@@ -133,12 +130,10 @@ const boot = async () => {
     socket.emit('init', { selfId: socket.id, allUserIds: Object.values(roomUsers[roomId]) });
 
     socket.on('notifyPeers', (data) => {
-      // console.log(data.from, ' sending hello to ', data.to);
       socket.to(data.to).emit('hello', { signalData: data.signalData, initiatorId: data.from });
     });
 
     socket.on('acceptConn', (data) => {
-      // console.log('sending acceptance message from ', socket.id);
       socket.to(data.to).emit('accepted', { targetId: socket.id, signalData: data.signalData });
     });
 

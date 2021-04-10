@@ -142,16 +142,18 @@ const WbCanvas: React.FC<WbCanvasProp> = ({ wid }) => {
 
   return (
     <div className={classes.root}>
-      <canvas ref={canvasRef} id="canvas" width="1500" height="750"></canvas>
+      <canvas className={classes.canv} ref={canvasRef} id="canvas" width={1650} height={750}></canvas>
     </div>
   );
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
   root:{
-    border: '5px solid black',
     margin: theme.spacing(3),
   },
+  canv:{
+    border: '5px solid black',
+  }
 }));
 
 export default WbCanvas

@@ -34,7 +34,6 @@ const Whiteboard: React.FC<WhiteboardProps> = () => {
     }, [router.query.wid]);
     
     useEffect(() => {
-        if (data) console.log(data.GetWhiteboard);
         if (data) setLoading(false);
         if (error) router.push('/404');
     }, [data, error]);

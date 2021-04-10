@@ -178,7 +178,7 @@ const WbSubTool: React.FC = () => {
                 </Grid>
 
                 <Typography gutterBottom>
-                    Border Color
+                    Backgroud Color
                 </Typography>
                 <Grid container alignItems='center' justify='space-between'>
                   <Grid item xs>
