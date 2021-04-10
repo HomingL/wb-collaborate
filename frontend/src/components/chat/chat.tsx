@@ -8,13 +8,7 @@ import { useChatContext } from './chatContext';
 import { usePBContext } from '../whiteboard/peerData';
 import { AccountCircle, Close } from '@material-ui/icons';
 import { useGetUserLazyQuery } from '../../generated/apolloComponents';
-import Message from './message';
-export interface message{
-    text: string
-    user: string
-    time: number
-    self: boolean
-}
+import Message, { message } from './message';
 
 const Chat: React.FC = () => {
     const classes = useStyles();
@@ -69,7 +63,6 @@ const Chat: React.FC = () => {
         if (peerData) {
           try {
             const pData = JSON.parse(peerData);
-            console.log('pData', pData);
 
             if (pData.chats) {
                 pData.chats.self = false;

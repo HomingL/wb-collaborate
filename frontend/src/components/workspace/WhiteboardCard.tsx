@@ -1,7 +1,6 @@
 import React from 'react'
-import { Card, makeStyles, Typography, CardContent, Button, CardActions, CardMedia, IconButton} from '@material-ui/core';
+import { Card, makeStyles, Typography, CardContent, Button, CardActions, IconButton} from '@material-ui/core';
 import { useRouter } from 'next/router';
-// import { fabric } from "fabric";
 import DeleteSweepIcon from '@material-ui/icons/DeleteSweep';
 import { useDeleteWhiteboardMutation, Whiteboard } from '../../generated/apolloComponents';
 
@@ -22,20 +21,6 @@ const WhiteboardCard: React.FC<WhiteboardCardProp> = ({setRefresh, refresh, whit
     }
   });
 
-  // const canvas = new fabric.Canvas('canvas');
-
-  // const url = canvas.toDataURL(user + "/" + id);
-  
-  // fabric.Image.fromURL(url, function(img) {
-  //   canvas.add(img);
-  //   // call toDataURL after image gets loaded
-  //   console.log(canvas.toDataURL());
-  // });
-
-  
-
-  // console.log(url);
-
   const handleDelete = () => {
     deleteWhiteboardMutation({
       variables:{
@@ -52,10 +37,6 @@ const WhiteboardCard: React.FC<WhiteboardCardProp> = ({setRefresh, refresh, whit
           { name }
         </Typography>
       </CardContent>
-      <CardMedia
-        // image={url}
-        title="Name"
-      />
       <CardActions>
         <Button size="small" onClick={() => router.push("/whiteboard/" + id)}>Open Board</Button>
         <IconButton onClick={handleDelete} aria-label="add to favorites">

@@ -41,15 +41,12 @@ const PeerConnecion: React.FC<PeerConnecionProps> = ({ children, wid }) => {
         socket.current.on('init', (data:{selfId:string, allUserIds:string[]}) => {
             selfSocketId.current = data.selfId;
             allSocketIds.current = data.allUserIds;
-            console.log("Self ID", selfSocketId.current);
-            console.log("AllSocketID", allSocketIds.current);
             connectPeers();
         });
         
         // keep all connected user id updated and establish simple-peer connection to them
         socket.current.on('allUserIds', (users:string[]) => {
             allSocketIds.current = (users);
-            // console.log("AllSocketIDs", allSocketIds.current);
             peerCleanup();
         });
 
@@ -74,18 +71,15 @@ const PeerConnecion: React.FC<PeerConnecionProps> = ({ children, wid }) => {
             initiator: true,
             trickle: false
         });
-        // console.log("calling peer");
+
         peer.on('signal', (signalData:any) => {
-            console.log("emit signal to", id);
             socket.current.emit("notifyPeers", { to: id, signalData: signalData, from: selfSocketId.current })
         })
         peer.on('error', (err:Error) => {
             console.error(err);
         });
         peer.on('connect', () => {
-            console.log("peers", peerConnections.current);
             peer.send(JSON.stringify({path: "hello from " + selfSocketId.current}));
-            console.log(selfSocketId.current + " successfully connected to " + id);
         });
         peer.on('data', (data:string) => {
             onPeerData(data);
@@ -94,7 +88,6 @@ const PeerConnecion: React.FC<PeerConnecionProps> = ({ children, wid }) => {
         // finalize connection if connection accepted
         socket.current.on('accepted', (data:any) => {
             if (data.targetId === id) {
-                // console.log("accepted by ", data.signalData);
                 try {
                     peer.signal(data.signalData);
                     peerConnections.current[id] = peer;
@@ -137,20 +130,15 @@ const PeerConnecion: React.FC<PeerConnecionProps> = ({ children, wid }) => {
             onPeerData(data);
         });
         peer.on('connect', () => {
-            console.log("peers", peerConnections.current);
             peer.send(JSON.stringify({path: "hello from " + selfSocketId.current}));
-            console.log(selfSocketId.current + " successfully connected to " + initiator);
         });
         peer.signal(initiatorData);
         peerConnections.current[initiator] = peer;
     }
 
     const peerBroadcast = useCallback((data:string) => {
-        // console.log("process data...", data);
         Object.values(peerConnections.current).forEach(peer => {
             try {
-                // console.log("send to:", peer);
-                // console.log("sending...", data);
                 peer.send(data);
             } catch (err) {
                 console.error(err);
@@ -162,7 +150,6 @@ const PeerConnecion: React.FC<PeerConnecionProps> = ({ children, wid }) => {
     
     // define this function to send data
     function onPeerData(data:string) {
-        // console.log("received data:", data.toString());
         setPeerData(data.toString());
     }
 

@@ -7,10 +7,6 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Pagination from '@material-ui/lab/Pagination';
 
 
-// interface WorkspaceDashboardProps {
-//   whiteboards: Whiteboard[]
-// }
-
 const WorkspaceDashboard: React.FC = () => {
     const pageLimit = 12;
     const classes = useStyles();
