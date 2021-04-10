@@ -1,7 +1,7 @@
 import { Entity, BaseEntity, PrimaryGeneratedColumn, ManyToOne, Column } from 'typeorm';
 import { Field, ObjectType, ID, InputType } from 'type-graphql';
 import { User } from './user';
-import { IsNotEmpty } from 'class-validator';
+import { IsJSON, IsNotEmpty } from 'class-validator';
 
 @Entity()
 @ObjectType()
@@ -47,5 +47,6 @@ export class UpdateWhiteboardInput {
   id: string;
 
   @Field({ nullable: true })
+  @IsJSON()
   data: string;
 }
