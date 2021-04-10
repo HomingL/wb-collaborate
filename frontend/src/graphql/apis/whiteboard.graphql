@@ -1,5 +1,10 @@
 mutation CreateWhiteboard($name: String!){
-  CreateWhiteboard(name: $name){
+  CreateWhiteboard(
+    input: {
+      name: $name
+      }
+  )
+    {
     id
     data
     user{
@@ -11,11 +16,20 @@ mutation CreateWhiteboard($name: String!){
 }
 
 mutation UpdateWhiteboard($id: String!, $data: String!){
-  UpdateWhiteboard(id: $id, data: $data)
+  UpdateWhiteboard(
+    input: {
+      id: $id, 
+      data: $data
+    }
+  )
 }
 
 query GetWhiteboard($id: String!){
-  GetWhiteboard(id: $id){
+  GetWhiteboard(
+    input: {
+      id: $id
+    }
+  ){
     name
     data
   }
@@ -35,5 +49,9 @@ query GetWhiteboards{
 }
 
 mutation DeleteWhiteboard($id: String!){
-  DeleteWhiteboard(id: $id)
+  DeleteWhiteboard(
+    input: {
+      id: $id
+    }
+  )
 }

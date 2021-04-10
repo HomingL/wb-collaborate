@@ -2,7 +2,7 @@ import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, OneToMany } from 't
 
 import { Field, ObjectType, ID, InputType } from 'type-graphql';
 import { Whiteboard } from './whiteboard';
-import { IsEmail, Length, Matches } from 'class-validator';
+import { IsEmail, IsNotEmpty, Length, Matches } from 'class-validator';
 
 @Entity()
 @ObjectType()
@@ -34,14 +34,17 @@ export class User extends BaseEntity {
 export class SignupInput {
   
   @Field()
+  @IsNotEmpty()
   name: string;
 
   @Field()
   @IsEmail()
+  @IsNotEmpty()
   email: string;
 
   @Field()
   @Length(8, 30)
+  @IsNotEmpty()
   @Matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/)
   password: string;
 }

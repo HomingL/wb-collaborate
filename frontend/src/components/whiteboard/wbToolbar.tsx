@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import React from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { Button, IconButton } from '@material-ui/core';
+import { IconButton } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import CreateIcon from '@material-ui/icons/Create';
@@ -12,7 +12,6 @@ import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
 import ChangeHistoryIcon from '@material-ui/icons/ChangeHistory';
 import TextFieldsIcon from '@material-ui/icons/TextFields';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
-import SaveIcon from '@material-ui/icons/Save';
 import ShowChartIcon from '@material-ui/icons/ShowChart';
 import { useWBContext } from './wbContext';
 import { fabric } from "fabric";
@@ -138,20 +137,6 @@ const WbToolbar: React.FC = () => {
           <IconButton edge="start" className={classes.button} onClick={() => createNewTextBox()}>
             <TextFieldsIcon />
           </IconButton>
-          <IconButton edge="start" className={classes.button}>
-            <CropDinSharpIcon />
-          </IconButton>
-          {/* <IconButton edge="start" className={classes.button}>
-            <RadioButtonUncheckedIcon />
-          </IconButton> */}
-          <Button
-            variant="outlined"
-            className={classes.button}
-            startIcon={<SaveIcon />}
-            onClick={() => saveCanvas()}
-          >
-            Save
-          </Button>
         </Toolbar>
       </AppBar>
     </div>

@@ -1,6 +1,7 @@
 import { Entity, BaseEntity, PrimaryGeneratedColumn, ManyToOne, Column } from 'typeorm';
 import { Field, ObjectType, ID, InputType } from 'type-graphql';
 import { User } from './user';
+import { IsNotEmpty } from 'class-validator';
 
 @Entity()
 @ObjectType()
@@ -26,6 +27,7 @@ export class Whiteboard extends BaseEntity {
 export class WhiteboardNameInput {
   
   @Field()
+  @IsNotEmpty()
   name: string;
 }
 
@@ -33,6 +35,7 @@ export class WhiteboardNameInput {
 export class WhiteboardIdInput {
   
   @Field()
+  @IsNotEmpty()
   id: string;
 }
 
@@ -40,8 +43,9 @@ export class WhiteboardIdInput {
 export class UpdateWhiteboardInput {
   
   @Field()
+  @IsNotEmpty()
   id: string;
 
-  @Field()
+  @Field({ nullable: true })
   data: string;
 }

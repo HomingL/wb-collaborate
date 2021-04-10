@@ -1,3 +1,4 @@
+import { UpdateWhiteboardInput, WhiteboardNameInput, WhiteboardIdInput } from './../models/whiteboard';
 /* eslint-disable linebreak-style */
 import { Resolver, Mutation, Arg, UseMiddleware, Ctx, Query } from 'type-graphql';
 import { User } from '../models/user';
@@ -11,7 +12,7 @@ export class WhiteboardResolver {
   @UseMiddleware(isAuthenticated)
   async CreateWhiteboard(
     @Ctx() ctx: Context,
-    @Arg('name') name: string,
+    @Arg('input') {name}: WhiteboardNameInput,
   ) {
     const { payload } = ctx;
     const email = payload?.email;
@@ -24,8 +25,8 @@ export class WhiteboardResolver {
 
   @Mutation(() => String)
   async UpdateWhiteboard(
-    @Arg('id') id: string,
-    @Arg('data') data: string,
+    @Arg('input') {data, id}: UpdateWhiteboardInput,
+
   ) {
     const whiteboard = await Whiteboard.findOne({ id });
     if (!whiteboard) return new Error(`whiteboard ${id} does not exist`);
@@ -36,7 +37,7 @@ export class WhiteboardResolver {
 
   @Query(() => Whiteboard, { nullable: true })
   async GetWhiteboard(
-    @Arg('id') id: string,
+    @Arg('input') {id}: WhiteboardIdInput,
   ) {
     const whiteboard = await Whiteboard.findOne(id);
     if (!whiteboard) return new Error(`Whiteboard id: ${id} does not exist`);
@@ -62,7 +63,7 @@ export class WhiteboardResolver {
 
   @Mutation(() => String)
   async DeleteWhiteboard(
-    @Arg('id') id: string,
+    @Arg('input') {id}: WhiteboardIdInput,
   ) {
     try {
       await Whiteboard

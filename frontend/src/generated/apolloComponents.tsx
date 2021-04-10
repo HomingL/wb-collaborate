@@ -22,7 +22,7 @@ export type Query = {
 
 
 export type QueryGetWhiteboardArgs = {
-  id: Scalars['String'];
+  input: WhiteboardIdInput;
 };
 
 export type User = {
@@ -39,6 +39,10 @@ export type Whiteboard = {
   name: Scalars['String'];
   user: User;
   data?: Maybe<Scalars['String']>;
+};
+
+export type WhiteboardIdInput = {
+  id: Scalars['String'];
 };
 
 export type Mutation = {
@@ -63,18 +67,17 @@ export type MutationSigninArgs = {
 
 
 export type MutationCreateWhiteboardArgs = {
-  name: Scalars['String'];
+  input: WhiteboardNameInput;
 };
 
 
 export type MutationUpdateWhiteboardArgs = {
-  data: Scalars['String'];
-  id: Scalars['String'];
+  input: UpdateWhiteboardInput;
 };
 
 
 export type MutationDeleteWhiteboardArgs = {
-  id: Scalars['String'];
+  input: WhiteboardIdInput;
 };
 
 export type SignupInput = {
@@ -87,6 +90,15 @@ export type SigninResponse = {
   __typename?: 'SigninResponse';
   user: User;
   token: Scalars['String'];
+};
+
+export type WhiteboardNameInput = {
+  name: Scalars['String'];
+};
+
+export type UpdateWhiteboardInput = {
+  id: Scalars['String'];
+  data?: Maybe<Scalars['String']>;
 };
 
 export type SignupMutationVariables = Exact<{
@@ -310,7 +322,7 @@ export type GetUserLazyQueryHookResult = ReturnType<typeof useGetUserLazyQuery>;
 export type GetUserQueryResult = Apollo.QueryResult<GetUserQuery, GetUserQueryVariables>;
 export const CreateWhiteboardDocument = gql`
     mutation CreateWhiteboard($name: String!) {
-  CreateWhiteboard(name: $name) {
+  CreateWhiteboard(input: {name: $name}) {
     id
     data
     user {
@@ -348,7 +360,7 @@ export type CreateWhiteboardMutationResult = Apollo.MutationResult<CreateWhitebo
 export type CreateWhiteboardMutationOptions = Apollo.BaseMutationOptions<CreateWhiteboardMutation, CreateWhiteboardMutationVariables>;
 export const UpdateWhiteboardDocument = gql`
     mutation UpdateWhiteboard($id: String!, $data: String!) {
-  UpdateWhiteboard(id: $id, data: $data)
+  UpdateWhiteboard(input: {id: $id, data: $data})
 }
     `;
 export type UpdateWhiteboardMutationFn = Apollo.MutationFunction<UpdateWhiteboardMutation, UpdateWhiteboardMutationVariables>;
@@ -379,7 +391,7 @@ export type UpdateWhiteboardMutationResult = Apollo.MutationResult<UpdateWhitebo
 export type UpdateWhiteboardMutationOptions = Apollo.BaseMutationOptions<UpdateWhiteboardMutation, UpdateWhiteboardMutationVariables>;
 export const GetWhiteboardDocument = gql`
     query GetWhiteboard($id: String!) {
-  GetWhiteboard(id: $id) {
+  GetWhiteboard(input: {id: $id}) {
     name
     data
   }
@@ -452,7 +464,7 @@ export type GetWhiteboardsLazyQueryHookResult = ReturnType<typeof useGetWhiteboa
 export type GetWhiteboardsQueryResult = Apollo.QueryResult<GetWhiteboardsQuery, GetWhiteboardsQueryVariables>;
 export const DeleteWhiteboardDocument = gql`
     mutation DeleteWhiteboard($id: String!) {
-  DeleteWhiteboard(id: $id)
+  DeleteWhiteboard(input: {id: $id})
 }
     `;
 export type DeleteWhiteboardMutationFn = Apollo.MutationFunction<DeleteWhiteboardMutation, DeleteWhiteboardMutationVariables>;
