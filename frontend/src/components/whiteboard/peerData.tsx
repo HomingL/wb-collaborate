@@ -75,7 +75,7 @@ const PeerConnecion: React.FC<PeerConnecionProps> = ({ children, wid }) => {
         peer.on('signal', (signalData:any) => {
             socket.current.emit("notifyPeers", { to: id, signalData: signalData, from: selfSocketId.current })
         })
-        peer.on('error', (err:Error) => {
+        peer.on('error', () => {
             callPeer(id);
         });
         peer.on('data', (data:string) => {

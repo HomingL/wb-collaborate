@@ -11,7 +11,87 @@ https://ggnbwhiteboard.rocks/
 
 ## API Documentation
 
+[Under Documentation/API_Documentation.md](../Documentation/API%20Documentation.md)
+
 ## Demo Video
+
+
+## To run the APP
+
+Need to install node version 10
+
+#### Using normal npm
+
+Need to clone the repository
+Need to open two terminals one for frontend and the other for the backend
+
+##### Backend
+
+Need to add a **.env** file that contains the following:
+
+```sh
+PORT=5000
+TOKEN_SECRET=Hello
+TOKEN_EXPIRE_TIME=60min
+FRONT_END_ORIGIN=http://localhost:3000
+NODE_ENV=development
+PORT_SOCKET=5001
+```
+
+Note if you change the **PORT** or the **PORT_SOCKET** you will need to change .env file in the front end as well.
+
+A file **ormconfig.json** need to be also added containing the following:
+
+If no **Postgress**:
+
+```json
+{
+    "type": "sqlite",
+    "database": "./db.sqlite3",
+    "entities": ["./dist/models/*.js"],
+    "synchronize": true
+}
+```
+
+If you have **Postgress** (reconmended):
+```json
+{
+    "type": "postgres",
+    "host": "localhost",
+    "port": 5432,
+    "username": "db",
+    "password": "db",
+    "database": "db",
+    "entities": ["dist/models/*.js"],
+    "synchronize": true
+} 
+```
+
+Make sure to open your database and replace the fields on the **ormconfig.json** with your own configuration
+
+```sh
+cd backend
+npm install
+npm run build
+npm run start
+```
+##### Frontend
+
+Need to add a **.env** file that contains the following:
+
+```sh
+NEXT_PUBLIC_BACK_END_ORIGIN=http://localhost:5000/graphql
+NEXT_PUBLIC_BACK_END_SOCKET=ws://localhost:5001
+```
+
+Then you will need to perform the following commands
+```sh
+cd frontend
+npm install
+npm run build
+npm run start
+```
+
 ## Team Members
 
 | First Name | Last Name |Student Number |
