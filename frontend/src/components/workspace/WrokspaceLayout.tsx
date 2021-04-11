@@ -4,17 +4,15 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import { Grid } from '@material-ui/core';
+import { Grid, Typography } from '@material-ui/core';
 import WBLogo from '../static_components/WBCollaborate';
 import { removeToken } from '../../utils/token';
-
-
 interface WorkspaceLayoutProps {
+  name: string;
   children: React.ReactNode;
 }
 
-
-const WorkspaceLayout: React.FC<WorkspaceLayoutProps> = ({ children }) => {
+const WorkspaceLayout: React.FC<WorkspaceLayoutProps> = ({ name, children }) => {
   const classes = useStyles();
 
   const handleLogout = () => {
@@ -29,15 +27,18 @@ const WorkspaceLayout: React.FC<WorkspaceLayoutProps> = ({ children }) => {
         <AppBar position="static" color={"primary"} >
           <Toolbar>
             <WBLogo />
-                <IconButton
-                  aria-label="account of current user"
-                  aria-controls="menu-appbar"
-                  aria-haspopup="true"
-                  onClick={handleLogout}
-                  color="inherit"
-                >
-                    <ExitToAppIcon />
-                </IconButton>
+            <Typography variant="h6" className={classes.title}>
+                {name}'s workspace
+            </Typography>
+            <IconButton
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleLogout}
+              color="inherit"
+            >
+                <ExitToAppIcon />
+            </IconButton>
             </Toolbar>
           </AppBar>
         </Grid>
@@ -56,8 +57,6 @@ const useStyles = makeStyles((theme: Theme) =>
       flexGrow: 1,
     },
     appBar: {
-      // width: `calc(100% - ${drawerWidth}px)`,
-      // marginLeft: drawerWidth,
     },
     drawer:{
       witdth: drawerWidth,

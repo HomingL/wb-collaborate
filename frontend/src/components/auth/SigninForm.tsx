@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import { Button, Collapse, Grid, IconButton, TextField, Theme } from "@material-ui/core";
+import { Button, Grid, TextField, Theme } from "@material-ui/core";
 import { makeStyles } from '@material-ui/core/styles';
-import { Alert } from '@material-ui/lab';
-import CloseIcon from '@material-ui/icons/Close';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { SignInValidationSchema } from './AuthValidationSchema';
@@ -10,12 +8,9 @@ import { useSigninMutation } from '../../generated/apolloComponents';
 import { useRouter } from 'next/router';
 import Link from '../../Link';
 import { setToken } from '../../utils/token';
+import ErrorMessage from '../dialog/ErrorMessage';
 
-interface SigninFormProps {
-
-}
-
-const SigninForm: React.FC<SigninFormProps> = () => {
+const SigninForm: React.FC = () => {
   const [badLogin, setBadLogin] = useState<boolean>(false);
   const classes = useStyles();
   const router = useRouter();
@@ -40,29 +35,15 @@ const SigninForm: React.FC<SigninFormProps> = () => {
         router.push(`/workspace/${uid}`);
       }).catch(() =>{
         setBadLogin(true);
-        // throw new Error('Server Side Error for Signin');
       })
     },
   });
   return (
     <>
       <form className={classes.form} onSubmit={formik.handleSubmit}>
-        <Collapse in={badLogin}>
-          <Alert action={
-            <IconButton
-              aria-label="close"
-              color="inherit"
-              size="small"
-              onClick={() => {
-                setBadLogin(false);
-              }}
-            >
-              <CloseIcon fontSize="inherit" />
-            </IconButton>
-          } severity="error">
-            Incorrect email or password!
-          </Alert>
-        </Collapse>
+        <ErrorMessage occur={badLogin} onClose={() => setBadLogin(false)}>
+          Incorrect email or password!
+        </ErrorMessage>
         <TextField
           variant="outlined"
           margin="normal"
@@ -93,10 +74,6 @@ const SigninForm: React.FC<SigninFormProps> = () => {
           id="password"
           autoComplete="current-password"
         />
-        {/* <FormControlLabel
-          control={<Checkbox value="remember" color="primary" />}
-          label="Remember me"
-        /> */}
         <Button
           type="submit"
           fullWidth
@@ -107,11 +84,6 @@ const SigninForm: React.FC<SigninFormProps> = () => {
           Sign In
         </Button>
         <Grid container>
-          {/* <Grid item xs>
-            <Link href="#" variant="body2">
-              Forgot password?
-            </Link>
-          </Grid> */}
           <Grid item>
             <Link href="/signup" variant="body2">
               {"Don't have an account? Sign Up"}

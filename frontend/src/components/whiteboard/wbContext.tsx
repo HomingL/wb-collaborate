@@ -1,4 +1,3 @@
-
 import React, { useState, useContext, createContext, useEffect, useCallback } from 'react'
 import { fabric } from "fabric";
 import { usePBContext } from './peerData';
@@ -44,7 +43,6 @@ const WBProvider: React.FC<WBProviderProps> = ({ wid, children }) => {
             },
         }).catch((err:any) => {
             console.log(err);
-            throw new Error('Error cannot save canvas');
         });
     }, [peerBroadcast, wid]);
   
