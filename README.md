@@ -96,7 +96,7 @@ This application is useful when working remotely. User at different physical loc
 
 #### Using Docker (Recomended)
 
-- Need to install docker
+Need to install docker and docker-compose
 
 ##### To start the app
 ```
@@ -128,7 +128,9 @@ FRONT_END_ORIGIN=http://localhost:3000
 PORT_SOCKET=5001
 ```
 
+
 Note if you change the **PORT** or the **PORT_SOCKET** you will need to change **.env** file in the front end as well.
+You can Change **TOKEN_SECRET** as anything you want.
 
 A file **ormconfig.json** has default configuration of:
 
