@@ -31,6 +31,7 @@ const Index: React.FC = () => {
 
   useEffect(() => {
     getUserQuery();
+    console.log("query");
   }, []);
   
   useEffect(() => {
