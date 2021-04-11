@@ -1,24 +1,18 @@
 version: '3'
 services:
   ggnb-proxy:
-    build: ./nginx
-    # image: nginx:1.19
+    # build: ./nginx
+    image: nginx:1.19
     depends_on: 
       - ggnb-frontend
       - ggnb-backend
     volumes: 
-      - ./nginx/nginx.conf:/etc/nginx/sites-available/default
-      - ./nginx/cert.pem:/etc/letsencrypt/live/ggnbwhiteboard.rocks/cert.pem
-      - ./nginx/chain.pem:/etc/letsencrypt/live/ggnbwhiteboard.rocks/chain.pem
-      - ./nginx/fullchain.pem:/etc/letsencrypt/live/ggnbwhiteboard.rocks/fullchain.pem
-      - ./nginx/options-ssl-nginx.conf:/etc/letsencrypt/options-ssl-nginx.conf
-      - ./nginx/ssl-dhparams.pem:/etc/letsencrypt/ssl-dhparams.pem
-      - ./nginx/privkey.pem:/etc/letsencrypt/live/ggnbwhiteboard.rocks/privkey.pem
+      - ./nginx/nginx_dev.conf:/etc/nginx/conf.d/default.conf
     ports: 
       - 80:80
-      - 443:443
   ggnb-frontend:
-    image: lihongming1/ggnb-frontend:2.0.5
+    container_name: ggnb-frontend
+    image: lihongming1/ggnb-frontend:2.0.6
     build: ./frontend
     working_dir: /var/opt
     depends_on:
@@ -29,13 +23,14 @@ services:
     env_file: ./frontend/.env.local
   ggnb-backend:
     container_name: ggnb-backend
-    image: lihongming1/ggnb-backend:2.0.5
+    image: lihongming1/ggnb-backend:2.0.6
     build: ./backend
     working_dir: /var/opt
     depends_on:
       - ggnb-database
+    ports: 
+      - 5000:5000
     expose: 
-      - "5000"
       - "5001"
     command: npm run start
     env_file: ./backend/.env
@@ -48,5 +43,5 @@ services:
       POSTGRES_DB: ggnb
     volumes:
       - ./pgdata:/var/lib/postgresql/data
-    ports:
-      - 8000:5432
+    expose:
+      - "5432"
