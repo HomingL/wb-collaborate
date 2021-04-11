@@ -18,7 +18,6 @@ services:
     expose: 
       - "3000"
     command: npm run start
-    env_file: ./frontend/.env
   ggnb-backend:
     container_name: ggnb-backend
     image: lihongming1/ggnb-backend:2.0.7
@@ -30,7 +29,6 @@ services:
     expose: 
       - "5001"
     command: npm run start
-    env_file: ./backend/.env
   ggnb-database:
     container_name: ggnb-database
     image: postgres:latest
