@@ -63,8 +63,6 @@ const PeerConnecion: React.FC<PeerConnecionProps> = ({ children, wid }) => {
     },[wid]);
     
     function callPeer(id:string) {
-        console.log("all ids:", allSocketIds.current);
-        console.log(selfSocketId.current, "is calling peers:", id);
         // return if connect to self or already connected
         if (id === selfSocketId.current || peerConnections.current[id]) return;
         const peer = new Peer({
