@@ -51,7 +51,7 @@ const Workspace: React.FC = () => {
                 <CircularProgress />
             </Grid>
         </> :
-        <WorkspaceLayout>
+        <WorkspaceLayout name={data ? data.User.name : ""}>
             <ErrorMessage occur={expired} onClose={() => router.push('/')}>
                 Session Expired! Redirecting to login page...
             </ErrorMessage>
