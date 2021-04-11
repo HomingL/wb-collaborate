@@ -11,86 +11,11 @@ https://ggnbwhiteboard.rocks/
 
 ## API Documentation
 
-[Under Documentation/API_Documentation.md](../Documentation/API%20Documentation.md)
+[Under Documentation/API_Documentation.md](https://github.com/UTSCC09/project-ggnb/blob/main/doc/API%20Documentation.md)
 
 ## Demo Video
 
-
-## To run the APP
-
-Need to install node version 10
-
-#### Using normal npm
-
-Need to clone the repository
-Need to open two terminals one for frontend and the other for the backend
-
-##### Backend
-
-Need to add a **.env** file that contains the following:
-
-```sh
-PORT=5000
-TOKEN_SECRET=Hello
-TOKEN_EXPIRE_TIME=60min
-FRONT_END_ORIGIN=http://localhost:3000
-NODE_ENV=development
-PORT_SOCKET=5001
-```
-
-Note if you change the **PORT** or the **PORT_SOCKET** you will need to change .env file in the front end as well.
-
-A file **ormconfig.json** need to be also added containing the following:
-
-If no **Postgress**:
-
-```json
-{
-    "type": "sqlite",
-    "database": "./db.sqlite3",
-    "entities": ["./dist/models/*.js"],
-    "synchronize": true
-}
-```
-
-If you have **Postgress** (reconmended):
-```json
-{
-    "type": "postgres",
-    "host": "localhost",
-    "port": 5432,
-    "username": "db",
-    "password": "db",
-    "database": "db",
-    "entities": ["dist/models/*.js"],
-    "synchronize": true
-} 
-```
-
-Make sure to open your database and replace the fields on the **ormconfig.json** with your own configuration
-
-```sh
-cd backend
-npm install
-npm run build
-npm run start
-```
-##### Frontend
-
-Need to add a **.env** file that contains the following:
-
-```sh
-NEXT_PUBLIC_BACK_END_ORIGIN=http://localhost:5000/graphql
-NEXT_PUBLIC_BACK_END_SOCKET=ws://localhost:5001
-```
-
-Then you will need to perform the following commands
-```sh
-cd frontend
-npm install
-npm run build
-npm run start
-```
+https://youtu.be/m4VAdPI4e_U
 
 ## Team Members
 
@@ -100,6 +25,7 @@ npm run start
 | Diego      | He        | 1004264547    |
 | Han-Shin   | Chen      | 1005403957    |
 
+##### Note: How to run the app is at the bottom of the file.
 ---
 
 ## App Description
@@ -140,24 +66,24 @@ This application is useful when working remotely. User at different physical loc
 ## Technology Stack
 
 #### Frontend:
-- React (next.js)
-- Apollo Client
-- Material-UI
+- [React (next.js)](https://nextjs.org/)
+- [Apollo Client](https://www.apollographql.com/docs/)
+- [Material-UI](https://material-ui.com/)
 
 #### Backend:
-- Express
-- GraphQL (Apollo Server)
-- PostgreSQL (with Typeorm)
+- [Express](https://expressjs.com/)
+- [Apollo Server](https://www.apollographql.com/docs/)
+- [PostgreSQL (with Typeorm)](https://typeorm.io/)
 
 #### Other Technologies
-- P2P connection (simple-peer)
-- Websocket (socket.io)
-- Canvas (fabric.js)
+- [P2P connection (simple-peer)](https://github.com/feross/simple-peer)
+- [Websocket (socket.io)](https://socket.io/)
+- [Canvas (fabric.js)](http://fabricjs.com/)
 
 ## Deployment
-- Digital Ocean 
-- Docker
-- Nginx
+- [Digital Ocean](https://www.digitalocean.com/)
+- [Docker](https://www.docker.com/)
+- [Nginx](https://www.nginx.com/)
 
 ## Top Five Technical Challenges
  - P2P User Communication(for whiteboard)
@@ -165,3 +91,102 @@ This application is useful when working remotely. User at different physical loc
  - Multi-feature toolbar(e.g. color selection)
  - Websocket for P2P connection management
  - Chat Box
+
+## To run the APP
+
+#### Using Docker (Recomended)
+
+Need to install docker and docker-compose
+
+##### To start the app
+```
+docker-compose -f dev-compose.yml up -d
+```
+
+The app is hosted at http://localhost
+
+##### To close the app
+```
+docker-compose -f dev-compose.yml down
+```
+
+#### Using normal npm
+
+- Need to install node version 10
+- Need to clone the repository
+- Need to open two terminals one for frontend and the other for the backend
+
+##### Backend
+
+Need to add a **.env** file that contains the following:
+
+```sh
+PORT=5000
+TOKEN_SECRET=Hello
+TOKEN_EXPIRE_TIME=60min
+FRONT_END_ORIGIN=http://localhost:3000
+PORT_SOCKET=5001
+```
+
+
+Note if you change the **PORT** or the **PORT_SOCKET** you will need to change **.env** file in the front end as well.
+You can Change **TOKEN_SECRET** as anything you want.
+
+A file **ormconfig.json** has default configuration of:
+
+Default config is **SQLite**:
+
+```json
+{
+    "type": "sqlite",
+    "database": "./db.sqlite3",
+    "entities": ["./dist/models/*.js"],
+    "synchronize": true
+}
+```
+
+If you have **Postgress** (reconmended) change the config to:
+```json
+{
+    "type": "postgres",
+    "host": "localhost",
+    "port": 5432,
+    "username": "db",
+    "password": "db",
+    "database": "db",
+    "entities": ["dist/models/*.js"],
+    "synchronize": true
+} 
+```
+
+Make sure to open your database and replace the fields on the **ormconfig.json** with your own configuration
+
+```sh
+cd backend
+npm install
+npm run build
+npm run start
+```
+##### Frontend
+
+Need to add a **.env** file that contains the following:
+
+```sh
+NEXT_PUBLIC_BACK_END_ORIGIN=http://localhost:5000/graphql
+NEXT_PUBLIC_BACK_END_SOCKET=ws://localhost:5001
+```
+
+Then you will need to perform the following commands
+```sh
+cd frontend
+npm install
+npm run build
+npm run start
+```
+
+The app is hosted at http://localhost:3000
+
+
+## Credit
+
+[Credits Doc](https://github.com/UTSCC09/project-ggnb/blob/main/doc/Credits.md)

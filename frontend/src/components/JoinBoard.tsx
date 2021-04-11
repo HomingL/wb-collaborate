@@ -1,21 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Grid, TextField } from "@material-ui/core";
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import { makeStyles } from '@material-ui/core/styles';
 import Fab from '@material-ui/core/Fab';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import Router from 'next/router';
+import { useRouter } from 'next/router';
 import { useGetWhiteboardLazyQuery } from '../generated/apolloComponents';
 import ErrorMessage from './dialog/ErrorMessage';
 
 const JoinBoard: React.FC = () => {
+  const router = useRouter();
   const classes = useStyles();
   const [badBoardRequest, setBadBoardRequest] = useState<boolean>(false);
-  const [boardId, setBoardId] = useState<string>("");
-  const [getWhiteboardQuery, {data, error}] = useGetWhiteboardLazyQuery({
-    fetchPolicy: 'cache-and-network'
-  });
+  const boardId = useRef<string>("");
+  const [getWhiteboardQuery, {data, error}] = useGetWhiteboardLazyQuery();
 
   const validationSchema = yup.object({
     boardcode: yup
@@ -32,14 +31,14 @@ const JoinBoard: React.FC = () => {
           id: values.boardcode
         },
       });
-      setBoardId(values.boardcode);
+      boardId.current = values.boardcode;
     },
   });
 
   useEffect(() => {
     if (error) setBadBoardRequest(true);
-    if (data && boardId) Router.push(`/whiteboard/${boardId}`);
-  }, [data, error, boardId]);
+    if (data && boardId.current) router.push(`/whiteboard/${boardId.current}`);
+  }, [data, error]);
   
   return (
     <form className={classes.form} noValidate onSubmit={formik.handleSubmit}>

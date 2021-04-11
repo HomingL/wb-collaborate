@@ -11,8 +11,7 @@ import { makeStyles, Theme } from '@material-ui/core/styles';
 import { useGetUserLazyQuery } from '../src/generated/apolloComponents';
 
 const navitems = [
-  {index: 0, title: "How to use?", link: "/"},
-  {index: 1, title: "About us", link: "/"}
+  {index: 0, title: "About us", link: "/about"}
 ];
 
 const nav = navitems.map((item) => 
@@ -32,6 +31,7 @@ const Index: React.FC = () => {
 
   useEffect(() => {
     getUserQuery();
+    console.log("query");
   }, []);
   
   useEffect(() => {

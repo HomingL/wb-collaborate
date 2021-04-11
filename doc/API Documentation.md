@@ -2,7 +2,7 @@
 
 ### About
 
-All the API can be tested on the GraphQL Playground once backend is running at http://localhost:5000/graphql
+All the API can be tested on the GraphQL Playground once backend is running at http://localhost:5000/graphql. Both ways on running the APP will allow you to hit the Playground.
 
 ### Types
 
