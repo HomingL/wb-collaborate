@@ -112,9 +112,9 @@ docker-compose -f dev-compose.yml down
 
 #### Using normal npm
 
-Need to install node version 10
-Need to clone the repository
-Need to open two terminals one for frontend and the other for the backend
+- Need to install node version 10
+- Need to clone the repository
+- Need to open two terminals one for frontend and the other for the backend
 
 ##### Backend
 
