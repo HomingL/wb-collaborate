@@ -66,24 +66,24 @@ This application is useful when working remotely. User at different physical loc
 ## Technology Stack
 
 #### Frontend:
-- React (next.js)
-- Apollo Client
-- Material-UI
+- [React (next.js)](https://nextjs.org/)
+- [Apollo Client](https://www.apollographql.com/docs/)
+- [Material-UI](https://material-ui.com/)
 
 #### Backend:
-- Express
-- GraphQL (Apollo Server)
-- PostgreSQL (with Typeorm)
+- [Express](https://expressjs.com/)
+- [Apollo Server](https://www.apollographql.com/docs/)
+- [PostgreSQL (with Typeorm)](https://typeorm.io/)
 
 #### Other Technologies
-- P2P connection (simple-peer)
-- Websocket (socket.io)
-- Canvas (fabric.js)
+- [P2P connection (simple-peer)](https://github.com/feross/simple-peer)
+- [Websocket (socket.io)](https://socket.io/)
+- [Canvas (fabric.js)](http://fabricjs.com/)
 
 ## Deployment
-- Digital Ocean 
-- Docker
-- Nginx
+- [Digital Ocean](https://www.digitalocean.com/)
+- [Docker](https://www.docker.com/)
+- [Nginx](https://www.nginx.com/)
 
 ## Top Five Technical Challenges
  - P2P User Communication(for whiteboard)
