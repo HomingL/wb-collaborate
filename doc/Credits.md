@@ -14,3 +14,8 @@ GraphQL and TypeORM
 
 https://blog.logrocket.com/how-build-graphql-api-typegraphql-typeorm/
 
+WebRTC and websocket
+
+https://dev.to/nyxtom/realtime-collaborative-drawing-part-2-server-sent-events-webrtc-mesh-networks-jnf
+
+https://github.com/feross/simple-peer
