@@ -41,7 +41,7 @@ export class WhiteboardIdInput {
 
 @InputType()
 export class UpdateWhiteboardInput {
-  
+
   @Field()
   @IsNotEmpty()
   id: string;

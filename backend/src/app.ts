@@ -4,8 +4,6 @@
 import 'dotenv/config';
 import 'reflect-metadata';
 import express from 'express';
-import * as fs from 'fs';
-import * as https from 'https';
 import cors from 'cors';
 import { createServer } from 'http';
 import { Server, Socket } from 'socket.io';
@@ -15,15 +13,13 @@ import { createConnection } from 'typeorm';
 import { UserResolver } from './resolvers/userResolver';
 import { WhiteboardResolver } from './resolvers/whiteboardResolver';
 
-// require('dotenv').config();
-
 const { PORT, FRONT_END_ORIGIN, PORT_SOCKET } = process.env;
 
 const boot = async () => {
   const app = express();
 
   app.get('/', (_, res) => {
-    res.send('hello world!');
+    res.send('backend connected!');
   });
 
   app.use((req, _res, next) => {
@@ -54,13 +50,6 @@ const boot = async () => {
 
   // establish socket.io server
   const port = PORT || 5000;
-  const configurations = {
-    // Note: You may need sudo to run on port 443
-    production: { ssl: true, port, hostname: 'ggnbwhiteboard.ninja' },
-    development: { ssl: false, port, hostname: 'localhost' },
-  };
-
-  const config = (process.env.NODE_ENV === 'development') ? configurations.development : configurations.production;
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
@@ -75,24 +64,12 @@ const boot = async () => {
       limit: '100mb',
     } });
 
-  let socketServer;
-  if (!config.ssl) {
-    socketServer = createServer(app);
-    const httpServer2 = createServer(app);
-    httpServer2.listen(config.port, () => {
-      console.log(`HTTP server started on ${config.hostname}: ${port}`);
-    });
-  } else {
-    const key = fs.readFileSync('server.key');
-    const cert = fs.readFileSync('server.cert');
-    // const ca = fs.readFileSync('/etc/letsencrypt/live/anime-sales.com/chain.pem', 'utf8');
-    socketServer = https.createServer({ key, cert }, app);
-
-    const httpsServer = https.createServer({ key, cert }, app);
-    httpsServer.listen(config.port, () => {
-      console.log(`HTTPS server started on ${config.hostname}:${port}`);
-    });
-  }
+  /* socket server and http server */
+  const socketServer = createServer(app);
+  const httpServer = createServer(app);
+  httpServer.listen(port, () => {
+    console.log(`HTTP server started on: ${port}`);
+  });
 
   const io = new Server(socketServer, {
     cors: {
@@ -101,8 +78,7 @@ const boot = async () => {
   const roomUsers:{ [roomId:string] : { [socketId:string] : string } } = {};
 
   socketServer.listen(PORT_SOCKET || 5001, () => {
-    const withSSL = config.ssl ? 'with SSL' : 'without SSL';
-    console.log(`socket server ${withSSL} started on ${config.hostname}:${PORT_SOCKET}`);
+    console.log(`socket server started on :${PORT_SOCKET}`);
   });
 
   function isAuth(token:string) {

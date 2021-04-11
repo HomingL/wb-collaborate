@@ -11,7 +11,7 @@ https://ggnbwhiteboard.rocks/
 
 ## API Documentation
 
-[Under Documentation/API_Documentation.md](../Documentation/API%20Documentation.md)
+[Under Documentation/API_Documentation.md](https://github.com/UTSCC09/project-ggnb/blob/main/Documentation/API%20Documentation.md)
 
 ## Demo Video
 

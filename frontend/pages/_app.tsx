@@ -24,8 +24,9 @@ export default function MyApp(props: AppProps) {
   return (
     <React.Fragment>
       <Head>
-        <title>WB Collaborate</title>
+        <title>WB Collaborate | Home</title>
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
+        <link rel="shortcut icon" href="/favicon.ico" />
       </Head>
       <ApolloProvider client={client}>
         <ThemeProvider theme={theme}>
