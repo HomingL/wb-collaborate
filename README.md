@@ -96,7 +96,7 @@ This application is useful when working remotely. User at different physical loc
 
 #### Using Docker (Recomended)
 
-Need to install docker
+- Need to install docker
 
 ##### To start the app
 ```
@@ -112,9 +112,9 @@ docker-compose -f dev-compose.yml down
 
 #### Using normal npm
 
-Need to install node version 10
-Need to clone the repository
-Need to open two terminals one for frontend and the other for the backend
+- Need to install node version 10
+- Need to clone the repository
+- Need to open two terminals one for frontend and the other for the backend
 
 ##### Backend
 
