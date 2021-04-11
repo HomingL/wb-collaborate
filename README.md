@@ -184,3 +184,8 @@ npm run start
 ```
 
 The app is hosted at http://localhost:3000
+
+
+## Credit
+
+[Credits Doc](https://github.com/UTSCC09/project-ggnb/blob/main/doc/Credits.md)
