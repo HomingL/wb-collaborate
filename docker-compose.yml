@@ -26,7 +26,6 @@ services:
     expose: 
       - "3000"
     command: npm run start
-    env_file: ./frontend/.env.local
   ggnb-backend:
     container_name: ggnb-backend
     image: lihongming1/ggnb-backend:2.0.5

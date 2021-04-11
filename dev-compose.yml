@@ -1,7 +1,6 @@
 version: '3'
 services:
   ggnb-proxy:
-    # build: ./nginx
     image: nginx:1.19
     depends_on: 
       - ggnb-frontend
@@ -13,18 +12,16 @@ services:
   ggnb-frontend:
     container_name: ggnb-frontend
     image: lihongming1/ggnb-frontend:2.0.7
-    build: ./frontend
     working_dir: /var/opt
     depends_on:
       - ggnb-backend
     expose: 
       - "3000"
     command: npm run start
-    env_file: ./frontend/.env.local
+    env_file: ./frontend/.env
   ggnb-backend:
     container_name: ggnb-backend
     image: lihongming1/ggnb-backend:2.0.7
-    build: ./backend
     working_dir: /var/opt
     depends_on:
       - ggnb-database
