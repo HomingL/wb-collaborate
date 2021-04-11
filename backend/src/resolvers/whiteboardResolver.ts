@@ -62,10 +62,13 @@ export class WhiteboardResolver {
   }
 
   @Mutation(() => String)
+  @UseMiddleware(isAuthenticated)
   async DeleteWhiteboard(
     @Arg('input') {id}: WhiteboardIdInput,
   ) {
     try {
+      const whiteboard = await Whiteboard.findOne(id);
+      if (!whiteboard) return new Error(`Whiteboard id: ${id} does not exist`);
       await Whiteboard
         .createQueryBuilder()
         .delete()

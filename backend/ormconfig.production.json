@@ -1,0 +1,10 @@
+{
+    "type": "postgres",
+    "host": "ggnb-database",
+    "port": 5432,
+    "username": "postgres",
+    "password": "postgres",
+    "database": "ggnb",
+    "entities": ["dist/models/*.js"],
+    "synchronize": true
+  }
