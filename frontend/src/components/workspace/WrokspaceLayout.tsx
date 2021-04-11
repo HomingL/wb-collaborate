@@ -7,12 +7,9 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { Grid } from '@material-ui/core';
 import WBLogo from '../static_components/WBCollaborate';
 import { removeToken } from '../../utils/token';
-
-
 interface WorkspaceLayoutProps {
   children: React.ReactNode;
 }
-
 
 const WorkspaceLayout: React.FC<WorkspaceLayoutProps> = ({ children }) => {
   const classes = useStyles();
@@ -56,8 +53,6 @@ const useStyles = makeStyles((theme: Theme) =>
       flexGrow: 1,
     },
     appBar: {
-      // width: `calc(100% - ${drawerWidth}px)`,
-      // marginLeft: drawerWidth,
     },
     drawer:{
       witdth: drawerWidth,

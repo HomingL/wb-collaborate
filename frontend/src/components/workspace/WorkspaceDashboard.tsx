@@ -6,7 +6,6 @@ import { useCreateWhiteboardMutation, useGetWhiteboardsLazyQuery, Whiteboard } f
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Pagination from '@material-ui/lab/Pagination';
 
-
 const WorkspaceDashboard: React.FC = () => {
     const pageLimit = 12;
     const classes = useStyles();
@@ -24,7 +23,7 @@ const WorkspaceDashboard: React.FC = () => {
       }
     });
 
-    const [GetWhiteboardsQuery, {data, error}] = useGetWhiteboardsLazyQuery(
+    const [getWhiteboardsQuery, {data, error}] = useGetWhiteboardsLazyQuery(
       {
         fetchPolicy: 'cache-and-network'
       }
@@ -36,7 +35,7 @@ const WorkspaceDashboard: React.FC = () => {
         createWhiteboardMutation({
           variables: {name: wbName},
         }).then(() =>{
-          GetWhiteboardsQuery();
+          getWhiteboardsQuery();
         });
         setWbName("");
       }else{
@@ -46,7 +45,7 @@ const WorkspaceDashboard: React.FC = () => {
     }
 
     useEffect(() => {
-      GetWhiteboardsQuery();
+      getWhiteboardsQuery();
     }, [refresh]);
 
     useEffect(() =>{

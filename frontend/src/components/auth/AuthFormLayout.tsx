@@ -1,8 +1,6 @@
 import React from 'react';
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import { Container, CssBaseline, Typography } from '@material-ui/core';
-// import Copyright from '../../Copyright';
-
 interface AuthFormLayoutProps {
   title: string;
   children: React.ReactNode;

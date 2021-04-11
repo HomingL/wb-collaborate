@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { Button, Grid, TextField } from '@material-ui/core';
 import { makeStyles, Theme } from "@material-ui/core/styles";
@@ -7,16 +7,12 @@ import * as yup from 'yup';
 import { SignupMutationVariables, useSignupMutation } from '../../generated/apolloComponents';
 import { SignUpValidationSchema } from './AuthValidationSchema';
 import Link from '../../Link';
+import ErrorMessage from '../dialog/ErrorMessage';
 
-
-
-interface SignupFormProps {
-
-}
-
-const SignupForm: React.FC<SignupFormProps> = () => {
+const SignupForm: React.FC = () => {
   const classes = useStyles();
   const router = useRouter();
+  const [badSignup, setBadSignup] = useState<boolean>(false);
   const [signupMutation] = useSignupMutation({
     variables: {
        email: '',
@@ -46,19 +42,20 @@ const SignupForm: React.FC<SignupFormProps> = () => {
         router.push('/');
       }
       ).catch(() =>{
-        throw new Error('Server Side Error for Signup');
+        setBadSignup(true);
       })
     }
   })
   return (
     <form className={classes.form} onSubmit={formik.handleSubmit} noValidate>
+      <ErrorMessage occur={badSignup} onClose={() => setBadSignup(false)}>
+        This email has been used!
+      </ErrorMessage>
       <Grid container spacing={1}>
         <Grid item xs={12}>
           <TextField
-            // className={classes.mdTextField}
             variant="outlined"
             margin="normal"
-            // required
             fullWidth
             name="name"
             label="Name"
@@ -75,7 +72,6 @@ const SignupForm: React.FC<SignupFormProps> = () => {
           <TextField
             variant="outlined"
             margin="normal"
-            // required
             fullWidth
             id="email"
             value={formik.values.email}
@@ -92,7 +88,6 @@ const SignupForm: React.FC<SignupFormProps> = () => {
           <TextField
             variant="outlined"
             margin="normal"
-            // required
             fullWidth
             value={formik.values.password}
             onChange={formik.handleChange}
@@ -121,12 +116,6 @@ const SignupForm: React.FC<SignupFormProps> = () => {
     </form>
   );
 }
-
-// interface FormFields{
-//   name: string;
-//   email: string;
-//   password: string;
-// }
 
 const useStyles = makeStyles((theme: Theme) => ({
   form: {
