@@ -5,7 +5,6 @@ import { fabric } from "fabric";
 import { useWBContext } from '../whiteboard/wbContext';
 import { usePBContext } from './peerData';
 import { useGetWhiteboardLazyQuery } from '../../generated/apolloComponents';
-// import { Root, Type, Field } from 'protobufjs';
 
 interface WbCanvasProp {
   wid: string,

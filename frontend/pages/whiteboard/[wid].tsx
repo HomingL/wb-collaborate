@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { WBProvider } from '../../src/components/whiteboard/wbContext'
 import PeerConnecion from '../../src/components/whiteboard/peerData';
-import { createStyles, Grid, makeStyles } from '@material-ui/core';
+import { CircularProgress, createStyles, Grid, makeStyles } from '@material-ui/core';
 import WbCanvas from '../../src/components/whiteboard/wbCanvas';
 import WbToolbar from '../../src/components/whiteboard/wbToolbar';
 import WbSubTool from '../../src/components/whiteboard/wbSubTool';
@@ -10,27 +10,25 @@ import { ChatProvider } from '../../src/components/chat/chatContext';
 import Chat from '../../src/components/chat/chat';
 import { useGetWhiteboardLazyQuery } from '../../src/generated/apolloComponents';
 
-interface WhiteboardProps {
-
-}
-
-const Whiteboard: React.FC<WhiteboardProps> = () => {
+const Whiteboard: React.FC = () => {
     const classes = useStyles();
     const router = useRouter()
     const [whiteboardId, setWhiteboardId] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(true);
-    const [GetWhiteboardQuery, {data, error}] = useGetWhiteboardLazyQuery({
+    const [getWhiteboardQuery, {data, error}] = useGetWhiteboardLazyQuery({
         fetchPolicy: 'cache-and-network'
-    })
+    });
 
     useEffect(() => {
         const { wid } = router.query;
         setWhiteboardId(wid as string);
-        GetWhiteboardQuery({
-            variables: {
-               id: wid as string
-            },
-        });
+        if (wid) {
+            getWhiteboardQuery({
+                variables: {
+                   id: wid as string
+                },
+            });
+        }
     }, [router.query.wid]);
     
     useEffect(() => {
@@ -39,34 +37,37 @@ const Whiteboard: React.FC<WhiteboardProps> = () => {
     }, [data, error]);
 
     return (
-        loading ?
-        <></>
-        :
-        <PeerConnecion wid={whiteboardId}>
-            <WBProvider wid={whiteboardId}>
-                <ChatProvider>
-                    <Grid container justify='space-between'>
-                        <Grid item xs={12}>
-                            <WbToolbar />
-                        </Grid>
-
+        <>
+            { loading ?
+            <Grid container alignItems="center" justify="center" style={{ minHeight: '100vh' }}>
+                <CircularProgress />
+            </Grid> :
+            <PeerConnecion wid={whiteboardId}>
+                <WBProvider wid={whiteboardId}>
+                    <ChatProvider>
                         <Grid container justify='space-between'>
-                            <Grid item xs={1}>
-                                <WbSubTool />
+                            <Grid item xs={12}>
+                                <WbToolbar />
                             </Grid>
 
-                            <Grid item xs={11}>
-                                <WbCanvas wid={whiteboardId}/>
-                            </Grid> 
-                        </Grid>
+                            <Grid container justify='space-between'>
+                                <Grid item xs={1}>
+                                    <WbSubTool />
+                                </Grid>
 
-                        <Grid container justify="flex-end" className={classes.chat}>
-                            <Chat />
+                                <Grid item xs={11}>
+                                    <WbCanvas wid={whiteboardId}/>
+                                </Grid> 
+                            </Grid>
+
+                            <Grid container justify="flex-end" className={classes.chat}>
+                                <Chat />
+                            </Grid>
                         </Grid>
-                    </Grid>
-                </ChatProvider>
-            </WBProvider>
-        </PeerConnecion>
+                    </ChatProvider>
+                </WBProvider>
+            </PeerConnecion> }
+        </>
     );
 }
 

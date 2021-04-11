@@ -17,15 +17,12 @@ const WbSubTool: React.FC = () => {
     const classes = useStyles();
     const [value, setValue] = useState(5);
     const [color, setColor] = useState(createColor("black"));
-
     const [selectValue, setSelectValue] = useState(0);
     const [selectColor, setSelectColor] = useState(createColor("black"));
     const [selectBorderColor, setSelectBorderColor] = useState(createColor("black"));
     const [selectBackgroundColor, setSelectBackgroundColor] = useState(createColor("white"));
 
-
     const { peerBroadcast } = usePBContext();
-
     const { select, canvas, setSelect } = useWBContext();
 
     useEffect(() =>{

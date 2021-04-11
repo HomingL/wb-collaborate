@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Grid, TextField } from "@material-ui/core";
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import { makeStyles } from '@material-ui/core/styles';
@@ -6,13 +6,16 @@ import Fab from '@material-ui/core/Fab';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import Router from 'next/router';
+import { useGetWhiteboardLazyQuery } from '../generated/apolloComponents';
+import ErrorMessage from './dialog/ErrorMessage';
 
-interface SigninFormProps {
-
-}
-
-const JoinBoard: React.FC<SigninFormProps> = () => {
+const JoinBoard: React.FC = () => {
   const classes = useStyles();
+  const [badBoardRequest, setBadBoardRequest] = useState<boolean>(false);
+  const [boardId, setBoardId] = useState<string>("");
+  const [getWhiteboardQuery, {data, error}] = useGetWhiteboardLazyQuery({
+    fetchPolicy: 'cache-and-network'
+  });
 
   const validationSchema = yup.object({
     boardcode: yup
@@ -24,13 +27,25 @@ const JoinBoard: React.FC<SigninFormProps> = () => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      Router.push(`/whiteboard/${values.boardcode}`);
+      getWhiteboardQuery({
+        variables: {
+          id: values.boardcode
+        },
+      });
+      setBoardId(values.boardcode);
     },
   });
-  
+
+  useEffect(() => {
+    if (error) setBadBoardRequest(true);
+    if (data && boardId) Router.push(`/whiteboard/${boardId}`);
+  }, [data, error, boardId]);
   
   return (
     <form className={classes.form} noValidate onSubmit={formik.handleSubmit}>
+      <ErrorMessage occur={badBoardRequest} onClose={() => setBadBoardRequest(false)}>
+        This whiteboard does not exist!
+      </ErrorMessage>
       <Grid container alignItems="center">
         <Grid item>
             <TextField
