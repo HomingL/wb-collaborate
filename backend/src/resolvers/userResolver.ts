@@ -1,8 +1,11 @@
-import { Resolver, Query, Mutation, Arg, UseMiddleware } from 'type-graphql';
+/* eslint-disable linebreak-style */
+import { Resolver, Query, Mutation, Arg, UseMiddleware, Ctx } from 'type-graphql';
 import { sign } from 'jsonwebtoken';
 import crypto from 'crypto';
+import { Context } from 'src/context';
+import { AuthenticationError } from 'apollo-server-express';
 import { isAuthenticated } from '../middlewares/auth';
-import { User } from '../models/user';
+import { SignupInput, User } from '../models/user';
 import { SigninResponse } from '../models/signinResponse';
 
 const { TOKEN_SECRET, TOKEN_EXPIRE_TIME } = process.env;
@@ -21,16 +24,17 @@ function generateHash(password: string, salt: string) {
 export class UserResolver {
   @Query(() => User)
   @UseMiddleware(isAuthenticated)
-  User() {
-    return { id: 1, name: 'Homing Li', email: 'homing.li@mail.utor' };
+  async User(
+    @Ctx() ctx: Context,
+  ) {
+    return ctx.payload;
   }
 
   @Mutation(() => User)
   async Signup(
-    @Arg('name') name: string,
-    @Arg('email') email: string,
-    @Arg('password') password: string,
+    @Arg("input") {name, email, password}: SignupInput,
   ) {
+
     const user = await User.findOne({ email });
     if (user) return new Error('User Already exist');
     const salt = generateSalt();
@@ -51,6 +55,6 @@ export class UserResolver {
       const response : SigninResponse = { user, token };
       return response;
     }
-    return new Error('Incorrect match of usename and password');
+    return new AuthenticationError('Incorrect match of usename and password');
   }
 }

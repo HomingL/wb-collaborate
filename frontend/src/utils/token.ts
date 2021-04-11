@@ -10,3 +10,9 @@ export const setToken = (token: string):string|null => {
     localStorage.setItem('token', token);
   return null;
 }
+
+export const removeToken = ():void=> {
+  if (typeof window !== 'undefined' && localStorage.getItem('token')){
+    localStorage.removeItem('token');
+  }
+}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import Link from '../src/Link';
@@ -6,8 +6,9 @@ import Copyright from '../src/Copyright';
 import SigninForm from '../src/components/auth/SigninForm';
 import AuthFormLayout from '../src/components/auth/AuthFormLayout';
 import JoinBoard from '../src/components/JoinBoard'
-import { Grid, Toolbar } from '@material-ui/core';
+import { Button, Grid, Toolbar } from '@material-ui/core';
 import { makeStyles, Theme } from '@material-ui/core/styles';
+import { useGetUserLazyQuery } from '../src/generated/apolloComponents';
 
 const navitems = [
   {index: 0, title: "How to use?", link: "/"},
@@ -20,9 +21,26 @@ const nav = navitems.map((item) =>
   </Box>
 );
 
-export default function Index() {
+const Index: React.FC = () => {
   const classes = useStyles();
+  const [isAuth, setIsAuth] = useState<boolean>(false);
+  const [GetUserQuery, {data, loading}]  = useGetUserLazyQuery(
+    {
+      fetchPolicy: 'cache-and-network'
+    }
+  );
+
+  useEffect(() => {
+    GetUserQuery();
+    if (data){
+      setIsAuth(true);
+    } 
+    else setIsAuth(false);
+  }, [data])
+
   return (
+    loading ?
+    <></> :
     <Grid container className={classes.container} justify="space-between" direction="column" spacing={3}>
 
       <Grid item>
@@ -45,12 +63,11 @@ export default function Index() {
             </Box>
         </Grid>
 
-        <Grid item >
+        {isAuth ? <Link href={`/workspace/${data?.User.id}`}><Button variant="contained" color='secondary' > Go to Your Workspace </Button> </Link>: <Grid item >
           <AuthFormLayout title='Sign In' >
             <SigninForm/>
           </AuthFormLayout>
-        </Grid>
-
+        </Grid>}
       </Grid>
 
       <Grid item>
@@ -75,3 +92,4 @@ const useStyles = makeStyles((theme: Theme) => ({
   }
 }));
 
+export default Index;

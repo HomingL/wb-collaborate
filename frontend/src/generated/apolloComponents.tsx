@@ -16,6 +16,13 @@ export type Scalars = {
 export type Query = {
   __typename?: 'Query';
   User: User;
+  GetWhiteboard?: Maybe<Whiteboard>;
+  GetWhiteboards: Array<Whiteboard>;
+};
+
+
+export type QueryGetWhiteboardArgs = {
+  input: WhiteboardIdInput;
 };
 
 export type User = {
@@ -23,19 +30,33 @@ export type User = {
   id: Scalars['ID'];
   name: Scalars['String'];
   email: Scalars['String'];
+  whiteboards?: Maybe<Array<Whiteboard>>;
+};
+
+export type Whiteboard = {
+  __typename?: 'Whiteboard';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  user: User;
+  data?: Maybe<Scalars['String']>;
+};
+
+export type WhiteboardIdInput = {
+  id: Scalars['String'];
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
   Signup: User;
   Signin: SigninResponse;
+  CreateWhiteboard: Whiteboard;
+  UpdateWhiteboard: Scalars['String'];
+  DeleteWhiteboard: Scalars['String'];
 };
 
 
 export type MutationSignupArgs = {
-  password: Scalars['String'];
-  email: Scalars['String'];
-  name: Scalars['String'];
+  input: SignupInput;
 };
 
 
@@ -44,10 +65,40 @@ export type MutationSigninArgs = {
   email: Scalars['String'];
 };
 
+
+export type MutationCreateWhiteboardArgs = {
+  input: WhiteboardNameInput;
+};
+
+
+export type MutationUpdateWhiteboardArgs = {
+  input: UpdateWhiteboardInput;
+};
+
+
+export type MutationDeleteWhiteboardArgs = {
+  input: WhiteboardIdInput;
+};
+
+export type SignupInput = {
+  name: Scalars['String'];
+  email: Scalars['String'];
+  password: Scalars['String'];
+};
+
 export type SigninResponse = {
   __typename?: 'SigninResponse';
   user: User;
   token: Scalars['String'];
+};
+
+export type WhiteboardNameInput = {
+  name: Scalars['String'];
+};
+
+export type UpdateWhiteboardInput = {
+  id: Scalars['String'];
+  data?: Maybe<Scalars['String']>;
 };
 
 export type SignupMutationVariables = Exact<{
@@ -90,14 +141,80 @@ export type GetUserQuery = (
   { __typename?: 'Query' }
   & { User: (
     { __typename?: 'User' }
-    & Pick<User, 'name' | 'email'>
+    & Pick<User, 'id' | 'name' | 'email'>
   ) }
+);
+
+export type CreateWhiteboardMutationVariables = Exact<{
+  name: Scalars['String'];
+}>;
+
+
+export type CreateWhiteboardMutation = (
+  { __typename?: 'Mutation' }
+  & { CreateWhiteboard: (
+    { __typename?: 'Whiteboard' }
+    & Pick<Whiteboard, 'id' | 'data'>
+    & { user: (
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'name' | 'email'>
+    ) }
+  ) }
+);
+
+export type UpdateWhiteboardMutationVariables = Exact<{
+  id: Scalars['String'];
+  data: Scalars['String'];
+}>;
+
+
+export type UpdateWhiteboardMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'UpdateWhiteboard'>
+);
+
+export type GetWhiteboardQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type GetWhiteboardQuery = (
+  { __typename?: 'Query' }
+  & { GetWhiteboard?: Maybe<(
+    { __typename?: 'Whiteboard' }
+    & Pick<Whiteboard, 'name' | 'data'>
+  )> }
+);
+
+export type GetWhiteboardsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetWhiteboardsQuery = (
+  { __typename?: 'Query' }
+  & { GetWhiteboards: Array<(
+    { __typename?: 'Whiteboard' }
+    & Pick<Whiteboard, 'id' | 'name' | 'data'>
+    & { user: (
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'name' | 'email'>
+    ) }
+  )> }
+);
+
+export type DeleteWhiteboardMutationVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type DeleteWhiteboardMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'DeleteWhiteboard'>
 );
 
 
 export const SignupDocument = gql`
     mutation Signup($email: String!, $password: String!, $name: String!) {
-  Signup(email: $email, password: $password, name: $name) {
+  Signup(input: {password: $password, email: $email, name: $name}) {
     id
     name
     email
@@ -172,6 +289,7 @@ export type SigninMutationOptions = Apollo.BaseMutationOptions<SigninMutation, S
 export const GetUserDocument = gql`
     query GetUser {
   User {
+    id
     name
     email
   }
@@ -202,3 +320,175 @@ export function useGetUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Ge
 export type GetUserQueryHookResult = ReturnType<typeof useGetUserQuery>;
 export type GetUserLazyQueryHookResult = ReturnType<typeof useGetUserLazyQuery>;
 export type GetUserQueryResult = Apollo.QueryResult<GetUserQuery, GetUserQueryVariables>;
+export const CreateWhiteboardDocument = gql`
+    mutation CreateWhiteboard($name: String!) {
+  CreateWhiteboard(input: {name: $name}) {
+    id
+    data
+    user {
+      id
+      name
+      email
+    }
+  }
+}
+    `;
+export type CreateWhiteboardMutationFn = Apollo.MutationFunction<CreateWhiteboardMutation, CreateWhiteboardMutationVariables>;
+
+/**
+ * __useCreateWhiteboardMutation__
+ *
+ * To run a mutation, you first call `useCreateWhiteboardMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateWhiteboardMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createWhiteboardMutation, { data, loading, error }] = useCreateWhiteboardMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *   },
+ * });
+ */
+export function useCreateWhiteboardMutation(baseOptions?: Apollo.MutationHookOptions<CreateWhiteboardMutation, CreateWhiteboardMutationVariables>) {
+        return Apollo.useMutation<CreateWhiteboardMutation, CreateWhiteboardMutationVariables>(CreateWhiteboardDocument, baseOptions);
+      }
+export type CreateWhiteboardMutationHookResult = ReturnType<typeof useCreateWhiteboardMutation>;
+export type CreateWhiteboardMutationResult = Apollo.MutationResult<CreateWhiteboardMutation>;
+export type CreateWhiteboardMutationOptions = Apollo.BaseMutationOptions<CreateWhiteboardMutation, CreateWhiteboardMutationVariables>;
+export const UpdateWhiteboardDocument = gql`
+    mutation UpdateWhiteboard($id: String!, $data: String!) {
+  UpdateWhiteboard(input: {id: $id, data: $data})
+}
+    `;
+export type UpdateWhiteboardMutationFn = Apollo.MutationFunction<UpdateWhiteboardMutation, UpdateWhiteboardMutationVariables>;
+
+/**
+ * __useUpdateWhiteboardMutation__
+ *
+ * To run a mutation, you first call `useUpdateWhiteboardMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateWhiteboardMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateWhiteboardMutation, { data, loading, error }] = useUpdateWhiteboardMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateWhiteboardMutation(baseOptions?: Apollo.MutationHookOptions<UpdateWhiteboardMutation, UpdateWhiteboardMutationVariables>) {
+        return Apollo.useMutation<UpdateWhiteboardMutation, UpdateWhiteboardMutationVariables>(UpdateWhiteboardDocument, baseOptions);
+      }
+export type UpdateWhiteboardMutationHookResult = ReturnType<typeof useUpdateWhiteboardMutation>;
+export type UpdateWhiteboardMutationResult = Apollo.MutationResult<UpdateWhiteboardMutation>;
+export type UpdateWhiteboardMutationOptions = Apollo.BaseMutationOptions<UpdateWhiteboardMutation, UpdateWhiteboardMutationVariables>;
+export const GetWhiteboardDocument = gql`
+    query GetWhiteboard($id: String!) {
+  GetWhiteboard(input: {id: $id}) {
+    name
+    data
+  }
+}
+    `;
+
+/**
+ * __useGetWhiteboardQuery__
+ *
+ * To run a query within a React component, call `useGetWhiteboardQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetWhiteboardQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetWhiteboardQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetWhiteboardQuery(baseOptions: Apollo.QueryHookOptions<GetWhiteboardQuery, GetWhiteboardQueryVariables>) {
+        return Apollo.useQuery<GetWhiteboardQuery, GetWhiteboardQueryVariables>(GetWhiteboardDocument, baseOptions);
+      }
+export function useGetWhiteboardLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetWhiteboardQuery, GetWhiteboardQueryVariables>) {
+          return Apollo.useLazyQuery<GetWhiteboardQuery, GetWhiteboardQueryVariables>(GetWhiteboardDocument, baseOptions);
+        }
+export type GetWhiteboardQueryHookResult = ReturnType<typeof useGetWhiteboardQuery>;
+export type GetWhiteboardLazyQueryHookResult = ReturnType<typeof useGetWhiteboardLazyQuery>;
+export type GetWhiteboardQueryResult = Apollo.QueryResult<GetWhiteboardQuery, GetWhiteboardQueryVariables>;
+export const GetWhiteboardsDocument = gql`
+    query GetWhiteboards {
+  GetWhiteboards {
+    id
+    name
+    data
+    user {
+      id
+      name
+      email
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetWhiteboardsQuery__
+ *
+ * To run a query within a React component, call `useGetWhiteboardsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetWhiteboardsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetWhiteboardsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetWhiteboardsQuery(baseOptions?: Apollo.QueryHookOptions<GetWhiteboardsQuery, GetWhiteboardsQueryVariables>) {
+        return Apollo.useQuery<GetWhiteboardsQuery, GetWhiteboardsQueryVariables>(GetWhiteboardsDocument, baseOptions);
+      }
+export function useGetWhiteboardsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetWhiteboardsQuery, GetWhiteboardsQueryVariables>) {
+          return Apollo.useLazyQuery<GetWhiteboardsQuery, GetWhiteboardsQueryVariables>(GetWhiteboardsDocument, baseOptions);
+        }
+export type GetWhiteboardsQueryHookResult = ReturnType<typeof useGetWhiteboardsQuery>;
+export type GetWhiteboardsLazyQueryHookResult = ReturnType<typeof useGetWhiteboardsLazyQuery>;
+export type GetWhiteboardsQueryResult = Apollo.QueryResult<GetWhiteboardsQuery, GetWhiteboardsQueryVariables>;
+export const DeleteWhiteboardDocument = gql`
+    mutation DeleteWhiteboard($id: String!) {
+  DeleteWhiteboard(input: {id: $id})
+}
+    `;
+export type DeleteWhiteboardMutationFn = Apollo.MutationFunction<DeleteWhiteboardMutation, DeleteWhiteboardMutationVariables>;
+
+/**
+ * __useDeleteWhiteboardMutation__
+ *
+ * To run a mutation, you first call `useDeleteWhiteboardMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteWhiteboardMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteWhiteboardMutation, { data, loading, error }] = useDeleteWhiteboardMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteWhiteboardMutation(baseOptions?: Apollo.MutationHookOptions<DeleteWhiteboardMutation, DeleteWhiteboardMutationVariables>) {
+        return Apollo.useMutation<DeleteWhiteboardMutation, DeleteWhiteboardMutationVariables>(DeleteWhiteboardDocument, baseOptions);
+      }
+export type DeleteWhiteboardMutationHookResult = ReturnType<typeof useDeleteWhiteboardMutation>;
+export type DeleteWhiteboardMutationResult = Apollo.MutationResult<DeleteWhiteboardMutation>;
+export type DeleteWhiteboardMutationOptions = Apollo.BaseMutationOptions<DeleteWhiteboardMutation, DeleteWhiteboardMutationVariables>;

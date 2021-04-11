@@ -12,7 +12,6 @@ const httpLink = createHttpLink({
 const authLink = setContext((_, { headers }) => {
 
   const token = getToken();
-  console.log('apollo sets bearer: ', token);
   return {
     headers: {
       ...headers,

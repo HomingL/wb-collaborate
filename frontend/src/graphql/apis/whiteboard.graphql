@@ -1,0 +1,57 @@
+mutation CreateWhiteboard($name: String!){
+  CreateWhiteboard(
+    input: {
+      name: $name
+      }
+  )
+    {
+    id
+    data
+    user{
+      id
+      name
+      email
+    }
+  }
+}
+
+mutation UpdateWhiteboard($id: String!, $data: String!){
+  UpdateWhiteboard(
+    input: {
+      id: $id, 
+      data: $data
+    }
+  )
+}
+
+query GetWhiteboard($id: String!){
+  GetWhiteboard(
+    input: {
+      id: $id
+    }
+  ){
+    name
+    data
+  }
+}
+
+query GetWhiteboards{
+  GetWhiteboards{
+    id
+    name
+    data
+    user{
+      id
+      name
+      email
+    }
+  }
+}
+
+mutation DeleteWhiteboard($id: String!){
+  DeleteWhiteboard(
+    input: {
+      id: $id
+    }
+  )
+}
