@@ -128,10 +128,11 @@ FRONT_END_ORIGIN=http://localhost:3000
 PORT_SOCKET=5001
 ```
 
-Note if you change the **PORT** or the **PORT_SOCKET** you will need to change .env file in the front end as well.
-You can Change TOKEN_SECRET as anything you want.
 
-A file **ormconfig.json** need has default configuration of:
+Note if you change the **PORT** or the **PORT_SOCKET** you will need to change **.env** file in the front end as well.
+You can Change **TOKEN_SECRET** as anything you want.
+
+A file **ormconfig.json** has default configuration of:
 
 Default config is **SQLite**:
 
