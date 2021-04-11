@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import { Button, Collapse, Grid, IconButton, TextField, Theme } from "@material-ui/core";
+import { Button, Grid, TextField, Theme } from "@material-ui/core";
 import { makeStyles } from '@material-ui/core/styles';
-import { Alert } from '@material-ui/lab';
-import CloseIcon from '@material-ui/icons/Close';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { SignInValidationSchema } from './AuthValidationSchema';
@@ -76,10 +74,6 @@ const SigninForm: React.FC = () => {
           id="password"
           autoComplete="current-password"
         />
-        {/* <FormControlLabel
-          control={<Checkbox value="remember" color="primary" />}
-          label="Remember me"
-        /> */}
         <Button
           type="submit"
           fullWidth
@@ -90,11 +84,6 @@ const SigninForm: React.FC = () => {
           Sign In
         </Button>
         <Grid container>
-          {/* <Grid item xs>
-            <Link href="#" variant="body2">
-              Forgot password?
-            </Link>
-          </Grid> */}
           <Grid item>
             <Link href="/signup" variant="body2">
               {"Don't have an account? Sign Up"}

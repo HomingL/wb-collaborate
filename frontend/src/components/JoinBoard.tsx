@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Grid, TextField } from "@material-ui/core";
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import { makeStyles } from '@material-ui/core/styles';
@@ -12,6 +12,7 @@ import ErrorMessage from './dialog/ErrorMessage';
 const JoinBoard: React.FC = () => {
   const classes = useStyles();
   const [badBoardRequest, setBadBoardRequest] = useState<boolean>(false);
+  const [boardId, setBoardId] = useState<string>("");
   const [getWhiteboardQuery, {data, error}] = useGetWhiteboardLazyQuery({
     fetchPolicy: 'cache-and-network'
   });
@@ -31,11 +32,14 @@ const JoinBoard: React.FC = () => {
           id: values.boardcode
         },
       });
-      if (error) setBadBoardRequest(true);
-      if (data) Router.push(`/whiteboard/${values.boardcode}`);
+      setBoardId(values.boardcode);
     },
   });
-  
+
+  useEffect(() => {
+    if (error) setBadBoardRequest(true);
+    if (data && boardId) Router.push(`/whiteboard/${boardId}`);
+  }, [data, error, boardId]);
   
   return (
     <form className={classes.form} noValidate onSubmit={formik.handleSubmit}>

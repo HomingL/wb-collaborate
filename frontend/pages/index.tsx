@@ -35,7 +35,6 @@ const Index: React.FC = () => {
   }, []);
   
   useEffect(() => {
-    console.log("query", data);
     if (data){
       setIsAuth(true);
     } 

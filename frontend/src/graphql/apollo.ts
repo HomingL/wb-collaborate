@@ -1,8 +1,6 @@
 import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client'
 import { setContext } from '@apollo/client/link/context'
-// import Cookies from 'js-cookie'
 import { getToken } from '../utils/token';
-
 
 const httpLink = createHttpLink({ 
     uri: process.env.NEXT_PUBLIC_BACK_END_ORIGIN, 

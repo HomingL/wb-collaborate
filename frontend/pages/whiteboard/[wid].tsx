@@ -10,11 +10,7 @@ import { ChatProvider } from '../../src/components/chat/chatContext';
 import Chat from '../../src/components/chat/chat';
 import { useGetWhiteboardLazyQuery } from '../../src/generated/apolloComponents';
 
-interface WhiteboardProps {
-
-}
-
-const Whiteboard: React.FC<WhiteboardProps> = () => {
+const Whiteboard: React.FC = () => {
     const classes = useStyles();
     const router = useRouter()
     const [whiteboardId, setWhiteboardId] = useState<string>('');
@@ -26,11 +22,13 @@ const Whiteboard: React.FC<WhiteboardProps> = () => {
     useEffect(() => {
         const { wid } = router.query;
         setWhiteboardId(wid as string);
-        getWhiteboardQuery({
-            variables: {
-               id: wid as string
-            },
-        });
+        if (wid) {
+            getWhiteboardQuery({
+                variables: {
+                   id: wid as string
+                },
+            });
+        }
     }, [router.query.wid]);
     
     useEffect(() => {
@@ -39,35 +37,37 @@ const Whiteboard: React.FC<WhiteboardProps> = () => {
     }, [data, error]);
 
     return (
-        loading ?
-        <Grid container alignItems="center" justify="center" style={{ minHeight: '100vh' }}>
-            <CircularProgress />
-        </Grid> :
-        <PeerConnecion wid={whiteboardId}>
-            <WBProvider wid={whiteboardId}>
-                <ChatProvider>
-                    <Grid container justify='space-between'>
-                        <Grid item xs={12}>
-                            <WbToolbar />
-                        </Grid>
-
+        <>
+            { loading ?
+            <Grid container alignItems="center" justify="center" style={{ minHeight: '100vh' }}>
+                <CircularProgress />
+            </Grid> :
+            <PeerConnecion wid={whiteboardId}>
+                <WBProvider wid={whiteboardId}>
+                    <ChatProvider>
                         <Grid container justify='space-between'>
-                            <Grid item xs={1}>
-                                <WbSubTool />
+                            <Grid item xs={12}>
+                                <WbToolbar />
                             </Grid>
 
-                            <Grid item xs={11}>
-                                <WbCanvas wid={whiteboardId}/>
-                            </Grid> 
-                        </Grid>
+                            <Grid container justify='space-between'>
+                                <Grid item xs={1}>
+                                    <WbSubTool />
+                                </Grid>
 
-                        <Grid container justify="flex-end" className={classes.chat}>
-                            <Chat />
+                                <Grid item xs={11}>
+                                    <WbCanvas wid={whiteboardId}/>
+                                </Grid> 
+                            </Grid>
+
+                            <Grid container justify="flex-end" className={classes.chat}>
+                                <Chat />
+                            </Grid>
                         </Grid>
-                    </Grid>
-                </ChatProvider>
-            </WBProvider>
-        </PeerConnecion>
+                    </ChatProvider>
+                </WBProvider>
+            </PeerConnecion> }
+        </>
     );
 }
 
