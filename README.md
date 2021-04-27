@@ -94,7 +94,7 @@ This application is useful when working remotely. User at different physical loc
 
 ## To run the APP
 
-#### Using Docker (Recomended)
+#### Method1: Using Docker (Recomended, no need to worry about env files)
 
 Need to install docker and docker-compose
 
@@ -110,7 +110,7 @@ The app is hosted at http://localhost
 docker-compose -f dev-compose.yml down
 ```
 
-#### Using normal npm
+#### Method2: Using npm
 
 - Need to install node version 10
 - Need to clone the repository
